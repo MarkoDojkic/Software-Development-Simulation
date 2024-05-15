@@ -1,0 +1,12 @@
+
+ˆ
+java:S1854"@Remove this useless assignment to local variable "projectOwner".(ô‡Š¸þÿÿÿÿ8Á“®î÷1J$edeec48f-857f-4c28-9694-4cb141c1e3e1
+y
+java:S1481"1Remove this unused "projectOwner" local variable.(ô‡Š¸þÿÿÿÿ8Ã“®î÷1J$f4d0e0c2-0921-497c-aa98-db5969a6d8a6
+•
+java:S6204("RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(‚øƒ©8Æ“®î÷1J$beb51411-6160-4daa-81a3-0fe9ef91cb10
+ƒ	java:S1257"<This block of commented-out lines of code should be removed.(Ù ÛÙüÿÿÿÿ8È“®î÷1J$b0a495ff-1b48-4b3d-9919-32a4be3778dd
+˜
+java:S1128"URemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.model.User'.(îåš—8É“®î÷1J$ceba9e0a-f4b3-4077-9eb7-2cd786931a6c
+œ
+java:S1128	"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.Utilities'.(Ò—¿¸8É“®î÷1J$f6178deb-3a13-4239-b16d-9e64fb973acb

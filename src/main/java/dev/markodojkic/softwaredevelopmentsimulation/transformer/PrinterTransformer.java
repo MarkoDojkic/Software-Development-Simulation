@@ -1,0 +1,32 @@
+package dev.markodojkic.softwaredevelopmentsimulation.transformer;
+
+import com.diogonunes.jcolor.Attribute;
+import lombok.Setter;
+import org.springframework.integration.annotation.Transformer;
+import org.springframework.stereotype.Component;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+
+@Component
+@Setter
+public class PrinterTransformer {
+	private String infoTextColorANSICode;
+	private String errorTextColorANSICode;
+
+	private static final String SPLITTER = "\n***------------------------------------------------------------------------------\n";
+
+	@Transformer
+	public String infoOutput(String output){
+		return colorize("/*\t- INFORMATION -\n\s\s* " +
+				output.replace("$", SPLITTER).replace("\n", "\n\s\s* ").replace("* ***", "\r") +
+				"\n\t- INFORMATION - */", Attribute.TEXT_COLOR(Integer.parseInt(infoTextColorANSICode)));
+	}
+
+	@Transformer
+	public String errorOutput(String output){
+		return colorize("/*\t- !ERROR! -\n\s\s!-- " +
+				output.replace("$", SPLITTER).replace("\n", "\n\s\s!-- ").replace("!-- ***", "\r") +
+				"\n\t - !ERROR! - */", Attribute.TEXT_COLOR(Integer.parseInt(errorTextColorANSICode)));
+	}
+}
+

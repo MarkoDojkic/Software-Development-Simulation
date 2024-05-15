@@ -13,6 +13,6 @@ public enum Priority {
 	CRITICAL(4, 7.15),
 	BLOCKER(5, 8.00);
 
-	public final int urgency;
-	public final double typicalResolutionTimeCoefficient;
+	private final int urgency;
+	private final double typicalResolutionTimeCoefficient;
 }

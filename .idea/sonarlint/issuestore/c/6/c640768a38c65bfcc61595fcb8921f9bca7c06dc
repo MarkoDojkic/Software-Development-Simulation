@@ -1,0 +1,6 @@
+
+	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8‚ªŞ÷1J$adae5479-15d6-4529-93d9-1425d49dd3c5
+…
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8±æ§Ş÷1J$e0f5c63b-3098-4dbe-9e5a-b9a5de1a68bf
+¡
+java:S2142"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ä ¹€8 ‚ªŞ÷1J$4af3039d-1bc0-40a7-b554-27767913f22c
