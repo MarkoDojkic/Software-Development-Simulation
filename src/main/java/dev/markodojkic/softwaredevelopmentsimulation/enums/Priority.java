@@ -6,13 +6,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Priority {
-    TRIVIAL(0, 1.00),
-    NORMAL(1, 2.75),
-    MINOR(2, 4.35),
-    MAJOR(3, 6.45),
-    CRITICAL(4, 7.15),
-    BLOCKER(5, 8.00);
+    TRIVIAL(0,  7),
+    NORMAL(1,  15),
+    MINOR(2,  50),
+    MAJOR(3,  37),
+    CRITICAL(4,  124),
+    BLOCKER(5,  160);
 
     private final int urgency;
-    private final double typicalResolutionTimeCoefficient;
+    private final int ansiColorCode;
 }

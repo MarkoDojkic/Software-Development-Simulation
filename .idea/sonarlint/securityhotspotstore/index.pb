@@ -44,3 +44,5 @@ Rsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/util/DataProvider.j
 esrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/transformer/StatusTransformerBuilder.java,b\9\b9f06bfa3a7f095fca99f8bb82724fd5572f8882
 „
 Tsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/interfaces/IPrinter.java,d\7\d7df2cc1297bb50a36646300e4772af53953c0dd
+z
+Jsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/Developer.java,9\3\937734c280dfbb33056c6abcafe9f284265c65be

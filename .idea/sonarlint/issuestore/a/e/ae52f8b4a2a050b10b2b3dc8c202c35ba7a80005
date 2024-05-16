@@ -1,30 +1,16 @@
 
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(†Ø÷ˆúÿÿÿÿ8¸Ñæ‰ø1J$738ffa13-7a8b-479c-9245-43ebfe6da023
-]
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ğœÂd8¬£×Šø1
-^
-java:S1106"AMove this left curly brace to the beginning of next line of code.(™†åë8­£×Šø1
+java:S1106"AMove this left curly brace to the beginning of next line of code.(†Ø÷ˆúÿÿÿÿ8©¬–ø1J$91e8db4f-a356-4caa-ac22-928d88e576f4
+ƒ
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ğœÂd8©¬–ø1J$8ef5e824-5715-4e80-b443-9139901416eb
+„
+java:S1106"AMove this left curly brace to the beginning of next line of code.(Šˆ»–8©¬–ø1J$be3d5991-a9dd-4ac1-90c1-3885ff83b45e
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ŞÑ˜Šşÿÿÿÿ8©¬–ø1J$2af61f6c-be6c-4c40-ad96-cb9f8f34bf7e
 a
-java:S1451"&Add or update the header of this file.8¼Ñæ‰ø1J$9b81b173-c9ac-492b-b7cd-c0d46aad8961
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8¼Ñæ‰ø1J$6d6d45dc-7da9-4876-8741-7a5e4d682a6a
-c
-java:S3242"GUse 'java.util.Collection' here; it is a more general type than 'List'.(ğœÂd8·£×Šø1
-d
-java:S3242"GUse 'java.util.Collection' here; it is a more general type than 'List'.(™†åë8¹£×Šø1
-s
-java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ÄÏè‰ø1J$f5ac7dc4-3acd-404a-ab07-32b3a70b1414
-s
-java:S1128"+Remove this unused import 'java.util.UUID'.(ÀãÄ£úÿÿÿÿ8ÅÏè‰ø1J$8db13147-0291-4eb1-bc25-efa427800281
-œ
-java:S1128"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.enums.Priority'.(™Øş«8ÅÏè‰ø1J$8796df25-5266-47b6-bd60-5cf00c4f33ec
-Ÿ
-java:S1128"WRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.enums.Status'.(’âÆŸúÿÿÿÿ8ÅÏè‰ø1J$f8535076-7433-4565-8b36-8e3f58b4fe85
-œ
-java:S1128	"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.enums.UserType'.(»­ì‚8ÅÏè‰ø1J$58b9f660-52f3-4595-b4da-a448263deba7
-©
-java:S1128"gRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.developers'.(¤¬8ÅÏè‰ø1J$05470bc0-d846-4440-8c6e-0c91bbe6c670
-¡
-java:S1128"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.Utilities'.(˜Ù„Æøÿÿÿÿ8ÅÏè‰ø1J$f4b75408-e0b1-4950-869f-7f5478832ab9
-µ
-java:S1128"rRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.getRandomElementFromList'.(ú’­ 8ÅÏè‰ø1J$3926bcdc-f585-406f-a27d-b9411c681570
+java:S1451"&Add or update the header of this file.8°¬–ø1J$ef4fff91-eb62-4840-ac20-f04562e7edd9
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8°¬–ø1J$14a03978-c6d4-41c1-b2c7-7eaf97167d82
+À
+java:S3242"xUse 'dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask' here; it is a more general type than 'TechnicalTask'.(ŞÑ˜Šşÿÿÿÿ8¸¬–ø1J$6cae6a34-32fb-40e9-b4d3-961e201f0bc1
+t
+java:S1128	"RRemove this unused import 'org.springframework.integration.annotation.Aggregator'.(‘Ş£³ûÿÿÿÿ8¸´à–ø1

@@ -1,10 +1,10 @@
 
 „
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ËÖÊ®8şêÊ†ø1J$4ad1d462-f74a-4248-b3cf-b810535943b4
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ËÖÊ®8şêÊ†ø1J$1bed4494-a526-4c46-9f2f-c4b4244c62d7
 a
-java:S1451"&Add or update the header of this file.8ÿêÊ†ø1J$0292728b-83dc-46b5-9f03-5eccfcda1e63
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8ëÊ†ø1J$50aff2e6-81c5-4cd7-9e8f-b508c732a692
+java:S1451"&Add or update the header of this file.8ÿêÊ†ø1J$37c05f77-0ff2-4166-a67a-8cf86684211b
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8ëÊ†ø1J$ecefe680-88eb-49a4-8610-58a78dc63cf3
 v
-java:S2208".Explicitly import the specific classes needed.(â—‡‘şÿÿÿÿ8ƒëÊ†ø1J$2e51789e-211b-47b1-b80a-798d9123148a
+java:S2208".Explicitly import the specific classes needed.(â—‡‘şÿÿÿÿ8ƒëÊ†ø1J$d0c8d17c-4bb2-48ba-afe5-1c616f8fb666
 b
-java:S4926"Remove this "serialVersionUID".(ô èŠ8•¾ô†ø1J$d47edd57-a2bf-462c-aa08-86bed7136302
+java:S4926"Remove this "serialVersionUID".(ô èŠ8•¾ô†ø1J$df65d5bd-81f0-4d16-b756-559c1d0cfa11

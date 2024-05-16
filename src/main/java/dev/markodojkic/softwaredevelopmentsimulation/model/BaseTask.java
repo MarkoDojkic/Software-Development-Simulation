@@ -1,7 +1,6 @@
 package dev.markodojkic.softwaredevelopmentsimulation.model;
 
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
-import dev.markodojkic.softwaredevelopmentsimulation.enums.Status;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -23,7 +22,6 @@ public class BaseTask implements Serializable {
 	private String name;
 	private String description;
 	private Priority priority;
-	private Status status;
 	private User assignee;
 	private User reporter;
 }

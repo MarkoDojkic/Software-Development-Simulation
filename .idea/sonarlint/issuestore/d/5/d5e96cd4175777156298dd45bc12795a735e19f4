@@ -1,56 +1,69 @@
 
-›	java:S109"TAssign this magic number 100 to a well-named constant, and use the constant instead.(¶Ηψÿÿÿÿ8ξ©τοχ1J$6360480d-7a56-43a7-acf7-19cb8c9a18d6
-–	java:S109"TAssign this magic number 100 to a well-named constant, and use the constant instead.(ιόÿ8ξ©τοχ1J$38d1a403-2863-4a7a-97ab-51e077069c0b
-—	java:S109"UAssign this magic number 1000 to a well-named constant, and use the constant instead.(όκ‘Θ8ο©τοχ1J$b8f06d14-eb68-4273-bb50-d5fea575473d
-™	java:S109)"RAssign this magic number 2 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$949f2170-4d6b-4861-83fd-677be4cdd127
-™	java:S109)"RAssign this magic number 7 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$e66ee29c-23e4-44cc-885f-9841aa704df3
-™	java:S109)"RAssign this magic number 6 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$6ec69fb6-353e-4020-9760-7ed36082be79
-	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8ο©τοχ1J$2b64dce0-90d5-4fcb-8cda-24aa344c022f
-	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8π©τοχ1J$75c0d0ab-890c-4479-8ef9-942151cd66f6
-	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8π©τοχ1J$3d6653d5-2a98-4a46-8863-46c07b6913df
-€	java:S864)"9Add parentheses to make the operator precedence explicit.(υ΄ώΖϊÿÿÿÿ8ς©τοχ1J$81af8e86-7ac0-4a79-aade-cf1413d39c59
+›	java:S109'"TAssign this magic number 100 to a well-named constant, and use the constant instead.(¶Ηψÿÿÿÿ8»£ξ•ψ1J$8b51ad59-f81c-4563-a54f-8156bd9d5a35
+–	java:S109)"TAssign this magic number 100 to a well-named constant, and use the constant instead.(ιόÿ8»£ξ•ψ1J$2affb513-c0e2-4a9b-a7e5-0736d4fe620e
+—	java:S109*"UAssign this magic number 1000 to a well-named constant, and use the constant instead.(όκ‘Θ8»£ξ•ψ1J$eaec9f5c-8744-4146-9001-1f7cdc4dad36
+™	java:S1095"RAssign this magic number 2 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8»£ξ•ψ1J$04dbaf47-c5d9-44f9-8010-41cac6310688
+™	java:S1095"RAssign this magic number 7 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8»£ξ•ψ1J$6267ee7b-f1ee-47f6-8db5-e6823b03ba64
+™	java:S1095"RAssign this magic number 6 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8»£ξ•ψ1J$e2c9b709-c374-4da0-8fdb-a66c4594f316
+	java:S1097"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8»£ξ•ψ1J$646968b3-9002-4dd4-9127-c5a854404db5
+	java:S1097"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8»£ξ•ψ1J$b2490cfb-e937-4137-8afb-c0d3fa8c95c6
+	java:S1097"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8»£ξ•ψ1J$a02f6698-a503-4efe-bcd9-8a9a3bf1b3c0
+	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òιόÿÿÿÿ8Ό£ξ•ψ1J$4829884d-03bc-434b-8027-ef1defd7415c
+€	java:S8645"9Add parentheses to make the operator precedence explicit.(υ΄ώΖϊÿÿÿÿ8Ό£ξ•ψ1J$6f5b6cb9-b70c-472d-a06b-451417208c2d
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ά°ώÿÿÿÿ8€ªτοχ1J$88c5d619-6923-4931-b2f9-778b5eadbfb4
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ά°ώÿÿÿÿ8Ώ£ξ•ψ1J$0392a768-deab-4e7e-9e29-ead2675c31da
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ςΜώόÿÿÿÿ8€ªτοχ1J$d97c1d45-c077-4f2d-a807-d5f7eebef7dc
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ΣΒ•„ύÿÿÿÿ8Ώ£ξ•ψ1J$6d26031e-df14-48fc-a2f8-fee8c71532f1
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ΡώΊοψÿÿÿÿ8€ªτοχ1J$a111f5fe-ec06-4bfe-88c9-1504a498d8d9
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(οΟΚΛύÿÿÿÿ8€ªτοχ1J$7d9c4064-b43b-4812-aa8c-7e58a9f8d81c
-‰
-java:S1106&"AMove this left curly brace to the beginning of next line of code.(¤£•Ζψÿÿÿÿ8€ªτοχ1J$cf745e0f-c25d-4fb8-a2fe-f3537f2befe3
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ΡώΊοψÿÿÿÿ8Ώ£ξ•ψ1J$3f926173-2e65-47e0-a5a6-4d235c197c1e
 „
-java:S1106("AMove this left curly brace to the beginning of next line of code.(Ξ”™Ò8ªτοχ1J$eb364f89-3e32-4bee-89b3-4a99cf18050c
+java:S1106"AMove this left curly brace to the beginning of next line of code.(θΐΩφ8Ώ£ξ•ψ1J$8066327a-3290-4205-bb55-fd928554e650
 ‰
-java:S1106."AMove this left curly brace to the beginning of next line of code.(•ο‘Ξϋÿÿÿÿ8ªτοχ1J$28fca499-078c-4efd-825e-119dd963fd31
+java:S1106"AMove this left curly brace to the beginning of next line of code.(΅»Άόωÿÿÿÿ8Ώ£ξ•ψ1J$7f7d5ee3-dc73-4909-bf88-11cfc2f7b523
 „
-java:S11060"AMove this left curly brace to the beginning of next line of code.(χΡΉΈ8ªτοχ1J$ec588e6d-4df5-495b-a702-63c2099d3834
+java:S1106"AMove this left curly brace to the beginning of next line of code.(δ Ή€8Ώ£ξ•ψ1J$7c24e379-83a1-41ca-9399-7aa104455566
+‰
+java:S1106$"AMove this left curly brace to the beginning of next line of code.(οΟΚΛύÿÿÿÿ8Ώ£ξ•ψ1J$a8717e02-9599-45d8-8dc2-04df35a86489
+‰
+java:S11062"AMove this left curly brace to the beginning of next line of code.(¤£•Ζψÿÿÿÿ8Ώ£ξ•ψ1J$2da029e2-0b83-4b66-a43f-6335e2023d08
+„
+java:S11064"AMove this left curly brace to the beginning of next line of code.(Ξ”™Ò8Ώ£ξ•ψ1J$cc4c9c68-7487-47f6-a87a-d559a37c2419
+‰
+java:S1106:"AMove this left curly brace to the beginning of next line of code.(•ο‘Ξϋÿÿÿÿ8Ώ£ξ•ψ1J$9ef47ff5-9523-40d0-a50f-4722a156205e
+„
+java:S1106<"AMove this left curly brace to the beginning of next line of code.(χΡΉΈ8Ώ£ξ•ψ1J$42876554-367f-4434-acac-71eefbc85833
 a
-java:S1451"&Add or update the header of this file.8§ªτοχ1J$b895e43b-b5c2-4372-85c2-c5be34054610
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8§ªτοχ1J$747267f5-99d2-4e48-a2ba-8d74a8c430d2
+java:S1451"&Add or update the header of this file.8Θ£ξ•ψ1J$b5b19ac6-1b89-4f12-856a-84e9c3bfeae1
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8Θ£ξ•ψ1J$ca984e4a-b972-4ceb-958d-f33fbbbd90df
+
+java:S3052"HRemove this initialization to "null", the compiler will do that for you.(χΚΆϊÿÿÿÿ8Κ£ξ•ψ1J$c339d24b-de1a-4224-814c-699d22724e49
+΅
+java:S2142"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(δ Ή€8Σ£ξ•ψ1J$a96ce1d7-3a14-43d9-a89b-66b442e7f1d0
+u
+java:S1108"2Move this "catch" keyword to a new dedicated line.(δ Ή€8Τ£ξ•ψ1J$6679b5bf-12e9-4039-a2f5-0c2559fc2cc0
 w
-java:S6212"/Declare this local variable with "var" instead.(¬ρωÿÿÿÿ8Λªτοχ1J$cb837cda-40ea-435b-907f-435dc5f817cc
+java:S6212%"/Declare this local variable with "var" instead.(¬ρωÿÿÿÿ8Φ£ξ•ψ1J$257edcea-ae6c-4e7e-a03e-1abd8406374d
 q
-java:S2143")Use the Java 8 Date and Time API instead.(¬ρωÿÿÿÿ8Ξªτοχ1J$f940870d-7d8d-40d6-a4f7-e080686ba0d5
+java:S2143%")Use the Java 8 Date and Time API instead.(¬ρωÿÿÿÿ8Χ£ξ•ψ1J$8ee32dbd-35c2-47c5-bfda-b0d3ebb6acf9
 w
-java:S6212"/Declare this local variable with "var" instead.(ªΪ®Ίÿÿÿÿÿ8Πªτοχ1J$787fa955-79e0-4265-bf05-7ab103ef05f3
+java:S6212&"/Declare this local variable with "var" instead.(ªΪ®Ίÿÿÿÿÿ8Χ£ξ•ψ1J$b9000e51-22a9-4de8-9ac8-1c220543dee6
 q
-java:S2143")Use the Java 8 Date and Time API instead.(ªΪ®Ίÿÿÿÿÿ8Òªτοχ1J$09f67791-75f6-4c90-9f90-28d13f1d7075
+java:S2143&")Use the Java 8 Date and Time API instead.(ªΪ®Ίÿÿÿÿÿ8Χ£ξ•ψ1J$8ee749e3-9b74-413b-b571-1a318589c0cc
 w
-java:S6212"/Declare this local variable with "var" instead.(¶Ηψÿÿÿÿ8Τªτοχ1J$544ed95f-9810-45f9-821f-005e7bc61d8e
+java:S6212'"/Declare this local variable with "var" instead.(¶Ηψÿÿÿÿ8Χ£ξ•ψ1J$5dda6acc-f158-4053-8700-d3a35cefb0bc
 q
-java:S2143")Use the Java 8 Date and Time API instead.(¶Ηψÿÿÿÿ8Φªτοχ1J$9d9b00ed-e6c4-46c0-8bdc-e933ed10c5d7
+java:S2143'")Use the Java 8 Date and Time API instead.(¶Ηψÿÿÿÿ8Χ£ξ•ψ1J$2394362e-8a49-49ed-8e3a-534f0776eaab
 r
-java:S6212"/Declare this local variable with "var" instead.(ιόÿ8Χªτοχ1J$bfffcea2-2858-42e0-8591-f3ac76b03598
+java:S6212)"/Declare this local variable with "var" instead.(ιόÿ8Χ£ξ•ψ1J$760666f8-47bd-4d0c-a8c2-6dd98511e3c5
 r
-java:S6212"/Declare this local variable with "var" instead.(όκ‘Θ8Ψªτοχ1J$c1b5299e-e194-4c63-97b0-a6429450695e
+java:S6212*"/Declare this local variable with "var" instead.(όκ‘Θ8Ψ£ξ•ψ1J$aa0d1915-09a9-4b17-9ce0-eb6dfe41cc6a
 w
-java:S6212'"/Declare this local variable with "var" instead.(©ΊΙϋÿÿÿÿ8ήªτοχ1J$173c0e5e-dc8e-4d4d-b4d3-826a83f930b7
+java:S62123"/Declare this local variable with "var" instead.(©ΊΙϋÿÿÿÿ8Ω£ξ•ψ1J$5f3480b6-160b-4e7a-9214-efbab4b178a4
 r
-java:S6212("/Declare this local variable with "var" instead.(Ξ”™Ò8ίªτοχ1J$f0bbb8df-409f-4576-8be7-59094f9d0955
+java:S62124"/Declare this local variable with "var" instead.(Ξ”™Ò8Ω£ξ•ψ1J$2b1ce37f-5a0d-4105-ac0d-236ffa11a84f
 
-java:S1774)"GConvert this usage of the ternary operator to an "if"/"else" structure.(υ΄ώΖϊÿÿÿÿ8αªτοχ1J$0112e383-976e-4f24-9b65-218d7a507296
+java:S17745"GConvert this usage of the ternary operator to an "if"/"else" structure.(υ΄ώΖϊÿÿÿÿ8Ω£ξ•ψ1J$776ad09a-c9eb-4626-ab74-02207823a794
 w
-java:S6212/"/Declare this local variable with "var" instead.(»Φ°Άϊÿÿÿÿ8δªτοχ1J$768c95cc-4bcf-40fe-8aec-431fd70ec433
+java:S6212;"/Declare this local variable with "var" instead.(»Φ°Άϊÿÿÿÿ8Ϊ£ξ•ψ1J$f9f0e663-ff0c-4a42-b3d3-4459173d8ba6
 r
-java:S62120"/Declare this local variable with "var" instead.(χΡΉΈ8ζªτοχ1J$9de601e2-268d-48b9-8529-b4d1fae4aad7
+java:S6212<"/Declare this local variable with "var" instead.(χΡΉΈ8Ϊ£ξ•ψ1J$d2c95d13-6de0-4b9b-bd47-8235469b6483

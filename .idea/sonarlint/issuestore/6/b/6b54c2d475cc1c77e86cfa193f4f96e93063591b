@@ -1,18 +1,14 @@
 
 
-java:S1213"?Move this static variable to comply with Java Code Conventions.(àè´]8Š×ÏŠø1J$ac147308-0685-4d57-8ca0-02da933e3ce3
+java:S1213"?Move this static variable to comply with Java Code Conventions.(àè´]8Š×ÏŠø1J$2d764f25-cdb7-4002-8e38-3950a5bce6c3
 „
-java:S1106"AMove this left curly brace to the beginning of next line of code.(§”´“8×ÏŠø1J$8b2534d8-db2b-4824-918f-1bb5699e107a
+java:S1106"AMove this left curly brace to the beginning of next line of code.(§”´“8×ÏŠø1J$2e36055a-6313-404d-87c8-38780e58c49c
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(²·Ãáıÿÿÿÿ8×ÏŠø1J$437617e1-9c99-4f7f-b9ed-b6ac5edec92c
+java:S1106"AMove this left curly brace to the beginning of next line of code.(²·Ãáıÿÿÿÿ8×ÏŠø1J$d86727e5-5d90-420f-977e-cc7fca8ebbc3
 „
-java:S1106"AMove this left curly brace to the beginning of next line of code.(¡À¸–8×ÏŠø1J$edc2749f-d506-49b7-9307-0aa4a03935fa
+java:S1106"AMove this left curly brace to the beginning of next line of code.(¡À¸–8×ÏŠø1J$fcf98b4b-ecd9-491f-ba40-3b1aba3a6caf
 a
-java:S1451"&Add or update the header of this file.8”×ÏŠø1J$8cae371c-744e-49ba-adb1-17aca57b6808
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8•×ÏŠø1J$02ef6076-1fc3-4d7f-a764-d2aea783a717
+java:S1451"&Add or update the header of this file.8”×ÏŠø1J$c3b648eb-4272-46bf-8cb0-74034f1aabd9
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8•×ÏŠø1J$64083afe-378f-47a5-aa57-79775898171a
 }
-java:S1258":Add a constructor to the class, or provide default values.(§”´“8—×ÏŠø1J$77711efb-3eaf-4302-a9af-cb5639fc1c2c
-Ÿ
-java:S1128"\Remove this unused import 'org.springframework.messaging.handler.annotation.MessageMapping'.(Šî8¥×ÏŠø1J$5475a2ca-ac5d-4682-8aa5-03d7aeb51831
-
-java:S1128"ERemove this unused import 'org.springframework.stereotype.Component'.(Ş÷Ñ¸ÿÿÿÿÿ8¦×ÏŠø1J$21a93dff-9c11-42c4-a914-a52b78abbad3
+java:S1258":Add a constructor to the class, or provide default values.(§”´“8—×ÏŠø1J$b16cefd7-fed2-4042-9470-2240a86e6fca

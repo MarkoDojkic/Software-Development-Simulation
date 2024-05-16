@@ -18,5 +18,5 @@ public class User implements Serializable {
 	private String displayName;
 	private String personalId;
 	private UserType userType;
-	private double experienceCoefficient;
+	private long experienceCoefficient;
 }

@@ -4,8 +4,6 @@ import com.diogonunes.jcolor.Attribute;
 import lombok.Setter;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Transformer;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Component;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 

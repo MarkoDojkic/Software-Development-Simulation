@@ -2,6 +2,8 @@ package dev.markodojkic.softwaredevelopmentsimulation.util;
 
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
+import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 import java.util.Calendar;
@@ -12,12 +14,22 @@ import java.util.Random;
 public class Utilities {
 	public static final Random random = new Random();
 	public static final Lorem lorem = LoremIpsum.getInstance();
-	public static long strToLong(Double value){
-		return Long.getLong(value.toString());
+	@Getter
+	public IPrinter iPrinter = null;
+
+	public static void setiPrinter(IPrinter iPrinter) {
+		Utilities.iPrinter = iPrinter;
 	}
 
 	public static <T> T getRandomElementFromList(List<T> list){
 		return list.get(random.nextInt(list.size()));
+	}
+	public static void simulatePause(long time){
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg

@@ -1,12 +1,9 @@
 package dev.markodojkic.softwaredevelopmentsimulation.model;
 
-import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
-import dev.markodojkic.softwaredevelopmentsimulation.enums.Status;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.List;
 
 
