@@ -19,6 +19,7 @@ public class BaseTask implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -3427998889352799377L;
 
+	private String id;
 	private String name;
 	private String description;
 	private Priority priority;

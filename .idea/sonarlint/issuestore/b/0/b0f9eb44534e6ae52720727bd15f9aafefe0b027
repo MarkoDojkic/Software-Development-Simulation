@@ -1,12 +1,38 @@
 
-ˆ
-java:S1854"@Remove this useless assignment to local variable "projectOwner".(ô‡Š¸þÿÿÿÿ8Á“®î÷1J$edeec48f-857f-4c28-9694-4cb141c1e3e1
-y
-java:S1481"1Remove this unused "projectOwner" local variable.(ô‡Š¸þÿÿÿÿ8Ã“®î÷1J$f4d0e0c2-0921-497c-aa98-db5969a6d8a6
-•
-java:S6204("RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(‚øƒ©8Æ“®î÷1J$beb51411-6160-4daa-81a3-0fe9ef91cb10
-ƒ	java:S1257"<This block of commented-out lines of code should be removed.(Ù ÛÙüÿÿÿÿ8È“®î÷1J$b0a495ff-1b48-4b3d-9919-32a4be3778dd
-˜
-java:S1128"URemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.model.User'.(îåš—8É“®î÷1J$ceba9e0a-f4b3-4077-9eb7-2cd786931a6c
-œ
-java:S1128	"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.Utilities'.(Ò—¿¸8É“®î÷1J$f6178deb-3a13-4239-b16d-9e64fb973acb
+‡
+java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8’†Ô‰ø1J$01d6414f-ab1b-4ee5-a18b-fa0a91c25894
+‡
+java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8’†Ô‰ø1J$fc664fd0-d4ce-4e14-98a0-2bc6998251e9
+™	java:S109&"RAssign this magic number 5 to a well-named constant, and use the constant instead.(¨ÊÛšþÿÿÿÿ8“†Ô‰ø1J$3cd7af69-ace3-4ac7-a753-ecddf27dd294
+š	java:S109&"SAssign this magic number 15 to a well-named constant, and use the constant instead.(¨ÊÛšþÿÿÿÿ8“†Ô‰ø1J$fe771a04-6236-429f-a140-9427af26071c
+”	java:S109("RAssign this magic number 3 to a well-named constant, and use the constant instead.(åæÖË8“†Ô‰ø1J$02ea5f12-2420-469d-b9c4-47b400467460
+”	java:S109("RAssign this magic number 6 to a well-named constant, and use the constant instead.(åæÖË8“†Ô‰ø1J$2459699f-1555-4712-adc9-c4204644371c
+”	java:S109)"RAssign this magic number 5 to a well-named constant, and use the constant instead.(ìê¥Ï8“†Ô‰ø1J$638b3f80-6c85-42e8-b00f-32574987e925
+•	java:S109)"SAssign this magic number 15 to a well-named constant, and use the constant instead.(ìê¥Ï8“†Ô‰ø1J$93bc9d41-b86e-4b00-aa39-b37f4cc79215
+”	java:S1095"RAssign this magic number 2 to a well-named constant, and use the constant instead.(ÊÅá€8“†Ô‰ø1J$b4d71ae2-d364-4002-a66e-c4b57a7641aa
+•	java:S1095"SAssign this magic number 10 to a well-named constant, and use the constant instead.(ÊÅá€8“†Ô‰ø1J$2a6af6e1-ac47-4fff-a09a-1af17c783762
+”	java:S1095"RAssign this magic number 2 to a well-named constant, and use the constant instead.(ÊÅá€8“†Ô‰ø1J$d6e5e7ed-21a6-41c6-a521-72bc443c7e71
+™	java:S109G"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³þÿÿÿÿ8“†Ô‰ø1J$3a83dc5a-4f4f-4829-8119-ae471e995629
+™	java:S109G"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³þÿÿÿÿ8“†Ô‰ø1J$566d0dd4-354c-4c51-b632-c1adb4ce721d
+”	java:S109H"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8“†Ô‰ø1J$27b34350-57e6-4e56-bf02-fa7dd1c22f04
+”	java:S109H"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8“†Ô‰ø1J$b312e06c-0859-4d1e-a5d9-71c4f1ad2d8b
+™	java:S109T"RAssign this magic number 2 to a well-named constant, and use the constant instead.(É°Šºûÿÿÿÿ8“†Ô‰ø1J$2d3c99dc-48c4-4c66-a48f-37995e85041d
+š	java:S109T"SAssign this magic number 10 to a well-named constant, and use the constant instead.(É°Šºûÿÿÿÿ8“†Ô‰ø1J$d1a13f5e-d09c-4ca6-b76a-8032a18f5b7c
+™	java:S109T"RAssign this magic number 2 to a well-named constant, and use the constant instead.(É°Šºûÿÿÿÿ8“†Ô‰ø1J$fd7c3c98-3473-4ab5-b83f-e866c20700e0
+™	java:S109`"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³þÿÿÿÿ8“†Ô‰ø1J$9ab25fe8-e207-417d-a8ee-0c21f8e64986
+™	java:S109`"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³þÿÿÿÿ8”†Ô‰ø1J$0fc31324-2fa5-4cf3-ad8c-0e67fb1677a6
+”	java:S109a"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8”†Ô‰ø1J$af72cb54-f6d1-4441-944a-196f217942a0
+”	java:S109a"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8”†Ô‰ø1J$950a7377-49b2-4c76-aefc-74ae71c2da77
+‰
+java:S1106&"AMove this left curly brace to the beginning of next line of code.(¨ÊÛšþÿÿÿÿ8™†Ô‰ø1J$83bf020a-85c5-41b7-b62e-97a64fed827f
+„
+java:S1106B"AMove this left curly brace to the beginning of next line of code.(ù«´Ë8™†Ô‰ø1J$f4177e10-f5e9-4a20-ba28-b39b2cbd4d52
+„
+java:S1106E"AMove this left curly brace to the beginning of next line of code.(á²‹8™†Ô‰ø1J$489c1584-5239-4ef2-94ee-e4fc0f058189
+„
+java:S1106["AMove this left curly brace to the beginning of next line of code.(«µŠî8™†Ô‰ø1J$b9b9a1f0-657a-4294-a73c-ed46a7d08168
+„
+java:S1106^"AMove this left curly brace to the beginning of next line of code.(á²‹8™†Ô‰ø1J$e995e309-f4df-4805-a33c-7c90b2a0d42b
+a
+java:S1451"&Add or update the header of this file.8›†Ô‰ø1J$6581cd52-7f5f-460a-9d36-13ae62b824cf
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8œ†Ô‰ø1J$1dd4fad7-a4bd-4ac3-9f6d-134c86e0db66

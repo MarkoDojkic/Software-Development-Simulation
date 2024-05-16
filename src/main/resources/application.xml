@@ -10,7 +10,6 @@
 		http://www.springframework.org/schema/integration/stream
 		https://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
 
-        <int:poller id="poller" default="true" fixed-delay="1000"/>
         <beans:bean id="printerTransformer" class="dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer">
                 <beans:property name="infoTextColorANSICode" value="68"/>
                 <beans:property name="errorTextColorANSICode" value="196"/>
@@ -20,7 +19,15 @@
                 <beans:property name="taskToPlannedTransferBaseTimeMilliseconds" value="350"/>
         </beans:bean>
 
-        <int:channel id="epics"/>
+        <int:channel id="epics">
+                <int:queue/>
+        </int:channel>
+
+        <int:bridge input-channel="epics" output-channel="in-progress-epics" send-timeout="1000">
+                <int:poller fixed-delay="1000" max-messages-per-poll="1" />
+        </int:bridge>
+
+        <!--<int:channel id="epics"/>
         <int:channel id="user-stories"/>
         <int:channel id="technical-tasks"/>
         <int:channel id="bugs"/>
@@ -34,13 +41,13 @@
                 <int-stream:stderr-channel-adapter id="console-error" append-newline="true"/>
         </int:chain>
 
-        <int:gateway id="IPrinter" service-interface="dev.markodojkic.softwaredevelopmentsimulation.util.IPrinter"/>
+        <int:gateway id="IPrinter" service-interface="dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter"/>
 
         <int:channel id="planned"/>
         <int:channel id="current-sprint">
                 <int:queue capacity="10"/>
         </int:channel>
         <int:channel id="work-in-progress"/>
-        <int:channel id="finished"/>
+        <int:channel id="finished"/>-->
 
 </beans:beans>

@@ -1,15 +1,0 @@
-
-š
-java:S1104"RMake random a static final constant or non-public and provide accessors if needed.(×‘éµùÿÿÿÿ8™Æ£í÷1J$31adc7f7-588d-45fb-a415-9745f6f86dcd
-”
-java:S1104"QMake lorem a static final constant or non-public and provide accessors if needed.(ˆ¡œÍ8šÆ£í÷1J$241f0842-abd4-445c-bb6d-47f150870c53
-™
-java:S1104"VMake developers a static final constant or non-public and provide accessors if needed.(ë–æù8šÆ£í÷1J$ac212a7c-5509-4679-817d-9918c1880e60
-t
-java:S1444",Make this "public static random" field final(×‘éµùÿÿÿÿ8œÆ£í÷1J$1ecf04aa-8232-4567-9cd3-24bde68c8f8e
-n
-java:S1444"+Make this "public static lorem" field final(ˆ¡œÍ8œÆ£í÷1J$6f668628-bd6c-44b7-a8cd-a75c56f722f9
-s
-java:S1444"0Make this "public static developers" field final(ë–æù8œÆ£í÷1J$f2e3e9a4-5357-4a5d-bb14-bf811716a9a1
-‚
-java:S1118":Add a private constructor to hide the implicit public one.(Ğ¨µıÿÿÿÿ8Ñô©í÷1J$1a73c286-da36-438a-aa72-989cb2c5065e

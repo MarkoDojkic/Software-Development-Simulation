@@ -2,16 +2,14 @@ package dev.markodojkic.softwaredevelopmentsimulation.util;
 
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
+import lombok.experimental.UtilityClass;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+@UtilityClass
 public class Utilities {
-	private Utilities() {
-		throw new IllegalStateException("Utility class");
-	}
-
 	public static final Random random = new Random();
 	public static final Lorem lorem = LoremIpsum.getInstance();
 	public static long strToLong(Double value){

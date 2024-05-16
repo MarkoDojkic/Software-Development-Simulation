@@ -1,0 +1,113 @@
+
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ΊΥ…ϊÿÿÿÿ8δ®τοχ1J$8e46ac1a-37b7-4fb9-a3c8-bc433304cdc9
+a
+java:S1451"&Add or update the header of this file.8“―τοχ1J$e1137edc-e30a-4387-9a26-00ca912baa43
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8“―τοχ1J$879a479b-3d29-495c-ba47-fd115d812039
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8 ―τοχ1J$0ffe9d49-58d2-4abf-a3bb-08136bc1236e
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8΅―τοχ1J$fa38d366-d542-4a0b-b317-c541512b0632
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8΅―τοχ1J$2ec7eefc-40d6-4ee0-b3c7-a39ca81f2bdd
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ά―τοχ1J$0eddf1b8-361d-4e0a-9b44-a8b3b2e434b0
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ά―τοχ1J$e62c9009-3090-4ecc-811c-a50ce0d99f81
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ν―τοχ1J$d5210039-1afe-4fad-a14b-c4394f7784ca
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ν―τοχ1J$e7ad1bca-f290-4ff6-aa6a-ed8d860c36f5
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ξ―τοχ1J$8a8a67c9-495f-4cc5-8ecd-d384e266d476
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ξ―τοχ1J$e7a66350-57b4-48e0-9f22-06d4a84991c2
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ο―τοχ1J$af60b238-f379-4c41-8979-39ce636ee06f
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ο―τοχ1J$69bb0d8e-2a38-450b-be02-f3228484cd61
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Π―τοχ1J$228b09f6-fb29-4086-b96e-a83844cce53c
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Σ―τοχ1J$e63c7bff-d7fe-411d-b04f-bc51fef4d1ca
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Τ―τοχ1J$3f6bbcfb-04bd-4f3f-8afa-90c6b26585f2
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Τ―τοχ1J$74ec7434-93ed-4f40-baf0-2c8c8acbaad8
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Υ―τοχ1J$1a5cbf6f-27da-457b-9486-ba9721950bba
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Υ―τοχ1J$6a72ce56-cd17-47e8-82e8-4f19b4d43c0c
+’	java:S103"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Φ―τοχ1J$ce8fd2c5-2da8-4ad6-b027-c053e0d96cba
+’	java:S103 "KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Χ―τοχ1J$9dd4fb60-a4f1-4a25-a718-ac61ba58f7fe
+’	java:S103!"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ψ―τοχ1J$5698147c-c5ec-42ac-99e6-667bafa39a61
+’	java:S103""KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ψ―τοχ1J$a58a3d11-882b-420f-a287-4ccbf9047d62
+’	java:S103#"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ψ―τοχ1J$67edbf2b-474a-4ff0-aedd-2ca4e4168fcc
+’	java:S103$"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ω―τοχ1J$f6440fbe-1b83-4c88-9853-436b81c47d8c
+’	java:S103%"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ω―τοχ1J$ea2818d9-fd86-439b-9180-298b98570816
+’	java:S103&"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ϊ―τοχ1J$e9e3e88c-aa0c-456b-a442-3abb791f19c0
+’	java:S103'"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ϊ―τοχ1J$b92372fb-bb8c-4145-bbcc-c2f7b1d4b77f
+’	java:S103("KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ϋ―τοχ1J$da869327-6bfc-4686-a4dc-5b4e69311f59
+’	java:S103)"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8Ϋ―τοχ1J$eb1ccff4-8e16-4b0f-88a3-5e07ae6b3bd2
+’	java:S103*"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8ά―τοχ1J$1b3d758d-4488-4692-9f98-75def2886064
+’	java:S103+"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8ά―τοχ1J$a1e32540-4513-4f5a-9d81-e136c93272e9
+’	java:S103,"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8έ―τοχ1J$2f9e61ee-78ee-4756-b5f9-40d973aa7333
+’	java:S103-"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8έ―τοχ1J$7a8e5ea4-1710-4a15-a716-917ffcd4a6c0
+’	java:S103."KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8ή―τοχ1J$c8280ba4-1442-4e8d-a7ba-04d2dc5e467d
+’	java:S103/"KSplit this 207 characters long line (which is greater than 120 authorized).(‡Β²«ϊÿÿÿÿ8ή―τοχ1J$6c79a4d9-27a7-4a8d-9b6f-d3a473ddf0da
+’	java:S1030"KSplit this 206 characters long line (which is greater than 120 authorized).(‘γ”¥ϊÿÿÿÿ8ί―τοχ1J$5795a9e8-b691-4c1d-b7da-4ce0735eb90d
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8€°τοχ1J$904eb39d-5629-44ae-b4cd-8e0613332c03
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8†°τοχ1J$228a8657-e52c-4f52-8c0f-274397653bcd
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8‹°τοχ1J$591951e4-a210-49f6-8e2f-3b8e0334174b
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8‘°τοχ1J$1f9e2a97-8c17-46e2-996c-10fffeeb202e
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8–°τοχ1J$3826e7d8-8b15-41d8-9ce0-3008ac993cfd
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8›°τοχ1J$6c577c55-1ffd-40db-bc2a-4c070b2965b7
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8΅°τοχ1J$8cd18cf1-5fa9-427f-a08a-ce48ac39c2db
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8¦°τοχ1J$b21d37a6-e9cb-4b6c-852d-f7c3b67d1368
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8ª°τοχ1J$a6872a1d-f53b-4881-a658-adbcdf4325b3
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8―°τοχ1J$6074b64b-8ed0-490b-ae8f-b6e766698fb7
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8µ°τοχ1J$0cae157f-3756-4ac8-ae05-47b1d8d47f77
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Ί°τοχ1J$1798d528-34ab-49fe-891c-91dc74903960
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Ώ°τοχ1J$e0929ff1-3dd8-4d7d-bf33-c966858fb43e
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Γ°τοχ1J$d718f0fe-1e6f-4360-b879-8328b423ad99
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Η°τοχ1J$60367ef7-1c91-4c52-b3db-cfe48bddc1d6
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Κ°τοχ1J$a5ab9d72-0277-41af-ad36-e90cd39578ee
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Ν°τοχ1J$80837305-f620-49e9-9905-30cbcaada4e3
+
+java:S1774"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Ρ°τοχ1J$ecfb4063-ec86-4872-b555-6c6346a4dff0
+
+java:S1774 "GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Τ°τοχ1J$b5eb26ef-d776-47cc-ae5d-089c767f9f75
+
+java:S1774!"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Χ°τοχ1J$e62a06f6-31aa-42ad-8b28-d4f247ee3039
+
+java:S1774""GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8Ϊ°τοχ1J$d98712a4-7b32-46de-8e28-62bb5ce3c75e
+
+java:S1774#"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8ή°τοχ1J$c30de856-bf3c-48ff-acb3-8d1c109bb87b
+
+java:S1774$"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8γ°τοχ1J$2e3d4401-b289-46e7-b629-e68fd919d278
+
+java:S1774%"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8ι°τοχ1J$b768f49a-adc9-4cb2-a6d1-b8dc189f73ca
+
+java:S1774&"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8π°τοχ1J$d9a422a7-df6b-4882-8163-a8fd5b37a34a
+
+java:S1774'"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8τ°τοχ1J$a453d095-ebe5-43e9-9400-d9980a7bb0c2
+
+java:S1774("GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8ϋ°τοχ1J$3622bfd4-fd66-44ca-a407-feac2845757f
+
+java:S1774)"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8€±τοχ1J$a272f227-0f25-41ea-8078-7fc8d4f56d57
+
+java:S1774*"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8‡±τοχ1J$62d694dd-06a5-4c76-a524-1a3b75405a16
+
+java:S1774+"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8±τοχ1J$d632f8cc-bade-49c1-ac8f-6c11918e25dd
+
+java:S1774,"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8“±τοχ1J$6e2b8c06-b6bc-4c03-b7e3-4d48613b9aea
+
+java:S1774-"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8—±τοχ1J$a7bfac7f-cd04-4636-bcc9-c5cc7ae04afb
+
+java:S1774."GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8±τοχ1J$3c008313-1b4e-48b4-82ef-82c40abc42a3
+
+java:S1774/"GConvert this usage of the ternary operator to an "if"/"else" structure.(‡Β²«ϊÿÿÿÿ8¦±τοχ1J$f0c7a37d-e203-4087-8e1d-48730cccb05f
+
+java:S17740"GConvert this usage of the ternary operator to an "if"/"else" structure.(‘γ”¥ϊÿÿÿÿ8Η±τοχ1J$03076e79-d395-4de4-b95c-c5469ad3b824
+
+java:S1067"[Reduce the number of conditional operators (35) used in the expression (maximum allowed 3).(μ¦θy8Ξ±τοχ1J$8cc684f4-10bd-49dd-a356-e3ade98fa0a3

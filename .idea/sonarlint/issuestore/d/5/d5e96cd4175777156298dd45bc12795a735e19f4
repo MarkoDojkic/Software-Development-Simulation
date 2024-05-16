@@ -1,0 +1,56 @@
+
+›	java:S109"TAssign this magic number 100 to a well-named constant, and use the constant instead.(¶Ηψÿÿÿÿ8ξ©τοχ1J$6360480d-7a56-43a7-acf7-19cb8c9a18d6
+–	java:S109"TAssign this magic number 100 to a well-named constant, and use the constant instead.(ιόÿ8ξ©τοχ1J$38d1a403-2863-4a7a-97ab-51e077069c0b
+—	java:S109"UAssign this magic number 1000 to a well-named constant, and use the constant instead.(όκ‘Θ8ο©τοχ1J$b8f06d14-eb68-4273-bb50-d5fea575473d
+™	java:S109)"RAssign this magic number 2 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$949f2170-4d6b-4861-83fd-677be4cdd127
+™	java:S109)"RAssign this magic number 7 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$e66ee29c-23e4-44cc-885f-9841aa704df3
+™	java:S109)"RAssign this magic number 6 to a well-named constant, and use the constant instead.(υ΄ώΖϊÿÿÿÿ8ο©τοχ1J$6ec69fb6-353e-4020-9760-7ed36082be79
+	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8ο©τοχ1J$2b64dce0-90d5-4fcb-8cda-24aa344c022f
+	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8π©τοχ1J$75c0d0ab-890c-4479-8ef9-942151cd66f6
+	java:S109+"SAssign this magic number 11 to a well-named constant, and use the constant instead.(”ΎΤ‰ψÿÿÿÿ8π©τοχ1J$3d6653d5-2a98-4a46-8863-46c07b6913df
+€	java:S864)"9Add parentheses to make the operator precedence explicit.(υ΄ώΖϊÿÿÿÿ8ς©τοχ1J$81af8e86-7ac0-4a79-aade-cf1413d39c59
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ά°ώÿÿÿÿ8€ªτοχ1J$88c5d619-6923-4931-b2f9-778b5eadbfb4
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ςΜώόÿÿÿÿ8€ªτοχ1J$d97c1d45-c077-4f2d-a807-d5f7eebef7dc
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ΡώΊοψÿÿÿÿ8€ªτοχ1J$a111f5fe-ec06-4bfe-88c9-1504a498d8d9
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(οΟΚΛύÿÿÿÿ8€ªτοχ1J$7d9c4064-b43b-4812-aa8c-7e58a9f8d81c
+‰
+java:S1106&"AMove this left curly brace to the beginning of next line of code.(¤£•Ζψÿÿÿÿ8€ªτοχ1J$cf745e0f-c25d-4fb8-a2fe-f3537f2befe3
+„
+java:S1106("AMove this left curly brace to the beginning of next line of code.(Ξ”™Ò8ªτοχ1J$eb364f89-3e32-4bee-89b3-4a99cf18050c
+‰
+java:S1106."AMove this left curly brace to the beginning of next line of code.(•ο‘Ξϋÿÿÿÿ8ªτοχ1J$28fca499-078c-4efd-825e-119dd963fd31
+„
+java:S11060"AMove this left curly brace to the beginning of next line of code.(χΡΉΈ8ªτοχ1J$ec588e6d-4df5-495b-a702-63c2099d3834
+a
+java:S1451"&Add or update the header of this file.8§ªτοχ1J$b895e43b-b5c2-4372-85c2-c5be34054610
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8§ªτοχ1J$747267f5-99d2-4e48-a2ba-8d74a8c430d2
+w
+java:S6212"/Declare this local variable with "var" instead.(¬ρωÿÿÿÿ8Λªτοχ1J$cb837cda-40ea-435b-907f-435dc5f817cc
+q
+java:S2143")Use the Java 8 Date and Time API instead.(¬ρωÿÿÿÿ8Ξªτοχ1J$f940870d-7d8d-40d6-a4f7-e080686ba0d5
+w
+java:S6212"/Declare this local variable with "var" instead.(ªΪ®Ίÿÿÿÿÿ8Πªτοχ1J$787fa955-79e0-4265-bf05-7ab103ef05f3
+q
+java:S2143")Use the Java 8 Date and Time API instead.(ªΪ®Ίÿÿÿÿÿ8Òªτοχ1J$09f67791-75f6-4c90-9f90-28d13f1d7075
+w
+java:S6212"/Declare this local variable with "var" instead.(¶Ηψÿÿÿÿ8Τªτοχ1J$544ed95f-9810-45f9-821f-005e7bc61d8e
+q
+java:S2143")Use the Java 8 Date and Time API instead.(¶Ηψÿÿÿÿ8Φªτοχ1J$9d9b00ed-e6c4-46c0-8bdc-e933ed10c5d7
+r
+java:S6212"/Declare this local variable with "var" instead.(ιόÿ8Χªτοχ1J$bfffcea2-2858-42e0-8591-f3ac76b03598
+r
+java:S6212"/Declare this local variable with "var" instead.(όκ‘Θ8Ψªτοχ1J$c1b5299e-e194-4c63-97b0-a6429450695e
+w
+java:S6212'"/Declare this local variable with "var" instead.(©ΊΙϋÿÿÿÿ8ήªτοχ1J$173c0e5e-dc8e-4d4d-b4d3-826a83f930b7
+r
+java:S6212("/Declare this local variable with "var" instead.(Ξ”™Ò8ίªτοχ1J$f0bbb8df-409f-4576-8be7-59094f9d0955
+
+java:S1774)"GConvert this usage of the ternary operator to an "if"/"else" structure.(υ΄ώΖϊÿÿÿÿ8αªτοχ1J$0112e383-976e-4f24-9b65-218d7a507296
+w
+java:S6212/"/Declare this local variable with "var" instead.(»Φ°Άϊÿÿÿÿ8δªτοχ1J$768c95cc-4bcf-40fe-8aec-431fd70ec433
+r
+java:S62120"/Declare this local variable with "var" instead.(χΡΉΈ8ζªτοχ1J$9de601e2-268d-48b9-8529-b4d1fae4aad7

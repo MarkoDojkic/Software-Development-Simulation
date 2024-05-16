@@ -1,4 +1,8 @@
 
-	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òιόÿÿÿÿ8‚ªήχ1J$1ea2915c-2318-449a-a6e8-debd308f3c0e
-΅
-java:S2142"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(δ Ή€8 ‚ªήχ1J$59e06be4-d57a-4a27-bf47-43cff4827d7b
+ƒ
+java:S1106	"AMove this left curly brace to the beginning of next line of code.(άμ¤(8²τοχ1J$ce80cf1c-d090-46f5-ad6a-e54ee6d393a8
+a
+java:S1451"&Add or update the header of this file.8«²τοχ1J$19957a01-0618-411e-9748-01befd5818f8
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8¬²τοχ1J$df9e2374-11bd-4a70-bc28-a3ca7d272bea
+|
+java:S1258	":Add a constructor to the class, or provide default values.(άμ¤(8Μ—Θψ1J$a62ddec5-c288-4dbe-8ec3-f2448aaa089f

@@ -1,0 +1,10 @@
+
+„
+java:S1106"AMove this left curly brace to the beginning of next line of code.(ËÖÊ®8şêÊ†ø1J$4ad1d462-f74a-4248-b3cf-b810535943b4
+a
+java:S1451"&Add or update the header of this file.8ÿêÊ†ø1J$0292728b-83dc-46b5-9f03-5eccfcda1e63
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8ëÊ†ø1J$50aff2e6-81c5-4cd7-9e8f-b508c732a692
+v
+java:S2208".Explicitly import the specific classes needed.(â—‡‘şÿÿÿÿ8ƒëÊ†ø1J$2e51789e-211b-47b1-b80a-798d9123148a
+b
+java:S4926"Remove this "serialVersionUID".(ô èŠ8•¾ô†ø1J$d47edd57-a2bf-462c-aa08-86bed7136302

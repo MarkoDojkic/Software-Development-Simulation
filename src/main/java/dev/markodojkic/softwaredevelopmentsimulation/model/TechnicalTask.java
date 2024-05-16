@@ -17,5 +17,5 @@ public class TechnicalTask extends BaseTask {
 	@Serial
 	private static final long serialVersionUID = 6697684717367472299L;
 
-	private int userStoryId;
+	private String userStoryId;
 }
