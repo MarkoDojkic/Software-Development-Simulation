@@ -38,7 +38,7 @@ public class SoftwareDevelopmentSimulationApp
 
 		List<Epic> epicList = new ArrayList<>();
 
-		for (var i = 0; i < 10/*random.nextInt(5,15)*/; i++) {
+		for (var i = 0; i < random.nextInt(5,15); i++) {
 			System.out.println(colorize(String.format("* Generating EPIC #%d", i), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(90)));
 			Utilities.simulatePause(200);
 			Epic epic = Epic.builder()
@@ -70,6 +70,7 @@ public class SoftwareDevelopmentSimulationApp
 		//TODO: Refactor epics to pooling (one at the time) - currently first is use for testing
 		//TODO: Move epic to done when currentSprintUserStories channel is empty
 		//TODO: Move userStories to done when technicalTasks channel is empty
+		//TODO: Correct JIRA activity stream timings
 	}
 
 	private static List<UserStory> generateUserStories(String epicId, User epicAssignee, int number){

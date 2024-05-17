@@ -38,6 +38,10 @@
                 <int:transformer ref="printerTransformer" method="infoOutput"/>
                 <int-stream:stdout-channel-adapter id="console-output" append-newline="true"/>
         </int:chain>
+        <int:chain input-channel="jiraActivityStreamChannel">
+                <int:transformer ref="printerTransformer" method="jiraActivityStreamOutput"/>
+                <int-stream:stdout-channel-adapter id="console-output" append-newline="true"/>
+        </int:chain>
         <int:chain input-channel="errorChannel">
                 <int:transformer ref="printerTransformer" method="errorOutput"/>
                 <int-stream:stderr-channel-adapter id="console-error" append-newline="true"/>
