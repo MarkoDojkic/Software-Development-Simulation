@@ -14,7 +14,7 @@ public class PrinterTransformer {
 	private String infoTextColorANSICode;
 	private String errorTextColorANSICode;
 
-	private static final String SPLITTER = String.format("%n***%s%n", "-".repeat(20));
+	private static final String SPLITTER = String.format("%n***%s%n", "-".repeat(30));
 
 	@Transformer
 	public String infoOutput(String output){

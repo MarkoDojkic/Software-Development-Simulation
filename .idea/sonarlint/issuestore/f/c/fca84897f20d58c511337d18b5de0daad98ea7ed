@@ -1,0 +1,17 @@
+
+„
+java:S1106"AMove this left curly brace to the beginning of next line of code.(“ù«8şœõ¶ø1J$2fea61e3-6bdf-4db5-9eec-7144c68f2d12
+‰
+java:S1106"AMove this left curly brace to the beginning of next line of code.(øÿúÿÿÿÿ8şœõ¶ø1J$9a327e53-92bc-4aa3-bcc7-c1b3852806d0
+a
+java:S1451"&Add or update the header of this file.8†õ¶ø1J$57d7866a-888e-4f54-8a52-77c126028c77
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8‡õ¶ø1J$96bd51c2-d08f-4d80-bb22-ea7340d1bcfc
+g	java:S103"KSplit this 227 characters long line (which is greater than 120 authorized).(ÕÚôÌ8Ã¿ˆ·ø1
+
+java:S3242"EUse 'java.lang.Iterable' here; it is a more general type than 'List'.(øÿúÿÿÿÿ8õ¶ø1J$d117b001-9ce5-412b-a35b-77df63f993da
+b
+java:S2676"Use the original value instead.(ÕÚôÌ8©×ù¶ø1J$5b7a9d65-35bc-4b07-83df-69dd4cf3952f
+{
+java:S4248"3Refactor this code to use a "static final" Pattern.(ç€˜–ùÿÿÿÿ8šõ¶ø1J$2aecf2ad-056e-41fc-b080-6323c48aec22
+¦
+java:S1128"^Remove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter'.(ã´şìüÿÿÿÿ8œõ¶ø1J$c3fe7ec1-10ae-493e-8e31-79f1f6aa69b1

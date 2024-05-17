@@ -1,16 +1,53 @@
 
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(†Ø÷ˆúÿÿÿÿ8©¬–ø1J$91e8db4f-a356-4caa-ac22-928d88e576f4
-ƒ
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ğœÂd8©¬–ø1J$8ef5e824-5715-4e80-b443-9139901416eb
-„
-java:S1106"AMove this left curly brace to the beginning of next line of code.(Šˆ»–8©¬–ø1J$be3d5991-a9dd-4ac1-90c1-3885ff83b45e
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(ŞÑ˜Šşÿÿÿÿ8©¬–ø1J$2af61f6c-be6c-4c40-ad96-cb9f8f34bf7e
-a
-java:S1451"&Add or update the header of this file.8°¬–ø1J$ef4fff91-eb62-4840-ac20-f04562e7edd9
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8°¬–ø1J$14a03978-c6d4-41c1-b2c7-7eaf97167d82
-À
-java:S3242"xUse 'dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask' here; it is a more general type than 'TechnicalTask'.(ŞÑ˜Šşÿÿÿÿ8¸¬–ø1J$6cae6a34-32fb-40e9-b4d3-961e201f0bc1
-t
-java:S1128	"RRemove this unused import 'org.springframework.integration.annotation.Aggregator'.(‘Ş£³ûÿÿÿÿ8¸´à–ø1
+c
+java:S1106"AMove this left curly brace to the beginning of next line of code.(†Ø÷ˆúÿÿÿÿ8¤ôÃ¶ø1
+^
+java:S1106!"AMove this left curly brace to the beginning of next line of code.(Ö¼8¥ôÃ¶ø1
+]
+java:S1106&"AMove this left curly brace to the beginning of next line of code.(ôÇI8¥ôÃ¶ø1
+^
+java:S1106+"AMove this left curly brace to the beginning of next line of code.(Šˆ»–8¥ôÃ¶ø1
+c
+java:S11060"AMove this left curly brace to the beginning of next line of code.(ŞÑ˜Šşÿÿÿÿ8¥ôÃ¶ø1
+;
+java:S1451"&Add or update the header of this file.8²ôÃ¶ø1
+Y	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8³ôÃ¶ø1
+g	java:S1036"KSplit this 131 characters long line (which is greater than 120 authorized).(ƒ¸Ş¥8´ôÃ¶ø1
+g	java:S103F"KSplit this 142 characters long line (which is greater than 120 authorized).(å•“¤8´ôÃ¶ø1
+P
+java:S2208".Explicitly import the specific classes needed.(û‚˜ ÿÿÿÿÿ8¶ôÃ¶ø1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8·ôÃ¶ø1
+R	java:S139#"6Move this trailing comment on the previous empty line.(›ÏŒú8ÇôÃ¶ø1
+š
+java:S32420"xUse 'dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask' here; it is a more general type than 'TechnicalTask'.(ŞÑ˜Šşÿÿÿÿ8ËôÃ¶ø1
+X	java:S1255"<This block of commented-out lines of code should be removed.(ç¹Øˆ8ÎôÃ¶ø1
+P
+java:S1128".Remove this unused import 'java.util.HashMap'.(™˜”€ùÿÿÿÿ8ÏôÃ¶ø1
+L
+java:S1128"*Remove this unused import 'java.util.Map'.(¼è½Òşÿÿÿÿ8ĞôÃ¶ø1
+W
+java:S1128":Remove this unused import 'java.util.concurrent.TimeUnit'.(Æ™ş8ĞôÃ¶ø1
+Z
+java:S1128"8Remove this unused import 'java.util.stream.Collectors'.(Óóº´úÿÿÿÿ8ĞôÃ¶ø1
+e
+java:S1128
+"CRemove this unused import 'com.google.common.collect.ImmutableMap'.(İéùÿÿÿÿ8ĞôÃ¶ø1
+X
+java:S1128";Remove this unused import 'com.google.common.collect.Maps'.(¯œĞ8ÑôÃ¶ø1
+q
+java:S1128"ORemove this unused import 'com.google.common.util.concurrent.Uninterruptibles'.(­…ûÿÿÿÿ8ÑôÃ¶ø1
+{
+java:S1128"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask'.(„¦ÅÊşÿÿÿÿ8ÑôÃ¶ø1
+q
+java:S1128"ORemove this unused import 'org.springframework.integration.dsl.AggregatorSpec'.(æ‰òïÿÿÿÿÿ8ÑôÃ¶ø1
+m
+java:S1128"PRemove this unused import 'org.springframework.integration.dsl.IntegrationFlow'.(ï…ë‰8ÑôÃ¶ø1
+s
+java:S1128"QRemove this unused import 'org.springframework.integration.dsl.IntegrationFlows'.( ö÷Äıÿÿÿÿ8ÒôÃ¶ø1
+z
+java:S1128"XRemove this unused import 'org.springframework.integration.dsl.StandardIntegrationFlow'.(»Êö©ÿÿÿÿÿ8ÒôÃ¶ø1
+_
+java:S1128"BRemove this unused import 'org.springframework.messaging.Message'.(–¬•ï8ÒôÃ¶ø1
+e
+java:S1128"IRemove this unused import 'org.springframework.messaging.MessageChannel'.(Çàô)8ÒôÃ¶ø1

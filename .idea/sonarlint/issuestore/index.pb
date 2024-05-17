@@ -3,8 +3,6 @@
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
 
 Osrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/enums/Priority.java,2\f\2f50b0f7fdb49c1246247c138d64a4c824846654
-}
-Msrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/enums/Status.java,a\b\ab8d4217e0160daf7c56ed3ca2e4835de86b1c62
 {
 Ksrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/model/epic.java,c\f\cffee1eba1bd75b0ea8f65126085fbeb5d96512d
 Ñ
@@ -23,12 +21,8 @@ asrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/SoftwareDevelopment
 Osrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/ProjectManager.java,a\e\ae52f8b4a2a050b10b2b3dc8c202c35ba7a80005
 
 Osrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/model/BaseTask.java,6\5\65c8d39ceabfbd6bcf0f362a88bd5050852c0625
-é
-^src/main/java/dev/markodojkic/softwaredevelopmentsimulation/transformer/StatusTransformer.java,d\5\d5d3155422a575a7d99c5cd184945a465714ef84
 p
 @src/main/java/dev/markodojkic/softwaredevelopmentsimulation/util,6\8\68284b1fee2740ad91eaab363546e3acdec764aa
-~
-Nsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/util/IPrinter.java,c\7\c7582783c10601297d8b196c8c338e20835e9659
 è
 _src/main/java/dev/markodojkic/softwaredevelopmentsimulation/transformer/PrinterTransformer.java,6\b\6b54c2d475cc1c77e86cfa193f4f96e93063591b
 }
@@ -40,9 +34,11 @@ Rsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/util/DataProvider.j
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
-ï
-esrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/transformer/StatusTransformerBuilder.java,b\9\b9f06bfa3a7f095fca99f8bb82724fd5572f8882
 Ñ
 Tsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/interfaces/IPrinter.java,d\7\d7df2cc1297bb50a36646300e4772af53953c0dd
 z
 Jsrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/Developer.java,9\3\937734c280dfbb33056c6abcafe9f284265c65be
+u
+Esrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/Jira.java,c\b\cb43787e6aa3733e196ad8b5af9a35d0699768df
+É
+Ssrc/main/java/dev/markodojkic/softwaredevelopmentsimulation/JiraActivityStream.java,f\c\fca84897f20d58c511337d18b5de0daad98ea7ed

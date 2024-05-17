@@ -1,20 +1,0 @@
-
-	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òιόÿÿÿÿ8‚ªήχ1J$1222aee9-e027-4a0d-9a3c-6405ddfcf9cf
-ƒ
-java:S1106"AMove this left curly brace to the beginning of next line of code.(άμ¤(8²τοχ1J$4c58aafc-46b3-4291-8f47-30e6e3fad30f
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(Ωϋ¦ύÿÿÿÿ8²τοχ1J$79472350-4d52-4300-a8d2-e3bb601064b1
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(΅»Άόωÿÿÿÿ8¬Ò†ψ1J$e7b202ec-f3af-4e9e-adad-ce7b27a4bd41
-„
-java:S1106"AMove this left curly brace to the beginning of next line of code.(δ Ή€8Ϋ‚ψ1J$ba17ef95-b245-4311-8c4f-f10cc122ffee
-a
-java:S1451"&Add or update the header of this file.8«²τοχ1J$c3f2338e-9821-4ebd-88f9-16c08534d0ba
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8¬²τοχ1J$68cde387-ae76-4cbe-a692-cb09e73a30b1
-’	java:S103"KSplit this 161 characters long line (which is greater than 120 authorized).(βΔ‘ύÿÿÿÿ8­²τοχ1J$3e70bbf5-1f3e-4c74-84de-7e5102f7b31d
-|
-java:S1258":Add a constructor to the class, or provide default values.(άμ¤(8±ο™ψ1J$9e2af123-d06a-41a3-a2b3-6f7b520fe389
-΅
-java:S2142"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(δ Ή€8 ‚ªήχ1J$57220d04-17e4-41f7-bcf4-bb4be22dcee7
-u
-java:S1108"2Move this "catch" keyword to a new dedicated line.(δ Ή€8Δ²τοχ1J$15eec423-86ef-4a06-9b71-6302bc7a8e58

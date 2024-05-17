@@ -1,5 +1,6 @@
 package dev.markodojkic.softwaredevelopmentsimulation.util;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter;
@@ -9,6 +10,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class Utilities {
@@ -25,11 +27,7 @@ public class Utilities {
 		return list.get(random.nextInt(list.size()));
 	}
 	public static void simulatePause(long time){
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		Uninterruptibles.sleepUninterruptibly(time, TimeUnit.MILLISECONDS);
 	}
 
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg

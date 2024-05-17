@@ -1,103 +1,62 @@
 
-	java:S112""FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8˜Ûò–ø1J$73246ce0-1d64-4ce6-88c7-f9933f29ea20
 „
-java:S1106"AMove this left curly brace to the beginning of next line of code.(´âøĞ8Èüº•ø1J$e21f7cef-6f62-4aeb-999f-cee8bcfd6b38
+java:S1106"AMove this left curly brace to the beginning of next line of code.(´âøĞ8Èüº•ø1J$684e6334-1a10-4489-b8a6-9896966c32cd
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(î–¤–üÿÿÿÿ8ÊÎï–ø1J$ad595f2e-8851-45a3-af5d-e24d30fbb5ad
+java:S1106"AMove this left curly brace to the beginning of next line of code.(î–¤–üÿÿÿÿ8ÊÎï–ø1J$aed6311e-a4e6-4153-bce0-7041ca708f15
 ‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8ÊÎï–ø1J$5a9e61e3-6d45-4256-9c61-e6dffa782fd6
+java:S1106 "AMove this left curly brace to the beginning of next line of code.(ï­€œıÿÿÿÿ8áŠè±ø1J$da913265-67f5-4fb2-a728-05164e4f3c3b
+‰
+java:S1106*"AMove this left curly brace to the beginning of next line of code.(¯À„¬ÿÿÿÿÿ8áŠè±ø1J$8b55e0b9-4726-4334-ad9f-1665489f52c2
 „
-java:S1106!"AMove this left curly brace to the beginning of next line of code.(ä ¹€8•ºò–ø1J$0d8ea61c-8e33-43a2-bb77-54629105ee40
+java:S11064"AMove this left curly brace to the beginning of next line of code.(®óÓŸ8áŠè±ø1J$deca6c47-7c9f-4171-9b1a-8c5642f61559
+ƒ
+java:S1106>"AMove this left curly brace to the beginning of next line of code.(”å®,8®åê±ø1J$fe94fce4-aaae-4f46-9a72-3ecd98ab0e36
 ‰
-java:S1106)"AMove this left curly brace to the beginning of next line of code.(ï­€œıÿÿÿÿ8ŸÛò–ø1J$1287db13-58b4-42f0-87fb-02d8831bfa84
-‰
-java:S1106*"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8ŸÛò–ø1J$547a03bb-f5f5-4b4a-ab9e-2dee7f1ce6fd
-„
-java:S11062"AMove this left curly brace to the beginning of next line of code.(ä ¹€8ŸÛò–ø1J$c4565c89-4d83-49b4-af17-de69f06e91e2
-c
-java:S11069"AMove this left curly brace to the beginning of next line of code.(¯À„¬ÿÿÿÿÿ8®ó–ø1
-c
-java:S1106:"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8®ó–ø1
-^
-java:S1106B"AMove this left curly brace to the beginning of next line of code.(ä ¹€8®ó–ø1
-^
-java:S1106I"AMove this left curly brace to the beginning of next line of code.(®óÓŸ8®ó–ø1
-c
-java:S1106J"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8®ó–ø1
-^
-java:S1106R"AMove this left curly brace to the beginning of next line of code.(ä ¹€8®ó–ø1
-]
-java:S1106Y"AMove this left curly brace to the beginning of next line of code.(”å®,8®ó–ø1
-c
-java:S1106Z"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8®ó–ø1
-^
-java:S1106b"AMove this left curly brace to the beginning of next line of code.(ä ¹€8®ó–ø1
-c
-java:S1106i"AMove this left curly brace to the beginning of next line of code.(ÃÿûŸüÿÿÿÿ8¯ó–ø1
-c
-java:S1106j"AMove this left curly brace to the beginning of next line of code.(¡»¢üùÿÿÿÿ8¯ó–ø1
-^
-java:S1106r"AMove this left curly brace to the beginning of next line of code.(ä ¹€8¯ó–ø1
+java:S1106H"AMove this left curly brace to the beginning of next line of code.(ÃÿûŸüÿÿÿÿ8¯åê±ø1J$dfb932c6-666a-4342-a79b-727672a82923
 a
-java:S1451"&Add or update the header of this file.8áüº•ø1J$37d517d7-4231-41e2-8e26-0941da7f4213
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8âüº•ø1J$882718d7-fedd-44eb-9eb2-cfddd989913a
-	java:S103"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8ØÎï–ø1J$3e0d96a4-935b-48e3-ae23-395a43b8eb68
-	java:S103 "KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8™ºò–ø1J$5f44c0dd-44ad-4d35-b0c1-7f396c70a790
-	java:S103,"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8¯Ûò–ø1J$f61ae473-46a0-482d-83e6-4a6e5aec88fc
-	java:S1030"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8¯Ûò–ø1J$0cc7af38-6ba6-4bcf-ad88-2e38f9c8e23f
-g	java:S103<"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103@"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103L"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103P"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103\"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103`"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103l"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8½ó–ø1
-g	java:S103p"KSplit this 170 characters long line (which is greater than 120 authorized).(øÙî8¾ó–ø1
+java:S1451"&Add or update the header of this file.8áüº•ø1J$b9ec3fc7-d447-42de-87e9-21c82908d619
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8âüº•ø1J$abd33e2a-d1ce-48f9-bdd2-fb60ff3b7015
+	java:S103"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8¯Ûò–ø1J$2d961049-41a8-4b4a-9273-dd9d7b320e06
+’	java:S103"KSplit this 144 characters long line (which is greater than 120 authorized).(¤¦£¾şÿÿÿÿ8·¬ë±ø1J$fc170bd0-d0ef-45a0-a501-9de08a732068
+	java:S103""KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8÷Šè±ø1J$a4f10092-2a6d-4e4f-99d5-e68b8634747e
+’	java:S103#"KSplit this 143 characters long line (which is greater than 120 authorized).(Ó¦úÿÿÿÿ8Ô‘ë±ø1J$39541cf7-5758-4b63-9ad3-aff9f52a0fd1
+	java:S103%"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8÷Šè±ø1J$14aa43bb-274c-481a-a98c-9b5d67a9cf71
+	java:S103,"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8÷Šè±ø1J$ba5248bf-3ef0-4423-8878-9bf0abf00982
+Œ	java:S103-"KSplit this 142 characters long line (which is greater than 120 authorized).(Òˆ÷$8±ûê±ø1J$2f0f96d1-5d3c-44b5-9f93-67b178aa4ff4
+	java:S103/"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8÷Šè±ø1J$ec8b0daa-8963-4e21-bbd2-dec42d2125b5
+	java:S1036"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8øŠè±ø1J$50bf50aa-6557-4148-97d7-634226c715cf
+	java:S1037"KSplit this 142 characters long line (which is greater than 120 authorized).(×ÿÏ–8Óåê±ø1J$986c635c-4ec6-429a-9b3d-9cfae6e53042
+	java:S1039"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8Óåê±ø1J$25a18bf3-1c68-4075-b2bc-508330e7125b
+	java:S103@"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8Ôåê±ø1J$ea24ed4a-242a-49a4-971c-f817e7ee54ac
+	java:S103A"KSplit this 145 characters long line (which is greater than 120 authorized).(Ü¤ÒŒ8İÓê±ø1J$0cfc3331-f122-4afa-b295-7b4fae25ba0b
+	java:S103C"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8Ôåê±ø1J$9c79cd9c-799e-43c6-9d57-e99684e5fdee
+	java:S103J"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8Ôåê±ø1J$06fad4e6-ea5e-41c6-8e1b-461e2245ffdd
+’	java:S103K"KSplit this 144 characters long line (which is greater than 120 authorized).(¥ĞñÂüÿÿÿÿ8ŞÓê±ø1J$4c7781f7-3a1e-43c9-bd80-e7826cc24034
+	java:S103M"KSplit this 169 characters long line (which is greater than 120 authorized).(øÙî8Õåê±ø1J$6420fd87-343f-49f9-ab8e-11b603b3362c
 }
-java:S1258":Add a constructor to the class, or provide default values.(´âøĞ8çüº•ø1J$4bb1ff62-bf28-4c6a-ba3a-476d2240831d
+java:S1258":Add a constructor to the class, or provide default values.(´âøĞ8çüº•ø1J$badf9b35-b769-4ff1-8eee-99f0caa7dd33
 
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(×‡Íü8òüº•ø1J$457c968c-623d-4cc9-b62c-fd0b91c24fdf
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(×‡Íü8òüº•ø1J$a8d940c7-1c7d-4097-9d83-90648021e22c
 ¢
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(¿Ï ¶üÿÿÿÿ8òüº•ø1J$dc636396-3394-4899-aa5d-b294b27cbf85
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(¿Ï ¶üÿÿÿÿ8òüº•ø1J$d8b59d86-05f3-4165-a336-e8c9d7d0960a
 ¢
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(ò¿œ¶ıÿÿÿÿ8òüº•ø1J$20433147-72de-4c2f-8ceb-00dd26d2fe9a
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(ò¿œ¶ıÿÿÿÿ8òüº•ø1J$9deb6da8-540e-4e31-b4f8-c665067067e8
 ¢
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(ì¸âĞøÿÿÿÿ8óüº•ø1J$c8ce5986-834d-493f-b050-a463fb6336ad
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(ì¸âĞøÿÿÿÿ8óüº•ø1J$2c4874c5-b97b-40ab-a1de-5fbc36294495
 ¢
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(Š¯¢Õùÿÿÿÿ8óüº•ø1J$5878ee51-b41a-4121-bd62-253c378f22e1
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(Š¯¢Õùÿÿÿÿ8óüº•ø1J$2edaccbf-76fe-4ff9-9698-77a7ae2678bb
 ¢
-java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(Õ¯ÿâúÿÿÿÿ8óüº•ø1J$ad7d5031-5738-4cba-a298-960a5795d22c
-¡
-java:S2142!"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ä ¹€8ºÛò–ø1J$ae5a9afd-da54-482c-b471-80a2a57337e9
-u
-java:S1108!"2Move this "catch" keyword to a new dedicated line.(ä ¹€8·ºò–ø1J$4696178c-9370-45ef-a71c-dc8530491ef4
-l	java:S106"+Replace this use of System.out by a logger.(ÙÒm8öÎï–ø1J$8c75503b-6a3c-48b9-9d90-6bf0f2bba4fd
-m	java:S106"+Replace this use of System.out by a logger.(¹Ğ½µ8¸ºò–ø1J$13cff819-0686-4041-91c4-ffe6d192c76f
-u
-java:S11082"2Move this "catch" keyword to a new dedicated line.(ä ¹€8ËÛò–ø1J$19e17aa9-48c7-41d1-a056-31385f26fdf9
-m	java:S106+"+Replace this use of System.out by a logger.(¦¸Ä8ËÛò–ø1J$901ad04e-c970-404d-87d0-19d6580f4314
-r	java:S106/"+Replace this use of System.out by a logger.(õ¤›üÿÿÿÿ8ÍÛò–ø1J$0a5274f8-e506-4ea4-a772-c7284400bf19
-O
-java:S1108B"2Move this "catch" keyword to a new dedicated line.(ä ¹€8Ğó–ø1
-L	java:S106;"+Replace this use of System.out by a logger.(²¨‹İúÿÿÿÿ8Ğó–ø1
-L	java:S106?"+Replace this use of System.out by a logger.(ªñ¥èÿÿÿÿÿ8Ñó–ø1
-O
-java:S1108R"2Move this "catch" keyword to a new dedicated line.(ä ¹€8Óó–ø1
-G	java:S106K"+Replace this use of System.out by a logger.(÷€êß8Óó–ø1
-L	java:S106O"+Replace this use of System.out by a logger.(’”¤Éûÿÿÿÿ8Ôó–ø1
-O
-java:S1108b"2Move this "catch" keyword to a new dedicated line.(ä ¹€8Öó–ø1
-G	java:S106["+Replace this use of System.out by a logger.(‹ÇÜ°8Öó–ø1
-F	java:S106_"+Replace this use of System.out by a logger.(‘Æõ#8×ó–ø1
-O
-java:S1108r"2Move this "catch" keyword to a new dedicated line.(ä ¹€8Ùó–ø1
-L	java:S106k"+Replace this use of System.out by a logger.(š¤µ¨üÿÿÿÿ8Úó–ø1
-G	java:S106o"+Replace this use of System.out by a logger.(Ôœ”8Ûó–ø1
-˜
-java:S1128"URemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.model.Epic'.(Ö»Áà8ÏÛò–ø1J$52f5c875-5e48-4fb5-aef3-b43ba42bbd63
-œ
-java:S1128"YRemove this unused import 'dev.markodojkic.softwaredevelopmentsimulation.util.Utilities'.(Ò—¿¸8ÏÛò–ø1J$157bd357-e62a-4ae2-a7cc-129ef6f39425
-˜
-java:S1128	"PRemove this unused import 'org.springframework.integration.annotation.Splitter'.(¶¦õ‚úÿÿÿÿ8ÏÛò–ø1J$aafea5a2-7067-42b3-bcd2-5266efba4011
+java:S3749"ZAnnotate this member with "@Autowired", "@Resource", "@Inject", or "@Value", or remove it.(Õ¯ÿâúÿÿÿÿ8óüº•ø1J$80dc3b25-026f-45f7-93c0-46d9b2665c44
+l	java:S106"+Replace this use of System.out by a logger.(ÙÒm8ËÛò–ø1J$8e4702a4-1a41-4759-bf7b-b2c433c1723b
+m	java:S106!"+Replace this use of System.out by a logger.(¦¸Ä8‹è±ø1J$d9862608-48f4-4aff-add3-8274713925c4
+r	java:S106$"+Replace this use of System.out by a logger.(õ¤›üÿÿÿÿ8‹è±ø1J$ca060de7-cc0d-47c8-a927-cd9c56d7d2a4
+r	java:S106+"+Replace this use of System.out by a logger.(²¨‹İúÿÿÿÿ8“‹è±ø1J$5e48864f-7a0d-407a-a49d-f47c37ba5b7c
+r	java:S106."+Replace this use of System.out by a logger.(ªñ¥èÿÿÿÿÿ8•‹è±ø1J$eedaf02b-f367-443a-82f0-535c6b818a15
+m	java:S1065"+Replace this use of System.out by a logger.(÷€êß8˜‹è±ø1J$5c30dcbd-10dd-43ec-bdbf-e94f722b1bb4
+r	java:S1068"+Replace this use of System.out by a logger.(’”¤Éûÿÿÿÿ8ûåê±ø1J$cf6192cb-6220-4c29-b3cc-72a49961e144
+m	java:S106?"+Replace this use of System.out by a logger.(‹ÇÜ°8€æê±ø1J$9b351e9a-220a-4295-9496-b794d3811262
+l	java:S106B"+Replace this use of System.out by a logger.(‘Æõ#8ƒæê±ø1J$2e537a03-0dbb-44c1-9a9f-1084ab23f1da
+r	java:S106I"+Replace this use of System.out by a logger.(š¤µ¨üÿÿÿÿ8…æê±ø1J$a63934a2-1085-4c79-80c8-8b3f2b928e58
+m	java:S106L"+Replace this use of System.out by a logger.(Ôœ”8‡æê±ø1J$768419c1-3152-4bf3-8cfb-3cb091e4e19b
 ó
-java:S4605"¯'Developer' is not reachable by @ComponentScan or @SpringBootApplication. Either move it to a package configured in @ComponentScan or update your @ComponentScan configuration.(´âøĞ8¥ıº•ø1J$e374c5bd-002d-4865-96fb-23f5971be267
+java:S4605"¯'Developer' is not reachable by @ComponentScan or @SpringBootApplication. Either move it to a package configured in @ComponentScan or update your @ComponentScan configuration.(´âøĞ8¥ıº•ø1J$1aa957bb-7cb5-4d38-97f6-ac2e66c9cd8c

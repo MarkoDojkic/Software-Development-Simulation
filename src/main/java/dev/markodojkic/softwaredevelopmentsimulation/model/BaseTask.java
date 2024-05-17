@@ -6,6 +6,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 
 @Data
 @SuperBuilder
@@ -24,4 +26,5 @@ public class BaseTask implements Serializable {
 	private Priority priority;
 	private User assignee;
 	private User reporter;
+	private ZonedDateTime createdOn;
 }

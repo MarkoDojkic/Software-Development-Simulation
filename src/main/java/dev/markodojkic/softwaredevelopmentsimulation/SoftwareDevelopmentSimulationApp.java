@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class SoftwareDevelopmentSimulationApp
 
 		List<Epic> epicList = new ArrayList<>();
 
-		for (var i = 0; i < 2/*random.nextInt(5,15)*/; i++) {
+		for (var i = 0; i < 10/*random.nextInt(5,15)*/; i++) {
 			System.out.println(colorize(String.format("* Generating EPIC #%d", i), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(90)));
 			Utilities.simulatePause(200);
 			Epic epic = Epic.builder()
@@ -48,6 +49,7 @@ public class SoftwareDevelopmentSimulationApp
 							.filter(dev -> dev.getUserType() == UserType.SENIOR_DEVELOPER).toList()))
 					.assignee(getRandomElementFromList(developers))
 					.id(UUID.randomUUID().toString())
+					.createdOn(ZonedDateTime.now())
 					.userStories(new ArrayList<>())
 					.build();
 
@@ -84,11 +86,12 @@ public class SoftwareDevelopmentSimulationApp
 					.assignee(getRandomElementFromList(developers))
 					.epicId(epicId)
 					.id(UUID.randomUUID().toString())
+					.createdOn(ZonedDateTime.now())
 					.technicalTasks(new ArrayList<>())
 					.build();
 
 			userStory.setTechnicalTasks(generatTechnicalTasks(userStory.getId(), userStory.getAssignee(),
-					random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 5)));
+					random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8)));
 			userStoryList.add(userStory);
 			System.out.println(colorize(String.format("\t+ Generated USER STORY #%d", i), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(124)));
 		}
@@ -110,6 +113,7 @@ public class SoftwareDevelopmentSimulationApp
 					.assignee(getRandomElementFromList(developers))
 					.userStoryId(userStoryId)
 					.id(UUID.randomUUID().toString())
+					.createdOn(ZonedDateTime.now())
 					.build());
 			System.out.println(colorize(String.format("\t\t+ Generated TECHNICAL TASK #%d", i), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(244)));
 		}

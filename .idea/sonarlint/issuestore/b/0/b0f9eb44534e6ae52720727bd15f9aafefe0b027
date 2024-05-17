@@ -1,66 +1,67 @@
 
 ‡
-java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8¬“æø1J$1d6eb859-cfb2-4eec-a632-d5a3691b28f4
+java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8¬“æø1J$eeb8eaed-8d22-45d6-980f-c514e60238b0
 ‡
-java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8­“æø1J$ae37f3fe-f2ea-4e35-acf3-8fa1c127ccbb
-™	java:S109("RAssign this magic number 2 to a well-named constant, and use the constant instead.(˜¿‡óşÿÿÿÿ8®“æø1J$84237346-c30e-45eb-8c31-3fa2aa6c0b3e
-›	java:S109)"TAssign this magic number 232 to a well-named constant, and use the constant instead.(•Â¨ºıÿÿÿÿ8®“æø1J$9539ee7a-f027-43d3-ab9f-8285d051b144
-š	java:S109)"SAssign this magic number 90 to a well-named constant, and use the constant instead.(•Â¨ºıÿÿÿÿ8®“æø1J$80942904-2a0d-48d4-a9bc-bf14cf444904
-›	java:S109*"TAssign this magic number 200 to a well-named constant, and use the constant instead.(¨´Í¹ıÿÿÿÿ8®“æø1J$6755acc4-337f-4d1e-809c-a426e4aebf43
-”	java:S109,"RAssign this magic number 3 to a well-named constant, and use the constant instead.(åæÖË8®“æø1J$ddbd6ed6-c764-4169-84b8-630bf27f541b
-”	java:S109,"RAssign this magic number 6 to a well-named constant, and use the constant instead.(åæÖË8®“æø1J$ed98a2ce-994f-498e-9492-cb13a4ee668f
-”	java:S109-"RAssign this magic number 5 to a well-named constant, and use the constant instead.(ìê¥Ï8®“æø1J$a4372386-3fb6-48b8-b20e-7c247fb84528
-•	java:S109-"SAssign this magic number 15 to a well-named constant, and use the constant instead.(ìê¥Ï8®“æø1J$8dff8b06-b1fd-431d-ba76-d34d0ba93865
-”	java:S1097"RAssign this magic number 3 to a well-named constant, and use the constant instead.(÷Ç£§8ŠŸ‰ø1J$51509daf-bc04-44a1-874e-2f28aa7e8c91
-›	java:S1099"TAssign this magic number 118 to a well-named constant, and use the constant instead.(Ù»‹‡ùÿÿÿÿ8®“æø1J$c3ab848f-5590-4fff-98d1-3c940eb80fec
-š	java:S1099"SAssign this magic number 90 to a well-named constant, and use the constant instead.(Ù»‹‡ùÿÿÿÿ8®“æø1J$b313e432-4d79-40b2-be65-6b407e143591
-›	java:S109M"TAssign this magic number 232 to a well-named constant, and use the constant instead.(î¦´‡ùÿÿÿÿ8®“æø1J$a8c1711f-c8a9-4753-84d7-40d9344bdeff
-›	java:S109M"TAssign this magic number 124 to a well-named constant, and use the constant instead.(î¦´‡ùÿÿÿÿ8®“æø1J$40d40fc6-b28f-4957-ada0-ec3370655c6c
-–	java:S109N"TAssign this magic number 100 to a well-named constant, and use the constant instead.(©Ş¡Î8®“æø1J$157515ff-dc9b-4308-a4fc-cc2b65362e28
-™	java:S109P"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8®“æø1J$6876c4a0-e05d-43b8-b0e7-067a3c416b57
-™	java:S109P"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8®“æø1J$9f5c805b-ad6b-40be-816c-3efd8ba92d9a
-”	java:S109Q"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8®“æø1J$c13c91e3-d9ef-4457-a71d-5efd6a17e90f
-”	java:S109Q"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$5f2a5d3a-41d0-4841-8451-ef9768d45fdb
-”	java:S109["RAssign this magic number 3 to a well-named constant, and use the constant instead.( ‰¤«8İ—Šø1J$43bedbc9-144b-4152-8a8f-1198ed06dd09
-”	java:S109["RAssign this magic number 5 to a well-named constant, and use the constant instead.( ‰¤«8ÀÎŠø1J$e5f6d688-4811-4ee1-96b0-80ebcb0b6b79
-–	java:S109]"TAssign this magic number 118 to a well-named constant, and use the constant instead.(à¸ÆØ8¯“æø1J$0b915140-719a-4101-a8af-05f1c81e048b
-–	java:S109]"TAssign this magic number 124 to a well-named constant, and use the constant instead.(à¸ÆØ8¯“æø1J$bcbddffd-7536-4a82-975b-0d59bb6a7191
-–	java:S109g"TAssign this magic number 244 to a well-named constant, and use the constant instead.(…®Ä8¯“æø1J$243bffe6-b3a9-43ea-bd49-5c427dbf118b
-š	java:S109h"SAssign this magic number 50 to a well-named constant, and use the constant instead.(¥¼üôşÿÿÿÿ8¯“æø1J$c162fea2-20b7-43d2-9f8e-0422e8967789
-™	java:S109j"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8¯“æø1J$c5079919-042e-4298-901b-0354435477cb
-™	java:S109j"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8¯“æø1J$34c1fc45-17b8-49b9-9f36-dbfa707baf62
-”	java:S109k"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$d5f08e40-560c-431e-bbb7-0e7950ad669b
-”	java:S109k"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$56ceab30-34fc-4e22-aa7c-66601c9e1f16
-–	java:S109r"TAssign this magic number 118 to a well-named constant, and use the constant instead.(Ã–œŠ8¯“æø1J$300075d4-00de-4350-bd85-4e57fef3104d
-–	java:S109r"TAssign this magic number 244 to a well-named constant, and use the constant instead.(Ã–œŠ8¯“æø1J$e3afac79-ff14-49d2-b798-9943d99025d9
+java:S1105"?Move this left curly brace to the end of previous line of code.(ÒÌâ–øÿÿÿÿ8­“æø1J$57d75cb9-0156-4d8b-ae44-ee926768800c
+™	java:S109("RAssign this magic number 2 to a well-named constant, and use the constant instead.(˜¿‡óşÿÿÿÿ8®“æø1J$be4cec7f-5ab1-4eec-a242-ed864483bfc6
+›	java:S109)"TAssign this magic number 232 to a well-named constant, and use the constant instead.(•Â¨ºıÿÿÿÿ8®“æø1J$31f6cb8f-d371-4d22-87cb-ccc2faf43c09
+š	java:S109)"SAssign this magic number 90 to a well-named constant, and use the constant instead.(•Â¨ºıÿÿÿÿ8®“æø1J$f9dc2aad-49bb-4706-be03-be93c834d974
+›	java:S109*"TAssign this magic number 200 to a well-named constant, and use the constant instead.(¨´Í¹ıÿÿÿÿ8®“æø1J$2409a979-c0d7-4de3-bdc6-ec874f62b309
+”	java:S109,"RAssign this magic number 3 to a well-named constant, and use the constant instead.(åæÖË8®“æø1J$4f772e16-21f0-4998-978c-e6b28c02a829
+”	java:S109,"RAssign this magic number 6 to a well-named constant, and use the constant instead.(åæÖË8®“æø1J$7864fd9e-97fa-435d-9029-c2604dc62cf3
+”	java:S109-"RAssign this magic number 5 to a well-named constant, and use the constant instead.(ìê¥Ï8®“æø1J$758406f4-521a-496d-b616-4847e3dee7ba
+•	java:S109-"SAssign this magic number 15 to a well-named constant, and use the constant instead.(ìê¥Ï8®“æø1J$74d8c3fd-0729-4059-8688-ccd9e4e83bda
+”	java:S1097"RAssign this magic number 3 to a well-named constant, and use the constant instead.(÷Ç£§8ŠŸ‰ø1J$f4c51618-fbe7-4fdc-a84c-62adb1855eda
+›	java:S1099"TAssign this magic number 118 to a well-named constant, and use the constant instead.(Ù»‹‡ùÿÿÿÿ8®“æø1J$d7c3222a-1e84-41ec-8b4d-3f402ae269af
+š	java:S1099"SAssign this magic number 90 to a well-named constant, and use the constant instead.(Ù»‹‡ùÿÿÿÿ8®“æø1J$35e53da8-bd60-41f9-8121-f4ecaa09a8e1
+›	java:S109M"TAssign this magic number 232 to a well-named constant, and use the constant instead.(î¦´‡ùÿÿÿÿ8®“æø1J$e71ecd6a-480e-4bd3-b6ff-70e669445bb6
+›	java:S109M"TAssign this magic number 124 to a well-named constant, and use the constant instead.(î¦´‡ùÿÿÿÿ8®“æø1J$3ac629e3-c8b1-4a76-8585-801c34c3bc7a
+–	java:S109N"TAssign this magic number 100 to a well-named constant, and use the constant instead.(©Ş¡Î8®“æø1J$95bb063f-da53-4a72-bec2-71800026beff
+™	java:S109P"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8®“æø1J$979a09a2-8703-4acf-890f-2af2209ef96f
+™	java:S109P"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8®“æø1J$ff531e72-f2b4-477b-adad-327525f88167
+”	java:S109Q"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8®“æø1J$2562b216-2219-495a-91d3-21ede41ea60c
+”	java:S109Q"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$71207992-811d-45a9-9dc3-e864fb2204d9
+”	java:S109["RAssign this magic number 3 to a well-named constant, and use the constant instead.( ‰¤«8İ—Šø1J$a37b124a-3347-4940-85a2-a9ccef99f30e
+”	java:S109["RAssign this magic number 5 to a well-named constant, and use the constant instead.( ‰¤«8ÀÎŠø1J$0e514397-8c47-460d-91b8-2aa53a714159
+–	java:S109]"TAssign this magic number 118 to a well-named constant, and use the constant instead.(à¸ÆØ8¯“æø1J$778b3d9d-32f7-4031-a849-8fb7a8309865
+–	java:S109]"TAssign this magic number 124 to a well-named constant, and use the constant instead.(à¸ÆØ8¯“æø1J$7439348d-5410-4d55-834c-a6577c8939b7
+–	java:S109g"TAssign this magic number 244 to a well-named constant, and use the constant instead.(…®Ä8¯“æø1J$7f50195e-a18f-4c03-a8da-1f0792f6c4ec
+š	java:S109h"SAssign this magic number 50 to a well-named constant, and use the constant instead.(¥¼üôşÿÿÿÿ8¯“æø1J$c0c0353e-acf4-4862-9194-311c08d8314d
+™	java:S109j"RAssign this magic number 2 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8¯“æø1J$e731a6e8-3882-4547-bc9f-340c660d8a54
+™	java:S109j"RAssign this magic number 4 to a well-named constant, and use the constant instead.(×©¤³şÿÿÿÿ8¯“æø1J$ed2b6206-a551-4bda-a892-934383fed3d4
+”	java:S109k"RAssign this magic number 2 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$d5c5e1f1-5ba7-48d8-912e-48e813f2d2d8
+”	java:S109k"RAssign this magic number 6 to a well-named constant, and use the constant instead.(æë°™8¯“æø1J$000c8b3a-eb13-4340-9676-481f27dabf26
+–	java:S109r"TAssign this magic number 118 to a well-named constant, and use the constant instead.(Ã–œŠ8¯“æø1J$6b096358-284c-486c-b6eb-7c4dbca2e377
+–	java:S109r"TAssign this magic number 244 to a well-named constant, and use the constant instead.(Ã–œŠ8¯“æø1J$860ed027-40bc-47ca-8f33-c71c292c629c
+a	java:S113"'Add a new line at the end of this file.8˜ÎĞ´ø1J$8c717a79-db3d-4064-aa1a-a645a34bc89f
 ‰
-java:S1106("AMove this left curly brace to the beginning of next line of code.(˜¿‡óşÿÿÿÿ8´“æø1J$7fe1da77-9751-49a7-a8b9-40134de6a6ed
+java:S1106("AMove this left curly brace to the beginning of next line of code.(˜¿‡óşÿÿÿÿ8´“æø1J$68d0f638-a632-4f9d-92d0-c3dd7078a317
 „
-java:S1106I"AMove this left curly brace to the beginning of next line of code.(ù«´Ë8´“æø1J$6b93cf7e-42fc-4bba-8170-e2cdccfa9b84
+java:S1106I"AMove this left curly brace to the beginning of next line of code.(ù«´Ë8´“æø1J$f1a5a8c9-4988-4c88-9fb0-f560d6b1c83b
 „
-java:S1106L"AMove this left curly brace to the beginning of next line of code.(á²‹8´“æø1J$199794cd-0a73-4375-82fa-8ecb8afb6382
+java:S1106L"AMove this left curly brace to the beginning of next line of code.(á²‹8´“æø1J$ec33d37e-03f2-44c8-8ed0-964d33e3db1a
 „
-java:S1106c"AMove this left curly brace to the beginning of next line of code.(«µŠî8´“æø1J$64c410f5-5c6f-4ce0-8207-155e26d028ee
+java:S1106c"AMove this left curly brace to the beginning of next line of code.(«µŠî8´“æø1J$cd356b29-d13b-43f2-9daa-b4767abd3ee8
 „
-java:S1106f"AMove this left curly brace to the beginning of next line of code.(á²‹8´“æø1J$8fc30117-2a52-48da-9113-9afa901478e5
+java:S1106f"AMove this left curly brace to the beginning of next line of code.(á²‹8´“æø1J$1102e518-0473-4f5d-8833-7aaa99ff714c
 a
-java:S1451"&Add or update the header of this file.8Ğ“æø1J$66c2d708-6731-4712-b8c2-4aad7c083d2a
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8Ñ“æø1J$c3ea74e8-4d7c-4162-a4ea-ed2a3555c161
-’	java:S103)"KSplit this 128 characters long line (which is greater than 120 authorized).(•Â¨ºıÿÿÿÿ8Ñ“æø1J$149ed776-9816-4792-a5e9-afb007912456
-’	java:S1039"KSplit this 127 characters long line (which is greater than 120 authorized).(Ù»‹‡ùÿÿÿÿ8Ñ“æø1J$dedf2d29-b611-4a58-b763-7092d3570732
-’	java:S103M"KSplit this 137 characters long line (which is greater than 120 authorized).(î¦´‡ùÿÿÿÿ8Ñ“æø1J$e0ed3f61-b3f9-4cef-80a3-a84a6471f0f0
-	java:S103]"KSplit this 136 characters long line (which is greater than 120 authorized).(à¸ÆØ8Ñ“æø1J$283e127c-3301-4e55-b0f8-defa26058d28
-	java:S103g"KSplit this 141 characters long line (which is greater than 120 authorized).(…®Ä8Ñ“æø1J$ac27f514-2baf-4ecd-8f8e-8cb30eb2e268
-	java:S103r"KSplit this 142 characters long line (which is greater than 120 authorized).(Ã–œŠ8Ñ“æø1J$111d1fef-c8ee-432a-9cb8-8fa4222f199b
-r	java:S106)"+Replace this use of System.out by a logger.(•Â¨ºıÿÿÿÿ8Ù“æø1J$df4db0d8-4dc0-40b9-809c-eb3b9714f29c
-r	java:S1069"+Replace this use of System.out by a logger.(Ù»‹‡ùÿÿÿÿ8ß“æø1J$d456c420-6904-494e-bd55-c9eb745074f9
+java:S1451"&Add or update the header of this file.8Ğ“æø1J$a8445c1d-65b5-48a9-a194-2aee75962d66
+	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8Ñ“æø1J$e5199269-67e8-4729-ba7c-854e19bc34a0
+’	java:S103)"KSplit this 128 characters long line (which is greater than 120 authorized).(•Â¨ºıÿÿÿÿ8Ñ“æø1J$98e9176e-3902-401a-8d16-4b35a94a0a9b
+’	java:S1039"KSplit this 127 characters long line (which is greater than 120 authorized).(Ù»‹‡ùÿÿÿÿ8Ñ“æø1J$9f482c51-2f9c-4111-a408-662c5f40accc
+’	java:S103M"KSplit this 137 characters long line (which is greater than 120 authorized).(î¦´‡ùÿÿÿÿ8Ñ“æø1J$a68ea1b9-ba35-4643-9d4d-04ef8d4b0c44
+	java:S103]"KSplit this 136 characters long line (which is greater than 120 authorized).(à¸ÆØ8Ñ“æø1J$5b66f209-6dfc-4360-8262-291afa4a53e1
+	java:S103g"KSplit this 141 characters long line (which is greater than 120 authorized).(…®Ä8Ñ“æø1J$625373c0-c991-4eb6-a892-36dc2a6d0e00
+	java:S103r"KSplit this 142 characters long line (which is greater than 120 authorized).(Ã–œŠ8Ñ“æø1J$9af7303f-195b-4102-a92f-5f68c1e986b3
+r	java:S106)"+Replace this use of System.out by a logger.(•Â¨ºıÿÿÿÿ8Ù“æø1J$e7e059c7-67cf-4bf0-bff0-ef4bdf3d2aa7
+r	java:S1069"+Replace this use of System.out by a logger.(Ù»‹‡ùÿÿÿÿ8ß“æø1J$05612ad6-9cd1-45d7-a793-6c04a47ac5ad
 u
-java:S1135D"2Complete the task associated to this TODO comment.(¦Ñãä8£”ù–ø1J$099c7f15-9f88-4c9e-ae59-d3941fb140fc
+java:S1135D"2Complete the task associated to this TODO comment.(¦Ñãä8£”ù–ø1J$430cefb7-401c-42f7-9c5c-699df0adb420
 z
-java:S1135E"2Complete the task associated to this TODO comment.(É¯Şüÿÿÿÿ8«Èú–ø1J$e3462d81-edff-4da8-a13f-9129db5cbf97
+java:S1135E"2Complete the task associated to this TODO comment.(É¯Şüÿÿÿÿ8«Èú–ø1J$131bf480-ba33-4196-b94f-8249fc6b7c21
 u
-java:S1135F"2Complete the task associated to this TODO comment.(æ‰‚“8Êü–ø1J$7cf3e231-f963-476d-8bdc-3d8f4d789f70
-r	java:S106M"+Replace this use of System.out by a logger.(î¦´‡ùÿÿÿÿ8á“æø1J$ac25346b-33cc-41cf-adc2-57d13890a29b
-m	java:S106]"+Replace this use of System.out by a logger.(à¸ÆØ8ä“æø1J$f258f2cb-6c93-4134-b4c0-32460364d635
-m	java:S106g"+Replace this use of System.out by a logger.(…®Ä8æ“æø1J$7d9e8c7d-393a-458c-a245-a952bed516a0
-m	java:S106r"+Replace this use of System.out by a logger.(Ã–œŠ8Æ‚Ç”ø1J$d2365d8a-b11e-4992-b69c-409288cbd6b4
+java:S1135F"2Complete the task associated to this TODO comment.(æ‰‚“8Êü–ø1J$c21a7725-3863-4cc2-9e8f-e92fa785134c
+r	java:S106M"+Replace this use of System.out by a logger.(î¦´‡ùÿÿÿÿ8á“æø1J$4b6e77e9-3c35-4efa-8b3a-5fef119f3799
+m	java:S106]"+Replace this use of System.out by a logger.(à¸ÆØ8ä“æø1J$3ade896d-6c5f-45b8-9ed5-089f8aa5a874
+m	java:S106g"+Replace this use of System.out by a logger.(…®Ä8æ“æø1J$012643f3-e6e7-4cd2-b58a-06dd599864b0
+m	java:S106r"+Replace this use of System.out by a logger.(Ã–œŠ8Æ‚Ç”ø1J$712ea89f-f3dd-463c-a635-d16871353dc8

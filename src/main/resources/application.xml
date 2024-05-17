@@ -22,13 +22,14 @@
                 <beans:property name="errorTextColorANSICode" value="196"/>
         </beans:bean>
         <beans:bean id="developer" class="dev.markodojkic.softwaredevelopmentsimulation.Developer">
-                <beans:property name="trivialTaskTypicalResolutionTimeCoefficient" value="80"/>
-                <beans:property name="normalTaskTypicalResolutionTimeCoefficient" value="71"/>
-                <beans:property name="minorTaskTypicalResolutionTimeCoefficient" value="64"/>
-                <beans:property name="majorTaskTypicalResolutionTimeCoefficient" value="43"/>
-                <beans:property name="criticalTaskTypicalResolutionTimeCoefficient" value="27"/>
-                <beans:property name="blockerTaskTypicalResolutionTimeCoefficient" value="11"/>
+                <beans:property name="trivialTaskTypicalResolutionTimeCoefficient" value="160"/>
+                <beans:property name="normalTaskTypicalResolutionTimeCoefficient" value="142"/>
+                <beans:property name="minorTaskTypicalResolutionTimeCoefficient" value="124"/>
+                <beans:property name="majorTaskTypicalResolutionTimeCoefficient" value="86"/>
+                <beans:property name="criticalTaskTypicalResolutionTimeCoefficient" value="54"/>
+                <beans:property name="blockerTaskTypicalResolutionTimeCoefficient" value="22"/>
         </beans:bean>
+        <beans:bean id="jiraActivityStream" class="dev.markodojkic.softwaredevelopmentsimulation.JiraActivityStream"/>
 
         <int:gateway id="projectOwner" service-interface="dev.markodojkic.softwaredevelopmentsimulation.ProjectOwner"/>
         <int:gateway id="IPrinter" service-interface="dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter"/>
@@ -53,17 +54,11 @@
 
 <!--        <int:resequencer input-channel="inProgressEpic" output-channel="doneEpics" release-strategy-expression=""/>-->
 
-        <int:chain input-channel="doneTasks" output-channel="infoChannel">
-                <int:splitter expression="payload.id"/>
-        </int:chain>
-
         <int:channel id="doneEpics"/>
         <int:channel id="currentSprintUserStories"/>
         <int:channel id="doneSprintUserStories"/>
         <int:channel id="toDoTechnicalTasks"/>
         <int:channel id="doneTechnicalTask"/>
-
-
 
         <int:channel id="trivialTechnicalTask"/>
         <int:channel id="normalTechnicalTask"/>
