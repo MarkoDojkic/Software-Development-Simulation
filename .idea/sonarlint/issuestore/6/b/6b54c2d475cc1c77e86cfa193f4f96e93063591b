@@ -1,14 +1,0 @@
-
-
-java:S1213"?Move this static variable to comply with Java Code Conventions.(àè´]8Š×ÏŠø1J$00911b59-6797-4c5a-8869-f68a8d19bf7a
-„
-java:S1106"AMove this left curly brace to the beginning of next line of code.(§”´“8×ÏŠø1J$3102fe3e-5560-4507-b3f5-49d4455639f4
-‰
-java:S1106"AMove this left curly brace to the beginning of next line of code.(²·Ãáıÿÿÿÿ8×ÏŠø1J$5b192fd3-1072-41dc-9fc2-b3f16ccd8090
-„
-java:S1106"AMove this left curly brace to the beginning of next line of code.(¡À¸–8×ÏŠø1J$7551b635-a960-4e6e-abf8-b30586e8a136
-a
-java:S1451"&Add or update the header of this file.8”×ÏŠø1J$fc1d1fe1-d6b3-4c98-9ff7-c2302640e206
-	java:S105"EReplace all tab characters in this file by sequences of white-spaces.8•×ÏŠø1J$277dfbd2-e96d-47dd-adba-213a918145cb
-}
-java:S1258":Add a constructor to the class, or provide default values.(§”´“8—×ÏŠø1J$3b11327d-e313-41ec-ad5a-f0be9891a2ea
