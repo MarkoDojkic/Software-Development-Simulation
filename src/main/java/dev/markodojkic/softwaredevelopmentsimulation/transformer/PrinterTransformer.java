@@ -1,10 +1,7 @@
 package dev.markodojkic.softwaredevelopmentsimulation.transformer;
 
-import com.diogonunes.jcolor.Ansi;
-import com.diogonunes.jcolor.AnsiFormat;
 import com.diogonunes.jcolor.Attribute;
 import lombok.Setter;
-import org.springframework.boot.info.OsInfo;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Transformer;
 
@@ -24,7 +21,7 @@ public class PrinterTransformer {
 	private String errorTextColorANSICode;
 
 	private static final String SPLITTER = String.format("%n***%s%n", "-".repeat(80));
-	private static final String SPLITTER_LINE = String.format("%n %s%n", "─".repeat(138));
+	private static final String SPLITTER_LINE = String.format("%n %s%n", "─".repeat(158));
 
 	@Transformer
 	public String infoOutput(String output){
@@ -42,6 +39,6 @@ public class PrinterTransformer {
 
 	@Transformer
 	public String jiraActivityStreamOutput(String output){
-		return colorize(String.format(" %s|%60s%-78s| %s%s %s", SPLITTER_LINE.stripLeading(), " ", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), SPLITTER_LINE, Arrays.stream(output.replace("$", SPLITTER_LINE).split("\\R")).map(value -> SPLITTER_LINE.contains(value) ? value.concat("\n") : ("| " + value + " ".repeat(SPLITTER_LINE.length() - value.replaceAll("\u001B\\[\\d*m", "").length() - (System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH).contains("windows") ? 6 : 4)) + "|\n")).collect(Collectors.joining()).stripTrailing(),SPLITTER_LINE).stripTrailing());
+		return colorize(String.format(" %s|%70s%-88s| %s%s %s", SPLITTER_LINE.stripLeading(), " ", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), SPLITTER_LINE, Arrays.stream(output.replace("$", SPLITTER_LINE).split("\\R")).map(value -> SPLITTER_LINE.contains(value) ? value.concat("\n") : ("| " + value + " ".repeat(Math.abs(SPLITTER_LINE.length() - value.replaceAll("\u001B\\[\\d*m", "").length() - (System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH).contains("windows") ? 6 : 4))) + "|\n")).collect(Collectors.joining()).stripTrailing(),SPLITTER_LINE).stripTrailing());
 	}
 }

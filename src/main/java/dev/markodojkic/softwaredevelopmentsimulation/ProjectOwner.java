@@ -5,6 +5,6 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import org.springframework.integration.annotation.Gateway;
 
 public interface ProjectOwner {
-	@Gateway(requestChannel = "epics", replyChannel = "infoChannel")
+	@Gateway(requestChannel = "epicsInput", replyChannel = "infoChannel")
 	void generateEpics(List<Epic> epicList);
 }

@@ -13,6 +13,8 @@
 		http://www.springframework.org/schema/integration/stream
 		https://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
 
+        <!--START Configuration and beans -->
+
         <int:annotation-config/>
 
         <context:component-scan base-package="dev.markodojkic.softwaredevelopmentsimulation"/>
@@ -21,48 +23,64 @@
                 <beans:property name="infoTextColorANSICode" value="68"/>
                 <beans:property name="errorTextColorANSICode" value="196"/>
         </beans:bean>
+
         <beans:bean id="developer" class="dev.markodojkic.softwaredevelopmentsimulation.Developer">
-                <beans:property name="trivialTaskTypicalResolutionTimeCoefficient" value="160"/>
-                <beans:property name="normalTaskTypicalResolutionTimeCoefficient" value="142"/>
-                <beans:property name="minorTaskTypicalResolutionTimeCoefficient" value="124"/>
-                <beans:property name="majorTaskTypicalResolutionTimeCoefficient" value="86"/>
-                <beans:property name="criticalTaskTypicalResolutionTimeCoefficient" value="54"/>
-                <beans:property name="blockerTaskTypicalResolutionTimeCoefficient" value="22"/>
+                <beans:property name="trivialTaskTypicalResolutionTimeCoefficient" value="1600"/>
+                <beans:property name="normalTaskTypicalResolutionTimeCoefficient" value="1420"/>
+                <beans:property name="minorTaskTypicalResolutionTimeCoefficient" value="1240"/>
+                <beans:property name="majorTaskTypicalResolutionTimeCoefficient" value="860"/>
+                <beans:property name="criticalTaskTypicalResolutionTimeCoefficient" value="540"/>
+                <beans:property name="blockerTaskTypicalResolutionTimeCoefficient" value="220"/>
         </beans:bean>
-        <beans:bean id="jiraActivityStream" class="dev.markodojkic.softwaredevelopmentsimulation.JiraActivityStream"/>
+        <beans:bean id="projectManager" class="dev.markodojkic.softwaredevelopmentsimulation.ProjectManager"/>
+        <beans:bean id="baseTaskPriorityComparator" class="dev.markodojkic.softwaredevelopmentsimulation.util.BaseTaskPriorityComparator"/>
+
+        <int:handler-retry-advice id="retryAdvice" max-attempts="100">
+                <int:fixed-back-off interval="500"/>
+        </int:handler-retry-advice>
 
         <int:gateway id="projectOwner" service-interface="dev.markodojkic.softwaredevelopmentsimulation.ProjectOwner"/>
         <int:gateway id="IPrinter" service-interface="dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter"/>
 
-        <int:chain input-channel="infoChannel">
+        <!--END Configuration, beans and gateways -->
+
+        <!--START Chains -->
+
+        <int:chain input-channel="infoChannel" send-timeout="100000">
                 <int:transformer ref="printerTransformer" method="infoOutput"/>
                 <int-stream:stdout-channel-adapter id="console-output" append-newline="true"/>
         </int:chain>
-        <int:chain input-channel="jiraActivityStreamChannel">
+        <int:chain input-channel="jiraActivityStreamChannel" send-timeout="100000">
                 <int:transformer ref="printerTransformer" method="jiraActivityStreamOutput"/>
                 <int-stream:stdout-channel-adapter id="console-output" append-newline="true"/>
         </int:chain>
-        <int:chain input-channel="errorChannel">
+        <int:chain input-channel="errorChannel" send-timeout="100000">
                 <int:transformer ref="printerTransformer" method="errorOutput"/>
                 <int-stream:stderr-channel-adapter id="console-error" append-newline="true"/>
         </int:chain>
 
-        <int:channel id="epics">
-<!--                <int:queue capacity="1"/>-->
+        <!--END Chains -->
+
+        <int:channel id="epicsInput">
+<!--                <int:priority-queue capacity="1" comparator="baseTaskPriorityComparator"/>-->
         </int:channel>
+        <int:channel id="currentSprintEpic"/>
         <int:channel id="inProgressEpic"/>
 
-<!--        <int:bridge input-channel="epics" output-channel="inProgressEpic">-->
-<!--                <int:poller fixed-delay="3000" max-messages-per-poll="1" />-->
+<!--        <int:bridge input-channel="epicsInput" output-channel="currentSprintEpic">-->
+<!--                <int:poller fixed-rate="1"/>-->
 <!--        </int:bridge>-->
 
-<!--        <int:resequencer input-channel="inProgressEpic" output-channel="doneEpics" release-strategy-expression=""/>-->
-
+        <int:channel id="inProgressUserStory"/>
         <int:channel id="doneEpics"/>
         <int:channel id="currentSprintUserStories"/>
         <int:channel id="doneSprintUserStories"/>
+
+
+        <!--START Technical task related -->
+
         <int:channel id="toDoTechnicalTasks"/>
-        <int:channel id="doneTechnicalTask"/>
+        <int:channel id="doneTechnicalTasks"/>
 
         <int:channel id="trivialTechnicalTask"/>
         <int:channel id="normalTechnicalTask"/>
@@ -71,34 +89,48 @@
         <int:channel id="criticalTechnicalTask"/>
         <int:channel id="blockerTechnicalTask"/>
 
-        <int:channel id="trivialTechnicalTaskQueue"><int:queue capacity="8"/></int:channel>
-        <int:channel id="normalTechnicalTaskQueue"><int:queue capacity="6"/></int:channel>
-        <int:channel id="minorTechnicalTaskQueue"><int:queue capacity="4"/></int:channel>
-        <int:channel id="majorTechnicalTaskQueue"><int:queue capacity="2"/></int:channel>
-        <int:channel id="criticalTechnicalTaskQueue"><int:queue capacity="1"/></int:channel>
-        <int:channel id="blockerTechnicalTaskQueue"><int:queue capacity="1"/></int:channel>
+        <int:channel id="trivialTechnicalTaskQueue">
+                <int:queue capacity="8"/>
+        </int:channel>
+        <int:channel id="normalTechnicalTaskQueue">
+                <int:queue capacity="6"/>
+        </int:channel>
+        <int:channel id="minorTechnicalTaskQueue">
+                <int:queue capacity="4"/>
+        </int:channel>
+        <int:channel id="majorTechnicalTaskQueue">
+                <int:queue capacity="2"/>
+        </int:channel>
+        <int:channel id="criticalTechnicalTaskQueue">
+                <int:queue capacity="1"/>
+        </int:channel>
+        <int:channel id="blockerTechnicalTaskQueue">
+                <int:queue capacity="1"/>
+        </int:channel>
 
         <int:bridge input-channel="trivialTechnicalTaskQueue" output-channel="trivialTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="8"/>
         </int:bridge>
 
         <int:bridge input-channel="normalTechnicalTaskQueue" output-channel="normalTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="6"/>
         </int:bridge>
 
         <int:bridge input-channel="minorTechnicalTaskQueue" output-channel="minorTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="4"/>
         </int:bridge>
 
         <int:bridge input-channel="majorTechnicalTaskQueue" output-channel="majorTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="2"/>
         </int:bridge>
 
         <int:bridge input-channel="criticalTechnicalTaskQueue" output-channel="criticalTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="1"/>
         </int:bridge>
 
         <int:bridge input-channel="blockerTechnicalTaskQueue" output-channel="blockerTechnicalTask">
-                <int:poller fixed-delay="1000"/>
+                <int:poller fixed-rate="1"/>
         </int:bridge>
+
+        <!--END Technical task related -->
 </beans:beans>

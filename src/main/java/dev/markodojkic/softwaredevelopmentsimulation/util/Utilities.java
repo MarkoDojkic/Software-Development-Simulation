@@ -6,6 +6,7 @@ import com.thedeanda.lorem.LoremIpsum;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import java.util.Calendar;
 import java.util.List;
@@ -18,9 +19,14 @@ public class Utilities {
 	public static final Lorem lorem = LoremIpsum.getInstance();
 	@Getter
 	public IPrinter iPrinter = null;
+	@Getter
+	private static AbstractApplicationContext abstractApplicationContext = null;
 
-	public static void setiPrinter(IPrinter iPrinter) {
+	public static void setIPrinter(IPrinter iPrinter) {
 		Utilities.iPrinter = iPrinter;
+	}
+	public static void setAbstractApplicationContext(AbstractApplicationContext abstractApplicationContext) {
+		Utilities.abstractApplicationContext = abstractApplicationContext;
 	}
 
 	public static <T> T getRandomElementFromList(List<T> list){
