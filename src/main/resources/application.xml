@@ -17,6 +17,8 @@
 
         <int:annotation-config/>
 
+        <int:poller default="true" fixed-delay="1000"/>
+
         <context:component-scan base-package="dev.markodojkic.softwaredevelopmentsimulation"/>
 
         <beans:bean id="printerTransformer" class="dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer">
@@ -39,10 +41,9 @@
                 <int:fixed-back-off interval="500"/>
         </int:handler-retry-advice>
 
-        <int:gateway id="projectOwner" service-interface="dev.markodojkic.softwaredevelopmentsimulation.ProjectOwner"/>
-        <int:gateway id="IPrinter" service-interface="dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter"/>
+        <int:gateway id="IGateways" service-interface="dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways"/>
 
-        <!--END Configuration, beans and gateways -->
+        <!--END Configuration, beans and gateway -->
 
         <!--START Chains -->
 
@@ -62,14 +63,10 @@
         <!--END Chains -->
 
         <int:channel id="epicsInput">
-<!--                <int:priority-queue capacity="1" comparator="baseTaskPriorityComparator"/>-->
+                <int:priority-queue comparator="baseTaskPriorityComparator"/>
         </int:channel>
         <int:channel id="currentSprintEpic"/>
         <int:channel id="inProgressEpic"/>
-
-<!--        <int:bridge input-channel="epicsInput" output-channel="currentSprintEpic">-->
-<!--                <int:poller fixed-rate="1"/>-->
-<!--        </int:bridge>-->
 
         <int:channel id="inProgressUserStory"/>
         <int:channel id="doneEpics"/>

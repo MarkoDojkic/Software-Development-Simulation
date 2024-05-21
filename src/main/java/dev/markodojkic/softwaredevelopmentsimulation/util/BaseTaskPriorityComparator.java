@@ -10,6 +10,6 @@ import java.util.Comparator;
 public class BaseTaskPriorityComparator implements Comparator<Message<BaseTask>> {
 	@Override
 	public int compare(Message<BaseTask> taskMessage1, Message<BaseTask> taskMessage2) {
-		return Integer.compare(taskMessage1.getPayload().getPriority().getUrgency(), taskMessage2.getPayload().getPriority().getUrgency());
+		return Integer.compare(taskMessage2.getPayload().getPriority().getUrgency(), taskMessage1.getPayload().getPriority().getUrgency());
 	}
 }

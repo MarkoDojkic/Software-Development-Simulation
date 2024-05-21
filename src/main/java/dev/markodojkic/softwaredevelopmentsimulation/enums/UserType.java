@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum UserType {
+    TECHNICAL_MANAGER(10.00),
     INTERN_DEVELOPER(1.00),
     JUNIOR_DEVELOPER(2.25),
     ADVANCED_JUNIOR_DEVELOPER(4.30),

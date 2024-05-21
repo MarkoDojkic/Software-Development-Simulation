@@ -1,12 +1,13 @@
 package dev.markodojkic.softwaredevelopmentsimulation.interfaces;
 
+import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import org.springframework.integration.annotation.Gateway;
-import org.springframework.integration.annotation.GatewayHeader;
-import org.springframework.integration.annotation.MessagingGateway;
+import org.springframework.stereotype.Component;
 
-@MessagingGateway(name = "iPrinter", defaultHeaders =
-	@GatewayHeader(name = "description", value = "Printing in predefined format to console"))
-public interface IPrinter {
+import java.util.List;
+
+@Component
+public interface IGateways {
 	@Gateway(requestChannel = "infoChannel")
 	void sendToInfo(String message);
 
@@ -15,4 +16,7 @@ public interface IPrinter {
 
 	@Gateway(requestChannel = "jiraActivityStreamChannel")
 	void sendToJiraActivityStream(String message);
+
+	@Gateway(requestChannel = "epicsInput", replyChannel = "infoChannel")
+	void generateEpics(List<Epic> epicList);
 }

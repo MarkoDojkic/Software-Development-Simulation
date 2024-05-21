@@ -3,7 +3,7 @@ package dev.markodojkic.softwaredevelopmentsimulation.util;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
-import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IPrinter;
+import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -18,12 +18,12 @@ public class Utilities {
 	public static final Random random = new Random();
 	public static final Lorem lorem = LoremIpsum.getInstance();
 	@Getter
-	public IPrinter iPrinter = null;
+	public IGateways iGateways = null;
 	@Getter
 	private static AbstractApplicationContext abstractApplicationContext = null;
 
-	public static void setIPrinter(IPrinter iPrinter) {
-		Utilities.iPrinter = iPrinter;
+	public static void setIGateways(IGateways iGateways) {
+		Utilities.iGateways = iGateways;
 	}
 	public static void setAbstractApplicationContext(AbstractApplicationContext abstractApplicationContext) {
 		Utilities.abstractApplicationContext = abstractApplicationContext;
