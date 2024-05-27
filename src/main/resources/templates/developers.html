@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Software development simulator - Developers page</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js">
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <style>
+        body {
+            margin: 0 auto;
+            padding: 0px;
+            text-align: center;
+            width: 100%;
+            font-family: "Myriad Pro",
+                "Helvetica Neue", Helvetica,
+                Arial, Sans-Serif;
+        }
+
+        #table {
+            border: 1px;
+            align: center;
+            cellpadding: 10;
+        }
+
+        #wrapper {
+            margin: 0 auto;
+            padding: 0px;
+            text-align: center;
+            width: 70%;
+        }
+
+        #wrapper h1 {
+            margin-top: 50px;
+            font-size: 45px;
+            color: #585858;
+        }
+
+        #wrapper h1 p {
+            font-size: 20px;
+        }
+
+        #table_detail {
+            width: 1000px;
+            text-align: left;
+            border-collapse: collapse;
+            color: #2E2E2E;
+            border: #A4A4A4;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <table id="table_detail" th:if="${ not#lists.isEmpty(developmentTeams) }">
+            <thead>
+                <tr>
+                    <th colspan="2" th:text="${'List of development teams (Total count: ' + #lists.size(developmentTeams) + ')'}">Development teams</th>
+                </tr>
+            </thead>
+            <tbody>
+                <th:block th:each="developmentTeam, iter : ${developmentTeams}">
+                    <tr th:each="developer : ${developmentTeam}" th:style="|color: ${developmentTeamForegroundColors.get(iter.index)}; background-color: ${developmentTeamBackgroundColors.get(iter.index)};|">
+                        <td th:text="${developer.displayName + ' (' + developer.personalId + ')'}"></td>
+                        <td th:text="${developer.userType.name + ' (' + developer.userType.seniorityCoefficient + '-' + developer.experienceCoefficient + ')'}"></td>
+                    </tr>
+                </th:block>
+            </tbody>
+        </table>
+    </div>
+changed4
+</body>
+</html>

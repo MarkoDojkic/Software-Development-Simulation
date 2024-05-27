@@ -3,6 +3,7 @@ package dev.markodojkic.softwaredevelopmentsimulation;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -12,6 +13,7 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.iGate
 
 @EnableConfigurationProperties
 @ComponentScan(basePackages = "dev.markodojkic.softwaredevelopmentsimulation")
+@SpringBootApplication
 public class SoftwareDevelopmentSimulationApp
 {
 	public static void main(String[] args)
@@ -23,8 +25,8 @@ public class SoftwareDevelopmentSimulationApp
 					@Copyright(Marko Dojkić 2024)$Please wait patiently while technical manager generates epics!
 				""");
 
-		updateDevelopmentTeamsSetup(20,50);
-		generateRandomTasks(3,16);
+		updateDevelopmentTeamsSetup();
+		//generateRandomTasks(3,16);
 
 		//TODO: Correct JIRA activity stream timings
 
