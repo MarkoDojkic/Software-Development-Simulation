@@ -1,8 +1,8 @@
 package dev.markodojkic.softwaredevelopmentsimulation;
 
 import com.diogonunes.jcolor.Attribute;
+import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import jakarta.annotation.PostConstruct;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -10,6 +10,7 @@ import org.springframework.integration.annotation.ServiceActivator;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.iGateways;
@@ -43,7 +44,7 @@ public class Developer {
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on trivial technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(trivialTaskTypicalResolutionTimeCoefficient  / technicalTask.getAssignee().getExperienceCoefficient());
+		Uninterruptibles.sleepUninterruptibly(trivialTaskTypicalResolutionTimeCoefficient  / technicalTask.getAssignee().getExperienceCoefficient(), TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on trivial technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
@@ -59,7 +60,7 @@ public class Developer {
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on normal technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(technicalTask.getAssignee().getExperienceCoefficient() / normalTaskTypicalResolutionTimeCoefficient);
+		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / normalTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on normal technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
@@ -75,7 +76,7 @@ public class Developer {
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on minor technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(technicalTask.getAssignee().getExperienceCoefficient() / minorTaskTypicalResolutionTimeCoefficient);
+		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / minorTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on minor technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
@@ -91,7 +92,7 @@ public class Developer {
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on major technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(technicalTask.getAssignee().getExperienceCoefficient() / majorTaskTypicalResolutionTimeCoefficient );
+		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / majorTaskTypicalResolutionTimeCoefficient , TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on major technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
@@ -107,7 +108,7 @@ public class Developer {
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on critical technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(technicalTask.getAssignee().getExperienceCoefficient() / criticalTaskTypicalResolutionTimeCoefficient);
+		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / criticalTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on critical technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
@@ -119,11 +120,11 @@ public class Developer {
 		iGateways.sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m created TASK: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				technicalTask.getReporter().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(artificialOffsetSeconds).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).concat(String.format("\033[1m%s\033[21m\033[24m changed the Assignee to '\033[1m%s\033[21m\033[24m' on TASK: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				technicalTask.getReporter().getDisplayName(), technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(artificialOffsetSeconds + 10).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))).replaceFirst(".$", ""));
-		iGateways.sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to In progress on TASK: \033[3m\033[1m\033[21m\033[24m - %s\033[23m ◴ %s$",
+		iGateways.sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to In progress on TASK: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).replaceFirst(".$", ""));
 		System.out.println(colorize(String.format("###Developer %s started working on blocker technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
-		Utilities.simulatePause(technicalTask.getAssignee().getExperienceCoefficient() / blockerTaskTypicalResolutionTimeCoefficient);
+		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / blockerTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
 		System.out.println(colorize(String.format("###Developer %s finished working on blocker technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;

@@ -38,7 +38,9 @@ public class Config {
 
 	@Bean(name = "retryAdvice")
 	Advice retryAdvice(){
-		return RetryInterceptorBuilder.stateless().maxAttempts(100).backOffPolicy(new FixedBackOffPolicy()).build();
+		FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+		fixedBackOffPolicy.setBackOffPeriod(450L);
+		return RetryInterceptorBuilder.stateless().maxAttempts(100).backOffPolicy(fixedBackOffPolicy).build();
 	}
 
 	@Bean(name = "information.input")
@@ -46,14 +48,14 @@ public class Config {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "epicsMessage.input")
+	@Bean(name = "epicMessage.input")
 	MessageChannel epicInput(){
-		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, new Comparator<Message<?>>() {
+		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, new Comparator<>() {
 			@Override
 			public int compare(Message<?> message1, Message<?> message2) {
 				Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1;
 				Message<BaseTask> baseTaskMessage2 = (Message<BaseTask>) message2;
-				return Integer.compare(baseTaskMessage1.getPayload().getPriority().getUrgency(), baseTaskMessage2.getPayload().getPriority().getUrgency());
+				return Integer.compare(baseTaskMessage2.getPayload().getPriority().getUrgency(), baseTaskMessage1.getPayload().getPriority().getUrgency());
 			}
 		});
 		epicInputPriorityChannel.setDatatypes(Epic.class);

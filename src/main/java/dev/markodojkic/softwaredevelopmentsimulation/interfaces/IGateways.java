@@ -17,6 +17,6 @@ public interface IGateways {
 	@Gateway(requestChannel = "jiraActivityStream.input")
 	void sendToJiraActivityStream(String message);
 
-	@Gateway(requestChannel = "epicsMessage.input")
-	void generateEpics(List<Epic> epicList);
+	@Gateway(requestChannel = "epicMessage.input")
+	void generateEpic(Epic epic);
 }

@@ -1,55 +1,28 @@
 package dev.markodojkic.softwaredevelopmentsimulation.util;
 
+import com.google.common.collect.Lists;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import lombok.experimental.UtilityClass;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @UtilityClass
 public class DataProvider {
-	public static final List<User> developers = List.of(
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), UserType.TECHNICAL_MANAGER, random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)),
-			new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18))
-	);
+	public static final User technicalManager = new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), UserType.TECHNICAL_MANAGER, random.nextLong(1, 18));
+
+	public static List<List<User>> currentDevelopmentTeamsSetup = Collections.emptyList();
+	public static Stack<Integer> availableDevelopmentTeamIds = new Stack<>();
+
+	public static void updateDevelopmentTeamsSetup(int countDownLimit, int countUpperLimit, boolean... retainOld){
+		if(retainOld.length != 0 && !retainOld[0]) currentDevelopmentTeamsSetup = Collections.emptyList();
+		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate((() -> new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), null, Arrays.stream(UserType.values()).skip(1).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18)))).limit(random.nextInt(10, 20)).toList(), random.nextInt(5, 10)).stream()).toList();
+		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().toList());
+	}
 
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg
 	private static String generateRandomJMBG() {
