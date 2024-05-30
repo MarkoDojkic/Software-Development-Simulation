@@ -17,13 +17,12 @@ public class DataHandlingController {
 		List<String> backgroundColors = DataProvider.currentDevelopmentTeamsSetup.stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
 		model.addAttribute("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
 		model.addAttribute("developmentTeamBackgroundColors", backgroundColors);
-		model.addAttribute("developmentTeamForegroundColors", backgroundColors.stream().map(DataHandlingController::getForegroundColor).toList());
+		model.addAttribute("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
 		return "developers";
 	}
 
-	public static String getBackgroundColor(String text) {
+	private String getBackgroundColor(String text) {
 		text = text.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
-
 		int hash = 0;
 		for (int i = 0; i < text.length(); i++) {
 			hash = text.charAt(i) + ((hash << 5) - hash);
@@ -35,15 +34,15 @@ public class DataHandlingController {
 		return String.format("#%02x%02x%02x", red, green, blue);
 	}
 
-	private static String getForegroundColor(String backgroundColor) {
+	private String getForegroundColor(String backgroundColor) {
 		return (calculateLuminance(hexToRBG(backgroundColor)) < 140) ? "#fff" : "#000";
 	}
 
-	private static float calculateLuminance(List<Integer> rgb) {
+	private float calculateLuminance(List<Integer> rgb) {
 		return (float) (0.2126 * rgb.get(0) + 0.7152 * rgb.get(1) + 0.0722 * rgb.get(2));
 	}
 
-	private static List<Integer> hexToRBG(String colorStr) {
+	private List<Integer> hexToRBG(String colorStr) {
 		if (colorStr == null) {
 			return Arrays.asList(128, 128, 128);
 		}

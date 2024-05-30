@@ -1,10 +1,24 @@
 <!DOCTYPE HTML>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Software development simulator - Home page</title>
-</head>
-<body>
-<p><a href="/developers">View Developers</a></p>
-</body>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Software development simulator - Home page</title>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+        <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
+        <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
+    </head>
+    <body onresize="onResize()">
+        <span style="position: sticky; top: 4%; left: 1.5%;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></span>
+        <sl-divider vertical></sl-divider>
+        <sl-button-group label="Alignment">
+            <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
+            <sl-button variant="neutral" href="#" outline>Open Jira activity stream</sl-button>
+        </sl-button-group>
+        <sl-divider vertical></sl-divider>
+        <sl-button-group label="Alignment">
+            <sl-button variant="primary" href="#" pill>View console information logs</sl-button>
+            <sl-button variant="danger" href="#" pill>View console error logs</sl-button>
+            <sl-button variant="warning" href="#" pill>View console warning logs</sl-button>
+        </sl-button-group>
+    </body>
 </html>

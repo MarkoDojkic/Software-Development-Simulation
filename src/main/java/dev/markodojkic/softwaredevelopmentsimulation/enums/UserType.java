@@ -2,6 +2,7 @@ package dev.markodojkic.softwaredevelopmentsimulation.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.thymeleaf.util.StringUtils;
 
 @AllArgsConstructor
 @Getter
@@ -15,4 +16,8 @@ public enum UserType {
     SENIOR_DEVELOPER(7.35);
 
     private final double seniorityCoefficient;
+
+    public final String getDisplayName(){
+        return StringUtils.capitalize(this.name().toLowerCase()).replace('_', ' ');
+    }
 }

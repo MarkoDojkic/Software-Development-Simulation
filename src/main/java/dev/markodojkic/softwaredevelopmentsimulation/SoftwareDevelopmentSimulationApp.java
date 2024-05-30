@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.updateDevelopmentTeamsSetup;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomTasks;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.iGateways;
 
 @EnableConfigurationProperties
@@ -21,9 +20,8 @@ public class SoftwareDevelopmentSimulationApp
 		Utilities.setIGateways(new SpringApplication(SoftwareDevelopmentSimulationApp.class).run(args).getBean(IGateways.class));
 
 		iGateways.sendToInfo("""
-					Welcome to Software development simulator
-					@Copyright(Marko Dojkić 2024)$Please wait patiently while technical manager generates epics!
-				""");
+					Welcome to Software development simulator™
+					Developed by Ⓒ Marko Dojkić 2024$Enjoy using our web application""");
 
 		updateDevelopmentTeamsSetup();
 		//generateRandomTasks(3,16);

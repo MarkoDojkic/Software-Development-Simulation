@@ -20,9 +20,10 @@ public class DataProvider {
 
 	public static void updateDevelopmentTeamsSetup(boolean... retainOld){
 		if(retainOld.length != 0 && !retainOld[0]) currentDevelopmentTeamsSetup = Collections.emptyList();
-		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), UUID.randomUUID().toString(), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 18))).limit(random.nextInt(50, 100)).toList(), random.nextInt(4, 10)).stream()).toList();
+		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), UUID.randomUUID().toString(), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 10))).limit(random.nextInt(30, 100)).toList(), random.nextInt(5, 15)).stream()).toList();
 		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().toList());
-	} //Generate between 50 and 100 developers ('User' class objects) and group them evenly in groups of anywhere between 4 and 10 and append that list to already existing list of developers (or use retainOld = false to override)
+	} //Generate between 30 and 100 developers ('User' class objects) and group them evenly in groups of anywhere between 15 and 15 and append that list to already existing list of developers (or use retainOld = false to override)
+
 
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg
 	private static String generateRandomJMBG() {
