@@ -19,6 +19,17 @@
             .carousel__slides--horizontal {
                 overflow-y: scroll; !important
             }
+
+            .user-experience-range {
+                --track-color-active: var(--sl-color-warning-600);
+                --track-color-inactive: var(--sl-color-warning-100);
+                width: 33%;
+            }
+
+            .horizontal-divider {
+                --spacing: 2rem;
+                --width: 0px;
+            }
         </style>
         <script>
             window.onload = onLoadFunctions;
@@ -27,8 +38,13 @@
                 onResize(null);
                 setTimeout(() => {
                     document.querySelector("#sl-tab-panel-1 > sl-carousel").shadowRoot.querySelector("#scroll-container").style.setProperty("overflow-y", "auto");
-                    console.log(document.querySelector("#sl-tab-panel-1 > sl-carousel").shadowRoot.querySelector("#scroll-container").style.getPropertyValue("overflow-y"));
                     document.querySelectorAll('.rating-developers').forEach(value => value.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
+                    document.querySelector(".user-experience-range").tooltipFormatter = value => `Developer experience - ${value}/10`;
+
+                    document.querySelector("#developmentTeamsSelectionTree").addEventListener("sl-selection-change", event => {
+                        document.querySelector("#selectedDevelopmentTeamId").value = parseInt(document.querySelector("#developmentTeamsSelectionTree").querySelector('[selected]').id);
+                    });
+
                     clearTimeout(this);
                 }, 500);
             }
@@ -57,7 +73,7 @@
             }
         </script>
     </head>
-    <body onresize="onResize()">
+    <body>
         <sl-tab-group>
             <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
             <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
@@ -65,10 +81,10 @@
             <sl-tab slot="nav" onclick="location.href = '/developers#'">Developers - Recreate</sl-tab>
             <sl-tab slot="nav" onclick="location.href = '/'">Go to Home page</sl-tab>
 
-            <sl-tab-panel name="tab-developers-view">
+            <sl-tab-panel name="tab-developers-view" onresize="onResize()">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
                 <sl-carousel class="custom-modifications" pagination th:if="${ not#lists.isEmpty(developmentTeams) }">
-                    <sl-carousel-item th:each="developmentTeam, iter : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: center;">
+                    <sl-carousel-item th:each="developmentTeam, iter : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
                         <sl-card class="card-overview" th:each="developer, iter2 : ${developmentTeam}">
                             <strong th:text="${developer.personalId}"></strong><br /><br />
                             <span th:text="${developer.displayName}"></span><br /><br />
@@ -88,7 +104,52 @@
                     </sl-carousel-item>
                 </sl-carousel>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-developers-create">NOT IMPLEMENTED YET</sl-tab-panel>
+            <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
+                <form id="developer-create-form" th:action="@{/developers}" th:object="${newDeveloper}" method="post" style="text-align: -webkit-center;">
+                    <div style="display: inline-flex">
+                        <sl-input id="name" name="name" th:value="*{name}" placeholder="Name" size="medium" pill></sl-input>
+                        <sl-divider vertical></sl-divider>
+                        <sl-input name="surname" th:value="*{surname}" placeholder="Surname" size="medium" pill></sl-input>
+                    </div>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType" th:value="*{userType}">
+                        <sl-option th:each="userType : ${userTypes}" th:value="${userType}" th:text="|${userType.getDisplayName()} (Seniority coefficient:${userType.seniorityCoefficient})|"></sl-option>
+                    </sl-select>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-range name="experienceCoefficient" th:value="*{experienceCoefficient}" class="user-experience-range" min="1" max="10"></sl-range>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <div>
+                        <span>Select development team to add to</span>
+                        <input type="number" id="selectedDevelopmentTeamId" name="developmentTeamId" style="display: none;"/>
+                        <sl-tree id="developmentTeamsSelectionTree" style="width: 33%">
+                            <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
+                            <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
+
+                            <sl-tree-item th:each="developmentTeam, iter : ${developmentTeams}" th:id="${iter.index}" style="margin: 0 auto;">
+                                <span th:text="|Development team #${iter.count}|"></span>
+                                <sl-tree-item th:each="developer, iter2 : ${developmentTeam}" disabled>
+                                    <span th:text="|${developer.getDisplayName()} |"></span>
+                                    <sl-divider vertical></sl-divider>
+                                    <th:block th:switch="${developer.userType.ordinal}">
+                                        <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
+                                        <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
+                                        <sl-badge th:case="3" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
+                                        <sl-badge th:case="4" th:text="${developer.userType.getDisplayName()}" variant="warning"></sl-badge>
+                                        <sl-badge th:case="5" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
+                                        <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
+                                    </th:block>
+                                </sl-tree-item>
+                            </sl-tree-item>
+                        </sl-tree>
+                    </div>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <div style="display: inline-flex">
+                        <sl-button variant="success" outline type="submit" name="save">Add developer</sl-button>
+                        <sl-divider vertical></sl-divider>
+                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                    </div>
+                </form>
+            </sl-tab-panel>
             <sl-tab-panel name="tab-developers-edit">NOT IMPLEMENTED YET</sl-tab-panel>
         </sl-tab-group>
     </body>

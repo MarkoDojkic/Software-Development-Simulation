@@ -1,13 +1,18 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
+import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
+import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class DataHandlingController {
@@ -18,7 +23,21 @@ public class DataHandlingController {
 		model.addAttribute("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
 		model.addAttribute("developmentTeamBackgroundColors", backgroundColors);
 		model.addAttribute("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
+		model.addAttribute("userTypes", UserType.values());
+		model.addAttribute("newDeveloper", new User());
 		return "developers";
+	}
+
+	@RequestMapping(value = "/developers", params = {"save"}, method = RequestMethod.POST)
+	public String addDeveloper(@ModelAttribute(name = "newDeveloper") User newDeveloper, @ModelAttribute(name = "developmentTeamId") int developmentTeamId, BindingResult bindingResult, ModelMap modelMap){
+		if(!bindingResult.hasErrors()){
+			//TODO: Implement thymeleaf form error handling
+			return "redirect:/developers";
+		}
+		newDeveloper.setPersonalId(UUID.randomUUID().toString());
+		DataProvider.addDeveloper(developmentTeamId, newDeveloper);
+		modelMap.clear();
+		return "redirect:/developers";
 	}
 
 	private String getBackgroundColor(String text) {

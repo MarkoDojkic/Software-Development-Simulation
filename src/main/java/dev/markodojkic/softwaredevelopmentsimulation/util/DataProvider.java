@@ -6,6 +6,7 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import lombok.experimental.UtilityClass;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -20,10 +21,15 @@ public class DataProvider {
 
 	public static void updateDevelopmentTeamsSetup(boolean... retainOld){
 		if(retainOld.length != 0 && !retainOld[0]) currentDevelopmentTeamsSetup = Collections.emptyList();
-		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), UUID.randomUUID().toString(), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 10))).limit(random.nextInt(30, 100)).toList(), random.nextInt(5, 15)).stream()).toList();
-		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().toList());
+		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), UUID.randomUUID().toString(), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 10))).limit(random.nextInt(30, 100)).toList(), random.nextInt(5, 15)).stream()).collect(Collectors.toCollection(ArrayList::new));
+		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 	} //Generate between 30 and 100 developers ('User' class objects) and group them evenly in groups of anywhere between 15 and 15 and append that list to already existing list of developers (or use retainOld = false to override)
 
+	public static void addDeveloper(int developmentTeamIndex, User developer){
+		List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
+		developmentTeam.add(developer);
+		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
+	}
 
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg
 	private static String generateRandomJMBG() {
