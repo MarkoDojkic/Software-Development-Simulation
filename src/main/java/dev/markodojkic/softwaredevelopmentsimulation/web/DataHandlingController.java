@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,20 +25,48 @@ public class DataHandlingController {
 		model.addAttribute("developmentTeamBackgroundColors", backgroundColors);
 		model.addAttribute("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
 		model.addAttribute("userTypes", UserType.values());
-		model.addAttribute("newDeveloper", new User());
+		model.addAttribute("formDeveloperPlaceholder", new User());
+		model.addAttribute("formEditDeveloperPlaceholder", new User());
 		return "developers";
 	}
 
-	@RequestMapping(value = "/developers", params = {"save"}, method = RequestMethod.POST)
-	public String addDeveloper(@ModelAttribute(name = "newDeveloper") User newDeveloper, @ModelAttribute(name = "developmentTeamId") int developmentTeamId, BindingResult bindingResult, ModelMap modelMap){
-		if(!bindingResult.hasErrors()){
+	@PostMapping(value = "/developers")
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "developmentTeamIndex") int developmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
+		if(bindingResult.hasErrors()){
 			//TODO: Implement thymeleaf form error handling
 			return "redirect:/developers";
 		}
 		newDeveloper.setPersonalId(UUID.randomUUID().toString());
-		DataProvider.addDeveloper(developmentTeamId, newDeveloper);
+		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
 		modelMap.clear();
 		return "redirect:/developers";
+	}
+
+	@RequestMapping(value = "/developers/edit", method = RequestMethod.GET)
+	public ModelAndView addEditingDeveloperModel(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
+		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm");
+		editingDeveloperForm.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
+		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
+		editingDeveloperForm.addObject("developerIndex", developerIndex);
+		editingDeveloperForm.addObject("userTypes", UserType.values());
+		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.currentDevelopmentTeamsSetup.get(developmentTeamIndex).get(developerIndex));
+		return editingDeveloperForm;
+	}
+
+	@PatchMapping(value = "/developers")
+	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") User existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
+		if(bindingResult.hasErrors()){
+			//TODO: Implement thymeleaf form error handling
+			return "redirect:/developers";
+		}
+		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
+		modelMap.clear();
+		return "redirect:/developers";
+	}
+
+	@RequestMapping(value = "/developers", method = RequestMethod.DELETE)
+	public void removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
+		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
 	}
 
 	private String getBackgroundColor(String text) {

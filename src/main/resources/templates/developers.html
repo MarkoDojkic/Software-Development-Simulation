@@ -6,6 +6,7 @@
         <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
         <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
         <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <style>
             :root {
                 --numberOfColumns: -1;
@@ -20,6 +21,11 @@
                 overflow-y: scroll; !important
             }
 
+            sl-tab-group::part(nav) {
+                display: flex;
+                justify-content: center;
+            }
+
             .user-experience-range {
                 --track-color-active: var(--sl-color-warning-600);
                 --track-color-inactive: var(--sl-color-warning-100);
@@ -30,6 +36,11 @@
                 --spacing: 2rem;
                 --width: 0px;
             }
+
+            #developmentTeamsSelectionTree, #editDeveloperDevelopmentTeamsSelectionTree {
+                --indent-guide-width: 1px;
+            }
+
         </style>
         <script>
             window.onload = onLoadFunctions;
@@ -37,20 +48,46 @@
             function onLoadFunctions() {
                 onResize(null);
                 setTimeout(() => {
-                    document.querySelector("#sl-tab-panel-1 > sl-carousel").shadowRoot.querySelector("#scroll-container").style.setProperty("overflow-y", "auto");
+                    if(document.querySelector("#sl-tab-panel-1 > sl-carousel").shadowRoot != null){
+                        document.querySelector("#sl-tab-panel-1 > sl-carousel").shadowRoot.querySelector("#scroll-container").style.setProperty("overflow-y", "auto");
+                    }
                     document.querySelectorAll('.rating-developers').forEach(value => value.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
                     document.querySelector(".user-experience-range").tooltipFormatter = value => `Developer experience - ${value}/10`;
 
                     document.querySelector("#developmentTeamsSelectionTree").addEventListener("sl-selection-change", event => {
-                        document.querySelector("#selectedDevelopmentTeamId").value = parseInt(document.querySelector("#developmentTeamsSelectionTree").querySelector('[selected]').id);
+                        document.querySelector("#selectedDevelopmentTeamIndex").value = parseInt(document.querySelector("#developmentTeamsSelectionTree").querySelector('[selected]').id);
                     });
 
+                    $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", event => {
+                        document.querySelector("#editDeveloperSelectedDevelopmentTeamIndex").value = parseInt(document.querySelector("#editDeveloperDevelopmentTeamsSelectionTree").querySelector('[selected]').id);
+                    });
+
+                    document.querySelectorAll(".edit-developer-button").forEach(editButton => editButton.addEventListener("click", e => {
+                        window.history.replaceState(null, null, "/developers/edit?".concat(e.currentTarget.value));
+                        $.ajax({
+                            type: "GET",
+                            url: "/developers/edit?".concat(e.currentTarget.value),
+                            success: response => {
+                                document.querySelector("#sl-tab-panel-3").innerHTML = response
+                            }
+                        });
+
+                        document.querySelector("#sl-tab-1").disabled = true;
+                        document.querySelector("#sl-tab-2").disabled = true;
+                        document.querySelector("#sl-tab-3").disabled = false;
+                        document.querySelector("#sl-tab-4").disabled = true;
+
+                        setTimeout(() => { //Timeout is needed due to delay between disabling and enabling tabs
+                            document.querySelector("body > sl-tab-group").show("tab-developers-edit");
+                            clearTimeout(this);
+                        }, 1)
+                    }));
+
                     clearTimeout(this);
-                }, 500);
+                }, 1);
             }
 
             function onResize(_event) {
-
               if (outerWidth > 2100) {
                 document.querySelector(':root').style.setProperty('--numberOfColumns', 6);
                 document.querySelector('.custom-modifications').style.setProperty("--aspect-ratio", 16/9);
@@ -71,24 +108,46 @@
                 document.querySelector('.custom-modifications').style.setProperty("--aspect-ratio", 0.5);
               }
             }
+
+            function cancelEditDeveloper(_event){
+                document.querySelector("#sl-tab-1").disabled = false;
+                document.querySelector("#sl-tab-2").disabled = false;
+                document.querySelector("#sl-tab-3").disabled = true;
+                document.querySelector("#sl-tab-4").disabled = false;
+
+                setTimeout(() => {
+                    document.querySelector("body > sl-tab-group").show("tab-developers-view")
+                    clearTimeout(this);
+                }, 1)
+            }
+            
+            function deleteDeveloper(developmentTeamIndex, developerIndex){
+                $.ajax({
+                    type: "DELETE",
+                    async: false,
+                    url: "/developers?developmentTeamIndex=" + developmentTeamIndex + "&developerIndex=" + developerIndex,
+                    error: () => window.location.href = "/developers"
+                });
+            }
         </script>
     </head>
     <body>
         <sl-tab-group>
+            <span style="position: fixed; top: 3.5%; left: 1.5%;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
             <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
             <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
-            <sl-tab slot="nav" panel="tab-developers-edit">Developers - Edit</sl-tab>
-            <sl-tab slot="nav" onclick="location.href = '/developers#'">Developers - Recreate</sl-tab>
-            <sl-tab slot="nav" onclick="location.href = '/'">Go to Home page</sl-tab>
+            <sl-tab slot="nav" panel="tab-developers-edit" disabled>Developers - Edit</sl-tab>
+            <sl-tab slot="nav" onclick="location.href = '/developers#'" disabled>Developers - Recreate</sl-tab>
 
             <sl-tab-panel name="tab-developers-view" onresize="onResize()">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
                 <sl-carousel class="custom-modifications" pagination th:if="${ not#lists.isEmpty(developmentTeams) }">
-                    <sl-carousel-item th:each="developmentTeam, iter : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
-                        <sl-card class="card-overview" th:each="developer, iter2 : ${developmentTeam}">
+                    <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
+                        <sl-card class="card-overview" th:each="developer, developerIteratorator : ${developmentTeam}">
                             <strong th:text="${developer.personalId}"></strong><br /><br />
                             <span th:text="${developer.displayName}"></span><br /><br />
                             <i><small th:text="|Level #${developer.userType.ordinal}|"></small></i>
+                            <sl-divider style="--spacing: 2px" vertical></sl-divider>
                             <th:block th:switch="${developer.userType.ordinal}">
                                 <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
                                 <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
@@ -98,14 +157,18 @@
                                 <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
                             </th:block>
                             <div slot="footer">
-                                <sl-rating th:value="${ ((developer.experienceCoefficient * developer.userType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly class="rating-developers"></sl-rating>
+                                <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
+                                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                                <sl-button variant="danger" outline th:onclick="|deleteDeveloper(${developmentTeamIterator.index}, ${developerIteratorator.index})|">Remove</sl-button>
+                                <sl-divider class="horizontal-divider" style="--spacing: 5px"></sl-divider>
+                                <sl-rating style="position: relative; top: 5px;" th:value="${ ((developer.experienceCoefficient * developer.userType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly class="rating-developers"></sl-rating>
                             </div>
                         </sl-card>
                     </sl-carousel-item>
                 </sl-carousel>
             </sl-tab-panel>
             <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
-                <form id="developer-create-form" th:action="@{/developers}" th:object="${newDeveloper}" method="post" style="text-align: -webkit-center;">
+                <form id="developer-create-form" th:action="@{/developers}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex">
                         <sl-input id="name" name="name" th:value="*{name}" placeholder="Name" size="medium" pill></sl-input>
                         <sl-divider vertical></sl-divider>
@@ -119,15 +182,15 @@
                     <sl-range name="experienceCoefficient" th:value="*{experienceCoefficient}" class="user-experience-range" min="1" max="10"></sl-range>
                     <sl-divider class="horizontal-divider"></sl-divider>
                     <div>
-                        <span>Select development team to add to</span>
-                        <input type="number" id="selectedDevelopmentTeamId" name="developmentTeamId" style="display: none;"/>
+                        <span>Select development team to assign to</span>
+                        <input type="number" id="selectedDevelopmentTeamIndex" name="developmentTeamIndex" style="display: none;"/>
                         <sl-tree id="developmentTeamsSelectionTree" style="width: 33%">
                             <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
                             <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
 
-                            <sl-tree-item th:each="developmentTeam, iter : ${developmentTeams}" th:id="${iter.index}" style="margin: 0 auto;">
-                                <span th:text="|Development team #${iter.count}|"></span>
-                                <sl-tree-item th:each="developer, iter2 : ${developmentTeam}" disabled>
+                            <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;">
+                                <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
+                                <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" disabled>
                                     <span th:text="|${developer.getDisplayName()} |"></span>
                                     <sl-divider vertical></sl-divider>
                                     <th:block th:switch="${developer.userType.ordinal}">
@@ -144,13 +207,64 @@
                     </div>
                     <sl-divider class="horizontal-divider"></sl-divider>
                     <div style="display: inline-flex">
-                        <sl-button variant="success" outline type="submit" name="save">Add developer</sl-button>
+                        <sl-button variant="success" outline type="submit">Add developer</sl-button>
                         <sl-divider vertical></sl-divider>
                         <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-developers-edit">NOT IMPLEMENTED YET</sl-tab-panel>
+            <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
         </sl-tab-group>
     </body>
+
+    <div style="display: none"> <!-- Fragment containers -->
+        <form id="developer-edit-form" th:action="@{/developers}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
+            <div style="display: inline-flex">
+                <sl-input id="name" name="name" th:value="*{name}" placeholder="Name" size="medium" pill></sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-input name="surname" th:value="*{surname}" placeholder="Surname" size="medium" pill></sl-input>
+            </div>
+            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType" th:value="*{userType}">
+                <sl-option th:each="userType : ${userTypes}" th:value="${userType}" th:text="|${userType.getDisplayName()} (Seniority coefficient:${userType.seniorityCoefficient})|"></sl-option>
+            </sl-select>
+            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-range name="experienceCoefficient" th:value="*{experienceCoefficient}" class="user-experience-range" min="1" max="10"></sl-range>
+            <sl-divider class="horizontal-divider"></sl-divider>
+            <div>
+                <span>Select development team to assign to</span>
+                <input type="text" th:field="*{personalId}" style="display: none;"/>
+                <input type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" value="-1" style="display: none;"/>
+                <input type="number" name="previousDevelopmentTeamIndex" style="display: none;"
+                       th:value="${developmentTeamIndex}"/>
+                <input type="number" name="developerIndex" style="display: none;"
+                       th:value="${developerIndex}"/>
+                <sl-tree id="editDeveloperDevelopmentTeamsSelectionTree" style="width: 33%">
+                    <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
+                    <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
+                    <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;" th:selected="${developmentTeamIndex} == ${developmentTeamIterator.index}">
+                        <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
+                        <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" th:style="(${developmentTeamIndex} == ${developmentTeamIterator.index} and ${developerIndex} == ${developerIteratorator.index}) ? 'border: 2px solid yellow' : 'border: none'" disabled>
+                            <span th:text="|${developer.getDisplayName()} |"></span>
+                            <sl-divider vertical></sl-divider>
+                            <th:block th:switch="${developer.userType.ordinal}">
+                                <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
+                                <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
+                                <sl-badge th:case="3" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
+                                <sl-badge th:case="4" th:text="${developer.userType.getDisplayName()}" variant="warning"></sl-badge>
+                                <sl-badge th:case="5" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
+                                <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
+                            </th:block>
+                        </sl-tree-item>
+                    </sl-tree-item>
+                </sl-tree>
+            </div>
+            <sl-divider class="horizontal-divider"></sl-divider>
+            <div style="display: inline-flex">
+                <sl-button variant="success" outline type="submit">Confirm</sl-button>
+                <sl-divider vertical></sl-divider>
+                <sl-button variant="danger" outline onclick="cancelEditDeveloper()">Cancel</sl-button>
+            </div>
+        </form>
+    </div>
 </html>

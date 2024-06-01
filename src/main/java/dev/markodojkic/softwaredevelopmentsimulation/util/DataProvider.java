@@ -31,6 +31,23 @@ public class DataProvider {
 		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
 	}
 
+	public static void editDeveloper(int developmentTeamIndex, int previousDevelopmentTeamIndex, int developerIndex, User developer){
+		if(previousDevelopmentTeamIndex != developmentTeamIndex){
+			removeDeveloper(previousDevelopmentTeamIndex, developerIndex);
+			addDeveloper(developmentTeamIndex, developer);
+		} else {
+			List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(previousDevelopmentTeamIndex));
+			developmentTeam.set(developerIndex, developer);
+			currentDevelopmentTeamsSetup.set(previousDevelopmentTeamIndex, developmentTeam);
+		}
+	}
+
+	public static void removeDeveloper(int developmentTeamIndex, int developerIndex){
+		List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
+		developmentTeam.remove(developerIndex);
+		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
+	}
+
 	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg
 	private static String generateRandomJMBG() {
 		String dd = String.format("%02d", Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
