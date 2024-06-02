@@ -18,7 +18,7 @@ public class User implements Serializable {
 	private String name = "";
 	private String surname = "";
 	private String personalId = "";
-	private UserType userType = UserType.TECHNICAL_MANAGER;
+	private UserType userType = UserType.INTERN_DEVELOPER;
 	private long experienceCoefficient = 0L;
 
 	public User(String displayName, String personalId, UserType userType, long experienceCoefficient) {

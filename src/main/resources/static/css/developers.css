@@ -1,0 +1,70 @@
+:root {
+    --numberOfColumns: -1;
+    --aspect-ratio: -1;
+}
+
+.card-overview {
+    height: 100%;
+}
+
+.carousel__slides--horizontal {
+    overflow-y: scroll; !important
+}
+
+sl-tab-group::part(nav) {
+    display: flex;
+    justify-content: center;
+}
+
+.user-experience-range {
+    --track-color-active: var(--sl-color-warning-600);
+    --track-color-inactive: var(--sl-color-warning-100);
+    width: 33%;
+}
+
+.horizontal-divider {
+    --spacing: 2rem;
+    --width: 0px;
+}
+
+#developmentTeamsSelectionTree, #editDeveloperDevelopmentTeamsSelectionTree {
+    --indent-guide-width: 1px;
+}
+
+.label-on-left {
+    --label-width: 65%;
+    --gap-width: 1rem;
+    margin-right: 5%;
+}
+
+.label-on-left:not(:nth-child(2)) { /* Styling fix for Developers - Recreate inputs other than: Likelihood of generating female developer input */
+    --label-width: 47%;
+    margin-right: -9.5%;
+}
+
+.label-on-left + .label-on-left {
+    margin-top: var(--sl-spacing-medium);
+}
+
+.label-on-left::part(form-control) {
+    display: grid;
+    grid: auto / var(--label-width) 1fr;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+.label-on-left::part(form-control-label) {
+    text-align: right;
+}
+
+.label-on-left:nth-child(2)::part(form-control-help-text) { /* Styling fix for Developers - Recreate: Likelihood of generating female developer input */
+    margin-left: -60%;
+}
+
+.label-on-left::part(form-control-help-text) {
+    grid-column-start: 2;
+}
+
+.label-on-left::part(form-control-input){
+    width: 40%;
+}

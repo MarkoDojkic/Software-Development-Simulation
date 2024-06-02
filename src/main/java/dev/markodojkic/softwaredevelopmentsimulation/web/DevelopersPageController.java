@@ -21,65 +21,56 @@ import java.util.UUID;
 public class DevelopersPageController {
 
 	@PutMapping(value = "/developers")
-	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters, BindingResult bindingResult, ModelMap modelMap){
-		if(bindingResult.hasErrors()){
-			Utilities.iGateways.sendToError(bindingResult.toString());
-		}
-		//FIGURE OUT HOW TO PASS BUILDER AS REQUEST BODY
+	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
 		DataProvider.updateDevelopmentTeamsSetup(parameters);
-		modelMap.clear();
 		return "redirect:/developers";
 	}
 
 	@GetMapping("/developers")
-	public String getAllDeveloper(Model model){
+	public ModelAndView getDevelopersPage(){
 		List<String> backgroundColors = DataProvider.currentDevelopmentTeamsSetup.stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
-		model.addAttribute("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
-		model.addAttribute("developmentTeamBackgroundColors", backgroundColors);
-		model.addAttribute("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
-		model.addAttribute("userTypes", UserType.values());
-		model.addAttribute("formDeveloperPlaceholder", new User());
-		model.addAttribute("formEditDeveloperPlaceholder", new User());
-		return "developers";
+		ModelAndView developersPage = new ModelAndView("developers");
+
+		developersPage.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
+		developersPage.addObject("developmentTeamBackgroundColors", backgroundColors);
+		developersPage.addObject("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
+		developersPage.addObject("userTypes", UserType.values());
+		developersPage.addObject("formDeveloperPlaceholder", new User());
+		developersPage.addObject("formEditDeveloperPlaceholder", new User());
+
+		return developersPage;
 	}
 
 	@PostMapping(value = "/developers")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
-		if(bindingResult.hasErrors()){
-			//TODO: Implement thymeleaf form error handling
-			return "/developers";
-		}
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
 		newDeveloper.setPersonalId(UUID.randomUUID().toString());
 		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
-		modelMap.clear();
 		return "redirect:/developers";
 	}
 
 	@RequestMapping(value = "/developers/edit", method = RequestMethod.GET)
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm");
+
 		editingDeveloperForm.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
 		editingDeveloperForm.addObject("developerIndex", developerIndex);
 		editingDeveloperForm.addObject("userTypes", UserType.values());
 		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.currentDevelopmentTeamsSetup.get(developmentTeamIndex).get(developerIndex));
+
 		return editingDeveloperForm;
 	}
 
 	@PatchMapping(value = "/developers")
-	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") User existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
-		if(bindingResult.hasErrors()){
-			//TODO: Implement thymeleaf form error handling
-			return "redirect:/developers";
-		}
+	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") User existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
 		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
-		modelMap.clear();
 		return "redirect:/developers";
 	}
 
 	@RequestMapping(value = "/developers", method = RequestMethod.DELETE)
 	public void removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
+		//No redirection, removal is handled via ajax on front-end
 	}
 
 	private String getBackgroundColor(String text) {
