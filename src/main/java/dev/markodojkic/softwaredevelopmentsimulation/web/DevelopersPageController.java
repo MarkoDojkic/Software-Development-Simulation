@@ -1,8 +1,10 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
 import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
+import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
+import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,10 +18,21 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class DataHandlingController {
+public class DevelopersPageController {
+
+	@PutMapping(value = "/developers")
+	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters, BindingResult bindingResult, ModelMap modelMap){
+		if(bindingResult.hasErrors()){
+			Utilities.iGateways.sendToError(bindingResult.toString());
+		}
+		//FIGURE OUT HOW TO PASS BUILDER AS REQUEST BODY
+		DataProvider.updateDevelopmentTeamsSetup(parameters);
+		modelMap.clear();
+		return "redirect:/developers";
+	}
 
 	@GetMapping("/developers")
-	public String getAllDevelopers(Model model){
+	public String getAllDeveloper(Model model){
 		List<String> backgroundColors = DataProvider.currentDevelopmentTeamsSetup.stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
 		model.addAttribute("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
 		model.addAttribute("developmentTeamBackgroundColors", backgroundColors);
@@ -31,10 +44,10 @@ public class DataHandlingController {
 	}
 
 	@PostMapping(value = "/developers")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "developmentTeamIndex") int developmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex, BindingResult bindingResult, ModelMap modelMap){
 		if(bindingResult.hasErrors()){
 			//TODO: Implement thymeleaf form error handling
-			return "redirect:/developers";
+			return "/developers";
 		}
 		newDeveloper.setPersonalId(UUID.randomUUID().toString());
 		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
@@ -43,7 +56,7 @@ public class DataHandlingController {
 	}
 
 	@RequestMapping(value = "/developers/edit", method = RequestMethod.GET)
-	public ModelAndView addEditingDeveloperModel(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
+	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm");
 		editingDeveloperForm.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);

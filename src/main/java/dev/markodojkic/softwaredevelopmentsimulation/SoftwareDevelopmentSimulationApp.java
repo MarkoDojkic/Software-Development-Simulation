@@ -1,17 +1,16 @@
 package dev.markodojkic.softwaredevelopmentsimulation;
 
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
+import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.ComponentScan;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.updateDevelopmentTeamsSetup;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.iGateways;
 
 @EnableConfigurationProperties
-@ComponentScan(basePackages = "dev.markodojkic.softwaredevelopmentsimulation")
 @SpringBootApplication
 public class SoftwareDevelopmentSimulationApp
 {
@@ -23,7 +22,7 @@ public class SoftwareDevelopmentSimulationApp
 					Welcome to Software development simulator™
 					Developed by Ⓒ Marko Dojkić 2024$Enjoy using our web application""");
 
-		updateDevelopmentTeamsSetup();
+		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 		//generateRandomTasks(3,16);
 
 		//TODO: Correct JIRA activity stream timings

@@ -41,6 +41,43 @@
                 --indent-guide-width: 1px;
             }
 
+            .label-on-left {
+                --label-width: 65%;
+                --gap-width: 1rem;
+                margin-right: 5%;
+            }
+
+            .label-on-left:not(:nth-child(2)) { /* Styling fix for Developers - Recreate inputs other than: Likelihood of generating female developer input */
+                --label-width: 47%;
+                margin-right: -9.5%;
+            }
+
+            .label-on-left + .label-on-left {
+                margin-top: var(--sl-spacing-medium);
+            }
+
+            .label-on-left::part(form-control) {
+                display: grid;
+                grid: auto / var(--label-width) 1fr;
+                gap: var(--sl-spacing-3x-small) var(--gap-width);
+                align-items: center;
+            }
+
+            .label-on-left::part(form-control-label) {
+                text-align: right;
+            }
+
+            .label-on-left:nth-child(2)::part(form-control-help-text) { /* Styling fix for Developers - Recreate: Likelihood of generating female developer input */
+                margin-left: -60%;
+            }
+
+            .label-on-left::part(form-control-help-text) {
+                grid-column-start: 2;
+            }
+
+            .label-on-left::part(form-control-input){
+                width: 40%;
+            }
         </style>
         <script>
             window.onload = onLoadFunctions;
@@ -129,6 +166,10 @@
                     error: () => window.location.href = "/developers"
                 });
             }
+
+            function clearDevelopmentTeamsSelectionTreeSelection(){
+                document.querySelector("#developmentTeamsSelectionTree").querySelector('[selected]').removeAttribute("selected");
+            }
         </script>
     </head>
     <body>
@@ -137,7 +178,7 @@
             <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
             <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
             <sl-tab slot="nav" panel="tab-developers-edit" disabled>Developers - Edit</sl-tab>
-            <sl-tab slot="nav" onclick="location.href = '/developers#'" disabled>Developers - Recreate</sl-tab>
+            <sl-tab slot="nav" panel="tab-developers-recreate">Developers - Recreate</sl-tab>
 
             <sl-tab-panel name="tab-developers-view" onresize="onResize()">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
@@ -183,7 +224,7 @@
                     <sl-divider class="horizontal-divider"></sl-divider>
                     <div>
                         <span>Select development team to assign to</span>
-                        <input type="number" id="selectedDevelopmentTeamIndex" name="developmentTeamIndex" style="display: none;"/>
+                        <input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="display: none;"/>
                         <sl-tree id="developmentTeamsSelectionTree" style="width: 33%">
                             <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
                             <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
@@ -209,11 +250,47 @@
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Add developer</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                        <sl-button variant="neutral" outline type="reset" onclick="clearDevelopmentTeamsSelectionTreeSelection()">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
             <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
+            <sl-tab-panel name="tab-developers-recreate">
+                <form id="developer-recreate-form" th:action="@{/developers}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
+                    <sl-input class="label-on-left" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" placeholder="45" size="medium" help-text="Default value is 45%" style="width: 51%" min="0" max="100" inputmode="number" no-spin-buttons pill>
+                        <sl-icon name="percent" slot="suffix"></sl-icon>
+                    </sl-input>
+                    <sl-divider vertical></sl-divider>
+                    <div style="display: ruby-text; margin-left: -6%;">
+                        <sl-input class="label-on-left" label="Created developers count" name="minimalDevelopersCount" type="number" placeholder="30" size="medium" help-text="Default values are min: x30 and max: x100. Limit is 999." inputmode="number" min="0" max="999" no-spin-buttons pill>
+                            <sl-icon name="x" slot="prefix"></sl-icon>
+                        </sl-input>
+                        <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
+                        <sl-input name="maximalDevelopersCount" type="number" placeholder="100" size="medium" min="0" max="999" style="width: 7%;" inputmode="number" no-spin-buttons pill>
+                            <sl-icon name="x" slot="prefix"></sl-icon>
+                        </sl-input>
+                    </div>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <div style="display: ruby-text; margin-left: -6%;">
+                        <sl-input class="label-on-left" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" placeholder="5" size="medium" help-text="Default values are min: x5 and max: x15. Limit is 999." inputmode="number" min="0" max="999" no-spin-buttons pill>
+                            <sl-icon name="x" slot="prefix"></sl-icon>
+                        </sl-input>
+                        <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
+                        <sl-input name="maximalDevelopersInTeamCount" type="number" placeholder="15" size="medium" min="0" max="999" style="width: 7%;" inputmode="number" no-spin-buttons pill>
+                            <sl-icon name="x" slot="prefix"></sl-icon>
+                        </sl-input>
+                    </div>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <input type="hidden" id="retainOld" name="retainOld" value="true">
+                    <sl-checkbox checked="true" onclick="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
+                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <div style="display: inline-flex">
+                        <sl-button variant="success" outline type="submit">Recreate development teams</sl-button>
+                        <sl-divider vertical></sl-divider>
+                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                    </div>
+                </form>
+            </sl-tab-panel>
         </sl-tab-group>
     </body>
 
