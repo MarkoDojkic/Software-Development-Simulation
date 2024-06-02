@@ -1,6 +1,7 @@
 package dev.markodojkic.softwaredevelopmentsimulation.model;
 
 import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.getPlaceOfBirthBasedUMCNPoliticalRegionCode;
 import lombok.*;
 
 import java.io.Serial;
@@ -15,16 +16,19 @@ public class User implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -949472808846392995L;
 
-	private String name = "";
-	private String surname = "";
-	private String personalId = "";
+	private String name;
+	private String surname;
+	private String yugoslavianUMCN;
+	private String placeOfBirth;
 	private UserType userType = UserType.INTERN_DEVELOPER;
 	private long experienceCoefficient = 0L;
 
-	public User(String displayName, String personalId, UserType userType, long experienceCoefficient) {
+	public User(String displayName, String yugoslavianUMCN, UserType userType, long experienceCoefficient) {
+		this();
 		this.name = displayName.split(" ")[0];
 		this.surname = displayName.split(" ")[1];
-		this.personalId = personalId;
+		this.yugoslavianUMCN = yugoslavianUMCN;
+		this.placeOfBirth = getPlaceOfBirthBasedUMCNPoliticalRegionCode(Integer.parseInt(yugoslavianUMCN.substring(7, 9)));
 		this.userType = userType;
 		this.experienceCoefficient = experienceCoefficient;
 	}

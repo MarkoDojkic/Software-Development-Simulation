@@ -10,145 +10,150 @@
     <link rel="stylesheet" th:href="@{/css/developers.css}"/>
     <script type="text/javascript" th:src="@{/js/developers.js}"></script>
 </head>
-<body>
-<sl-tab-group>
-    <span style="position: fixed; top: 2%; left: 1.5%;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
-    <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
-    <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
-    <sl-tab slot="nav" panel="tab-developers-edit" disabled>Developers - Edit</sl-tab>
-    <sl-tab slot="nav" panel="tab-developers-recreate">Developers - Recreate</sl-tab>
+<body onresize="onResize()">
+    <sl-tab-group>
+        <span style="position: fixed; top: 2%; left: 1.5%;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
+        <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
+        <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
+        <sl-tab slot="nav" panel="tab-developers-edit" disabled>Developers - Edit</sl-tab>
+        <sl-tab slot="nav" panel="tab-developers-recreate">Developers - Recreate</sl-tab>
 
-    <sl-tab-panel name="tab-developers-view" onresize="onResize()">
-        <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
-        <sl-carousel class="custom-modifications" pagination th:if="${ not#lists.isEmpty(developmentTeams) }">
-            <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
-                <sl-card class="card-overview" th:each="developer, developerIteratorator : ${developmentTeam}">
-                    <strong th:text="${developer.personalId}"></strong><br /><br />
-                    <span th:text="${developer.displayName}"></span><br /><br />
-                    <i><small th:text="|Level #${developer.userType.ordinal}|"></small></i>
-                    <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                    <th:block th:switch="${developer.userType.ordinal}">
-                        <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
-                        <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
-                        <sl-badge th:case="3" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                        <sl-badge th:case="4" th:text="${developer.userType.getDisplayName()}" variant="warning"></sl-badge>
-                        <sl-badge th:case="5" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                        <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
-                    </th:block>
-                    <div slot="footer">
-                        <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
+        <sl-tab-panel name="tab-developers-view">
+            <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
+            <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" class="custom-modifications" pagination>
+                <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
+                    <sl-card class="card-overview" th:each="developer, developerIteratorator : ${developmentTeam}">
+                        <strong th:text="${developer.yugoslavianUMCN}"></strong><br /><br />
+                        <span th:text="${developer.displayName} "></span>
+                        <sl-icon th:name="${T(java.lang.Integer).parseInt(developer.yugoslavianUMCN.substring(9, 10)) < 5 ? 'gender-male' : 'gender-female'}"></sl-icon><br /><br />
+                        <span th:text="|Birth place: ${developer.placeOfBirth}|"></span><br /><br />
+                        <i><small th:text="|Level #${developer.userType.ordinal}|"></small></i>
                         <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                        <sl-button variant="danger" outline th:onclick="|deleteDeveloper(${developmentTeamIterator.index}, ${developerIteratorator.index})|">Remove</sl-button>
-                        <sl-divider class="horizontal-divider" style="--spacing: 5px"></sl-divider>
-                        <sl-rating style="position: relative; top: 5px;" th:value="${ ((developer.experienceCoefficient * developer.userType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly class="rating-developers"></sl-rating>
-                    </div>
-                </sl-card>
-            </sl-carousel-item>
-        </sl-carousel>
-    </sl-tab-panel>
-    <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
-        <form id="developer-create-form" th:action="@{/developers}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
-            <div style="display: inline-flex">
-                <sl-input id="name" name="name" th:value="*{name}" placeholder="Name" size="medium" maxlength="64"                 pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$"
-                          required pill></sl-input>
-                <sl-divider vertical></sl-divider>
-                <sl-input name="surname" th:value="*{surname}" placeholder="Surname" size="medium" maxlength="128"                 pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$"
-                          required pill></sl-input>
-            </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType" th:value="*{userType}" required>
-                <sl-option th:each="userType, userTypeIterator : ${userTypes}" th:value="${userType}" th:text="|${userType.getDisplayName()} (Seniority coefficient:${userType.seniorityCoefficient}) |" th:unless="${userTypeIterator.index} == 0"></sl-option>
-            </sl-select>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <sl-range name="experienceCoefficient" th:value="*{experienceCoefficient}" class="user-experience-range" min="0" max="10" required></sl-range>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <div>
-                <span>Select development team to assign to</span>
-                <sl-tree id="developmentTeamsSelectionTree" style="width: 33%">
-                    <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
-                    <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
+                        <th:block th:switch="${developer.userType.ordinal}">
+                            <sl-badge th:case="1" th:text="${developer.userType.displayName}" variant="neutral"></sl-badge>
+                            <sl-badge th:case="2" th:text="${developer.userType.displayName}" variant="primary"></sl-badge>
+                            <sl-badge th:case="3" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                            <sl-badge th:case="4" th:text="${developer.userType.displayName}" variant="warning"></sl-badge>
+                            <sl-badge th:case="5" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                            <sl-badge th:case="6" th:text="${developer.userType.displayName}" variant="danger"></sl-badge>
+                        </th:block>
+                        <div slot="footer">
+                            <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
+                            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                            <sl-button variant="danger" outline th:onclick="|deleteDeveloper(${developmentTeamIterator.index}, ${developerIteratorator.index})|">Remove</sl-button>
+                            <sl-divider class="horizontal-divider" style="--spacing: 5px"></sl-divider>
+                            <sl-rating style="position: relative; top: 5px;" th:value="${ ((developer.experienceCoefficient * developer.userType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly class="rating-developers"></sl-rating>
+                        </div>
+                    </sl-card>
+                </sl-carousel-item>
+            </sl-carousel>
+        </sl-tab-panel>
+        <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
+            <form id="developer-create-form" th:action="@{/developers}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
+                <div style="display: inline-flex">
+                    <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                    <sl-divider vertical></sl-divider>
+                    <sl-input type="text" name="surname" placeholder="Surname" size="medium" maxlength="128" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                </div>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <sl-radio-group size="medium" label="Select gender" name="gender" required>
+                    <sl-radio-button pill value="0">Male <sl-icon name="gender-male"></sl-icon></sl-radio-button>
+                    <sl-radio-button pill value="1">Female <sl-icon name="gender-female"></sl-icon></sl-radio-button>
+                </sl-radio-group>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType">
+                    <sl-option th:each="userType, userTypeIterator : ${userTypes}" th:value="${userType}" th:text="|${userType.displayName} (Seniority coefficient:${userType.seniorityCoefficient}) |" th:unless="${userTypeIterator.index} == 0"></sl-option>
+                </sl-select>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <sl-range name="experienceCoefficient" class="user-experience-range" min="0" max="10" required></sl-range>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <div>
+                    <span>Select development team to assign to</span>
+                    <sl-tree id="developmentTeamsSelectionTree" style="width: 33%">
+                        <sl-icon name="plus-square" slot="expand-icon"></sl-icon>
+                        <sl-icon name="dash-square" slot="collapse-icon"></sl-icon>
 
-                    <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;">
-                        <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
-                        <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" disabled>
-                            <span th:text="|${developer.getDisplayName()} |"></span>
-                            <sl-divider vertical></sl-divider>
-                            <th:block th:switch="${developer.userType.ordinal}">
-                                <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
-                                <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
-                                <sl-badge th:case="3" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                                <sl-badge th:case="4" th:text="${developer.userType.getDisplayName()}" variant="warning"></sl-badge>
-                                <sl-badge th:case="5" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                                <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
-                            </th:block>
+                        <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;">
+                            <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
+                            <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" disabled>
+                                <span th:text="|${developer.displayName} |"></span>
+                                <sl-divider vertical></sl-divider>
+                                <th:block th:switch="${developer.userType.ordinal}">
+                                    <sl-badge th:case="1" th:text="${developer.userType.displayName}" variant="neutral"></sl-badge>
+                                    <sl-badge th:case="2" th:text="${developer.userType.displayName}" variant="primary"></sl-badge>
+                                    <sl-badge th:case="3" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                                    <sl-badge th:case="4" th:text="${developer.userType.displayName}" variant="warning"></sl-badge>
+                                    <sl-badge th:case="5" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                                    <sl-badge th:case="6" th:text="${developer.userType.displayName}" variant="danger"></sl-badge>
+                                </th:block>
+                            </sl-tree-item>
                         </sl-tree-item>
-                    </sl-tree-item>
-                </sl-tree>
-                <input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="opacity: 0;" min="1" max="6" readonly required/>
-            </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <div style="display: inline-flex">
-                <sl-button variant="success" outline type="submit">Add developer</sl-button>
+                    </sl-tree>
+                    <input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" required/>
+                </div>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <div style="display: inline-flex">
+                    <sl-button variant="success" outline type="submit">Add developer</sl-button>
+                    <sl-divider vertical></sl-divider>
+                    <sl-button variant="neutral" outline type="reset" onclick="clearDevelopmentTeamsSelectionTreeSelection()">Clear form</sl-button>
+                </div>
+            </form>
+        </sl-tab-panel>
+        <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
+        <sl-tab-panel name="tab-developers-recreate">
+            <form id="developer-recreate-form" th:action="@{/developers}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
+                <sl-input class="label-on-left" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" placeholder="45" size="medium" help-text="Default value is 45%" style="width: 51%" min="0" max="100" inputmode="number" no-spin-buttons pill>
+                    <sl-icon name="percent" slot="suffix"></sl-icon>
+                </sl-input>
                 <sl-divider vertical></sl-divider>
-                <sl-button variant="neutral" outline type="reset" onclick="clearDevelopmentTeamsSelectionTreeSelection()">Clear form</sl-button>
-            </div>
-        </form>
-    </sl-tab-panel>
-    <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
-    <sl-tab-panel name="tab-developers-recreate">
-        <form id="developer-recreate-form" th:action="@{/developers}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
-            <sl-input class="label-on-left" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" placeholder="45" size="medium" help-text="Default value is 45%" style="width: 51%" min="0" max="100" inputmode="number" no-spin-buttons pill>
-                <sl-icon name="percent" slot="suffix"></sl-icon>
-            </sl-input>
-            <sl-divider vertical></sl-divider>
-            <div style="display: ruby-text; margin-left: -6%;">
-                <sl-input class="label-on-left" label="Created developers count" name="minimalDevelopersCount" type="number" placeholder="30" size="medium" help-text="Default values are min: x30 and max: x100. Limit is 999." inputmode="number" min="0" max="999" no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-                <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
-                <sl-input name="maximalDevelopersCount" type="number" placeholder="100" size="medium" min="0" max="999" style="width: 7%;" inputmode="number" no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-            </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <div style="display: ruby-text; margin-left: -6%;">
-                <sl-input class="label-on-left" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" placeholder="5" size="medium" help-text="Default values are min: x5 and max: x15. Limit is 999." inputmode="number" min="0" max="999" no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-                <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
-                <sl-input name="maximalDevelopersInTeamCount" type="number" placeholder="15" size="medium" min="0" max="999" style="width: 7%;" inputmode="number" no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-            </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <input type="hidden" id="retainOld" name="retainOld" value="true">
-            <sl-checkbox checked="true" onclick="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <div style="display: inline-flex">
-                <sl-button variant="success" outline type="submit">Recreate development teams</sl-button>
-                <sl-divider vertical></sl-divider>
-                <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
-            </div>
-        </form>
-    </sl-tab-panel>
-</sl-tab-group>
+                <div style="display: ruby-text; margin-left: -6%;">
+                    <sl-input class="label-on-left" label="Created developers count" name="minimalDevelopersCount" type="number" placeholder="30" size="medium" help-text="Default values are min: x30 and max: x100. Limit is 999." min="0" max="999" no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                    <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
+                    <sl-input name="maximalDevelopersCount" type="number" placeholder="100" size="medium" min="0" max="999" style="width: 7%;" no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                </div>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <div style="display: ruby-text; margin-left: -6%;">
+                    <sl-input class="label-on-left" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" placeholder="5" size="medium" help-text="Default values are min: x5 and max: x15. Limit is 999." inputmode="number" min="0" max="999" no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                    <sl-icon name="dash" style="margin-right: 0.6%;"></sl-icon>
+                    <sl-input name="maximalDevelopersInTeamCount" type="number" placeholder="15" size="medium" min="0" max="999" style="width: 7%;" inputmode="number" no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                </div>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <input type="hidden" id="retainOld" name="retainOld" value="true">
+                <sl-checkbox checked="true" onclick="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
+                <sl-divider class="horizontal-divider"></sl-divider>
+                <div style="display: inline-flex">
+                    <sl-button variant="success" outline type="submit">Recreate development teams</sl-button>
+                    <sl-divider vertical></sl-divider>
+                    <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                </div>
+            </form>
+        </sl-tab-panel>
+    </sl-tab-group>
 </body>
 
 <div style="display: none"> <!-- Fragment containers -->
     <form id="developer-edit-form" th:action="@{/developers}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
         <div style="display: inline-flex">
-            <sl-input id="name" name="name" th:value="*{name}" placeholder="Name" size="medium" maxlength="64"                 pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$"
-                      required pill></sl-input>
+            <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
             <sl-divider vertical></sl-divider>
-            <sl-input name="surname" th:value="*{surname}" placeholder="Surname" size="medium" maxlength="128"                 pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$"
-                      required pill></sl-input>
+            <sl-input type="text" name="surname" placeholder="Surname" size="medium" maxlength="128" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
         </div>
         <sl-divider class="horizontal-divider"></sl-divider>
-        <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType" th:value="*{userType}" required>
-            <sl-option th:each="userType, userTypeIterator : ${userTypes}" th:value="${userType}" th:text="|${userType.getDisplayName()} (Seniority coefficient:${userType.seniorityCoefficient})|" th:unless="${userTypeIterator.index} == 0"></sl-option>
+        <span th:text="|Birth place: ${formEditDeveloperPlaceholder.placeOfBirth}, Gender: |"></span> <sl-icon th:name="${T(java.lang.Integer).parseInt((formEditDeveloperPlaceholder.yugoslavianUMCN == null ? 0 : formEditDeveloperPlaceholder.yugoslavianUMCN.substring(9, 10))) < 5 ? 'gender-male' : 'gender-female'}"></sl-icon>
+        <sl-divider class="horizontal-divider"></sl-divider>
+        <sl-select pill style="width: 33%" placeholder="Select user type (ex. Intern developer)" placement="bottom" name="userType" required>
+            <sl-option th:each="userType, userTypeIterator : ${userTypes}" th:value="${userType}" th:text="|${userType.displayName} (Seniority coefficient:${userType.seniorityCoefficient})|" th:unless="${userTypeIterator.index} == 0"></sl-option>
         </sl-select>
         <sl-divider class="horizontal-divider"></sl-divider>
-        <sl-range name="experienceCoefficient" th:value="*{experienceCoefficient}" class="user-experience-range" min="1" max="10"></sl-range>
+        <sl-range name="experienceCoefficient" class="user-experience-range" min="1" max="10"></sl-range>
         <sl-divider class="horizontal-divider"></sl-divider>
         <div>
             <span>Select development team to assign to</span>
@@ -158,25 +163,23 @@
                 <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;" th:selected="${developmentTeamIndex} == ${developmentTeamIterator.index}">
                     <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
                     <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" th:style="(${developmentTeamIndex} == ${developmentTeamIterator.index} and ${developerIndex} == ${developerIteratorator.index}) ? 'border: 2px solid yellow' : 'border: none'" disabled>
-                        <span th:text="|${developer.getDisplayName()} |"></span>
+                        <span th:text="|${developer.displayName} |"></span>
                         <sl-divider vertical></sl-divider>
                         <th:block th:switch="${developer.userType.ordinal}">
-                            <sl-badge th:case="1" th:text="${developer.userType.getDisplayName()}" variant="neutral"></sl-badge>
-                            <sl-badge th:case="2" th:text="${developer.userType.getDisplayName()}" variant="primary"></sl-badge>
-                            <sl-badge th:case="3" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                            <sl-badge th:case="4" th:text="${developer.userType.getDisplayName()}" variant="warning"></sl-badge>
-                            <sl-badge th:case="5" th:text="${developer.userType.getDisplayName()}" variant="success"></sl-badge>
-                            <sl-badge th:case="6" th:text="${developer.userType.getDisplayName()}" variant="danger"></sl-badge>
+                            <sl-badge th:case="1" th:text="${developer.userType.displayName}" variant="neutral"></sl-badge>
+                            <sl-badge th:case="2" th:text="${developer.userType.displayName}" variant="primary"></sl-badge>
+                            <sl-badge th:case="3" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                            <sl-badge th:case="4" th:text="${developer.userType.displayName}" variant="warning"></sl-badge>
+                            <sl-badge th:case="5" th:text="${developer.userType.displayName}" variant="success"></sl-badge>
+                            <sl-badge th:case="6" th:text="${developer.userType.displayName}" variant="danger"></sl-badge>
                         </th:block>
                     </sl-tree-item>
                 </sl-tree-item>
             </sl-tree>
-            <input type="text" th:field="*{personalId}" style="opacity: 0;" readonly required/>
-            <input type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" min="1" max="6" style="opacity: 0;" readonly required/>
-            <input type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" readonly required
-                   th:value="${developmentTeamIndex}"/>
-            <input type="number" name="developerIndex" style="opacity: 0;" readonly required
-                   th:value="${developerIndex}"/>
+            <input type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" required/>
+            <input type="text" th:field="*{yugoslavianUMCN}" style="opacity: 0;" readonly/>
+            <input type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
+            <input type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
         </div>
         <sl-divider class="horizontal-divider"></sl-divider>
         <div style="display: inline-flex">

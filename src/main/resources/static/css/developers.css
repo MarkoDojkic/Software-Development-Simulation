@@ -7,10 +7,6 @@
     height: 100%;
 }
 
-.carousel__slides--horizontal {
-    overflow-y: scroll; !important
-}
-
 sl-tab-group::part(nav) {
     display: flex;
     justify-content: center;

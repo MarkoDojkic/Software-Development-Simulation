@@ -1,11 +1,14 @@
 package dev.markodojkic.softwaredevelopmentsimulation.util;
 
+import ch.qos.logback.core.util.StringUtil;
 import com.google.common.collect.Lists;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import lombok.experimental.UtilityClass;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,18 +18,22 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @UtilityClass
 public class DataProvider {
-	public static final User technicalManager = new User((random.nextInt(100) % 100 < 45 ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(), UserType.TECHNICAL_MANAGER, random.nextLong(1, 18));
+	public static final User technicalManager = new User(lorem.getNameMale(), generateRandomJMBG(true), UserType.TECHNICAL_MANAGER, random.nextLong(1, 18));
 
 	public static List<List<User>> currentDevelopmentTeamsSetup = Collections.emptyList();
 	public static Stack<Integer> availableDevelopmentTeamIds = new Stack<>();
 
 	public static void updateDevelopmentTeamsSetup(DevelopmentTeamCreationParameters parameters){
 		if(!parameters.isRetainOld()) currentDevelopmentTeamsSetup = Collections.emptyList();
-		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> new User((random.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage() ? lorem.getNameFemale() : lorem.getNameMale()), UUID.randomUUID().toString(), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 10))).limit(random.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), random.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
+		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> {
+			boolean isFemale = random.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
+			return new User((isFemale ? lorem.getNameFemale() : lorem.getNameMale()), generateRandomJMBG(!isFemale), Arrays.stream(UserType.values()).skip(random.nextInt(1, UserType.values().length)).findAny().orElse(UserType.INTERN_DEVELOPER), random.nextLong(1, 10));
+	}).limit(random.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), random.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
 		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 	} //Generate between <min - default 30> and <max - default 100> developers ('User' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
 
-	public static void addDeveloper(int developmentTeamIndex, User developer){
+	public static void addDeveloper(int developmentTeamIndex, int gender, User developer){
+		developer.setYugoslavianUMCN(StringUtil.isNullOrEmpty(developer.getYugoslavianUMCN()) ? generateRandomJMBG(gender == 0) : developer.getYugoslavianUMCN());
 		List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
 		developmentTeam.add(developer);
 		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
@@ -35,7 +42,7 @@ public class DataProvider {
 	public static void editDeveloper(int developmentTeamIndex, int previousDevelopmentTeamIndex, int developerIndex, User developer){
 		if(previousDevelopmentTeamIndex != developmentTeamIndex){
 			removeDeveloper(previousDevelopmentTeamIndex, developerIndex);
-			addDeveloper(developmentTeamIndex, developer);
+			addDeveloper(developmentTeamIndex, -1, developer); //Gender cannot be edited
 		} else {
 			List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(previousDevelopmentTeamIndex));
 			developmentTeam.set(developerIndex, developer);
@@ -49,14 +56,15 @@ public class DataProvider {
 		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
 	}
 
-	//Below functions are adapted form https://github.com/borko-rajkovic/ts-jmbg
-	private static String generateRandomJMBG() {
-		String dd = String.format("%02d", Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-		String mm = String.format("%02d", Calendar.getInstance().get(Calendar.MONTH) + 1);
-		String yyy = String.format("%03d", Calendar.getInstance().get(Calendar.YEAR) % 100);
+	//Below functions are adapted from https://github.com/borko-rajkovic/ts-jmbg with slight changes for gender and randomized birthdate generation
+	private static String generateRandomJMBG(boolean isMale) {
+		LocalDateTime dateOfBirth = lorem.getPriorDate(Duration.ofSeconds(31536000 * 18));
+		String dd = String.format("%02d", dateOfBirth.getDayOfMonth());
+		String mm = String.format("%02d", dateOfBirth.getMonth().getValue());
+		String yyy = String.format("%03d", dateOfBirth.getYear() % 100);
 
-		int rr = random.nextInt(100);
-		int bbb = random.nextInt(1000);
+		int rr = random.nextInt(97);
+		int bbb = isMale ? random.nextInt(0, 500) : random.nextInt(500, 1000);
 
 		String withoutControlNumber = dd + mm + yyy + String.format("%02d", rr) + String.format("%03d", bbb);
 		int calculatedControlNumber = calculateJMBGControlNumber(convertToDigits(withoutControlNumber));
@@ -78,5 +86,27 @@ public class DataProvider {
 			digits[i] = Character.getNumericValue(input.charAt(i));
 		}
 		return digits;
+	}
+
+	//Below function was generated by ChatGPT :)
+	public static String getPlaceOfBirthBasedUMCNPoliticalRegionCode(int rr){
+		// Mapping country code ranges to their respective countries
+		final Map<String, String> countryMap = Map.<String, String>ofEntries(Map.entry("10-19", "Bosnia and Herzegovina"), Map.entry("21-29", "Montenegro"), Map.entry("30-39", "Croatia"),Map.entry("41-49", "Macedonia"), Map.entry("60-69", "Outside of Yugoslavia - Has temporary residence"), Map.entry("70-79", "Central Serbia"),Map.entry("80-89", "Serbian province of Vojvodina"), Map.entry("90-99", "Serbian province of Kosovo"));
+
+		// Mapping region codes to their respective regions
+		final Map<Integer, String> regionMap = Map.<Integer, String>ofEntries(Map.entry(1, "Foreigners in Bosnia and Herzegovina"), Map.entry(2, "Foreigners in Montenegro"), Map.entry(3, "Foreigners in Croatia"), Map.entry(4, "Foreigners in Macedonia"), Map.entry(5, "Foreigners in Slovenia"), Map.entry(6, "Foreigners in Central Serbia"), Map.entry(7, "Foreigners in Vojvodina"), Map.entry(8, "Foreigners in Kosovo"), Map.entry(9, "Naturalized citizens without republican citizenship"), Map.entry(10, "Banja Luka"), Map.entry(11, "Bihać"), Map.entry(12, "Doboj"), Map.entry(13, "Goražde"), Map.entry(14, "Livno"), Map.entry(15, "Mostar"), Map.entry(16, "Prijedor"), Map.entry(17, "Sarajevo"), Map.entry(18, "Tuzla"), Map.entry(19, "Zenica"), Map.entry(21, "Podgorica, Danilovgrad, Kolašin"), Map.entry(22, "Bar, Ulcinj"), Map.entry(23, "Budva, Kotor, Tivat"), Map.entry(24, "Herceg Novi"), Map.entry(25, "Cetinje"), Map.entry(26, "Nikšić, Plužine, Šavnik"), Map.entry(27, "Berane, Rožaje, Plav, Andrijevica"), Map.entry(28, "Bijelo Polje, Mojkovac"), Map.entry(29, "Pljevlja, Žabljak"), Map.entry(30, "Osijek, Slavonia region"), Map.entry(31, "Bjelovar, Virovitica, Koprivnica, Pakrac, Podravina region"), Map.entry(32, "Varaždin, Međimurje region"), Map.entry(33, "Zagreb"), Map.entry(34, "Karlovac, Kordun region"), Map.entry(35, "Gospić, Lika region"), Map.entry(36, "Rijeka, Pula, Gorski kotar, Istria and Croatian Littoral regions"), Map.entry(37, "Sisak, Banovina region"), Map.entry(38, "Split, Zadar, Šibenik, Dubrovnik, Dalmatia region"), Map.entry(39, "Hrvatsko Zagorje and mixed"), Map.entry(41, "Bitola"), Map.entry(42, "Kumanovo"), Map.entry(43, "Ohrid"), Map.entry(44, "Prilep"), Map.entry(45, "Skopje"), Map.entry(46, "Strumica"), Map.entry(47, "Tetovo"), Map.entry(48, "Veles"), Map.entry(49, "Štip"), Map.entry(70, "Serbian citizens registered abroad at a Serbian diplomatic/consular post"), Map.entry(71, "Belgrade region (City of Belgrade)"), Map.entry(72, "Šumadija and Pomoravlje regions"), Map.entry(73, "Niš region"), Map.entry(74, "Southern Morava region"), Map.entry(75, "Zaječar region"), Map.entry(76, "Podunavlje region"), Map.entry(77, "Podrinje and Kolubara regions"), Map.entry(78, "Kraljevo region"), Map.entry(79, "Užice region"), Map.entry(80, "Novi Sad region"), Map.entry(81, "Sombor region"), Map.entry(82, "Subotica region"), Map.entry(84, "Kikinda region"), Map.entry(85, "Zrenjanin region"), Map.entry(86, "Pančevo region"), Map.entry(87, "Vršac region"), Map.entry(88, "Ruma region"), Map.entry(89, "Sremska Mitrovica region"), Map.entry(91, "Priština region"), Map.entry(92, "Kosovska Mitrovica region"), Map.entry(93, "Peć region"), Map.entry(94, "Đakovica region"), Map.entry(95, "Prizren region"), Map.entry(96, "Gnjilane region"));
+
+		// Checking the country and region based on the country code and region code
+		String country = "Unknown";
+		if (rr >= 10 && rr <= 19) country = countryMap.get("10-19");
+		else if (rr >= 21 && rr <= 29) country = countryMap.get("21-29");
+		else if (rr >= 30 && rr <= 39) country = countryMap.get("30-39");
+		else if (rr >= 41 && rr <= 49) country = countryMap.get("41-49");
+		else if (rr >= 60 && rr <= 69) country = countryMap.get("60-69");
+		else if (rr >= 70 && rr <= 79) country = countryMap.get("70-79");
+		else if (rr >= 80 && rr <= 89) country = countryMap.get("80-89");
+		else if (rr >= 90 && rr <= 99) country = countryMap.get("90-99");
+
+		return rr < 10 ? regionMap.getOrDefault(rr, "Unknown") : (rr >= 50 && rr <= 59) ? "Unknown region in Slovenia" : country + ", " + regionMap.getOrDefault(rr, "Unknown");
 	}
 }

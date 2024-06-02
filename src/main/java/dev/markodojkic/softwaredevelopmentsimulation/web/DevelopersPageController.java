@@ -4,18 +4,13 @@ import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.User;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class DevelopersPageController {
@@ -42,9 +37,8 @@ public class DevelopersPageController {
 	}
 
 	@PostMapping(value = "/developers")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
-		newDeveloper.setPersonalId(UUID.randomUUID().toString());
-		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "gender") int gender){
+		DataProvider.addDeveloper(developmentTeamIndex, gender, newDeveloper);
 		return "redirect:/developers";
 	}
 

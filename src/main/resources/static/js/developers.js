@@ -5,68 +5,69 @@ $(window).on("load", async () => {
     ]).then(() => {
         onResize();
 
-        $("#sl-tab-panel-1 > sl-carousel > #scroll-container").style.setProperty("overflow-y", "auto");
+        $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container")[0].style.setProperty("overflow-y", "auto");
 
-        $('.rating-developers').forEach(value => value.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
-        $(".user-experience-range").tooltipFormatter = value => `Developer experience - ${value}/10`;
+        $('.rating-developers').each(value => value.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
+        $(".user-experience-range")[0].tooltipFormatter = value => `Developer experience - ${value}/10`;
 
-        $("#developmentTeamsSelectionTree").addEventListener("sl-selection-change", event => {
-            $("#selectedDevelopmentTeamIndex").value = parseInt($("#developmentTeamsSelectionTree").querySelector('[selected]').id);
+        $("#developmentTeamsSelectionTree")[0].addEventListener("sl-selection-change", event => {
+            $("#selectedDevelopmentTeamIndex")[0].value = parseInt($("#developmentTeamsSelectionTree [selected]")[0].id);
         });
 
-        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", () => {
-            $("#editDeveloperSelectedDevelopmentTeamIndex").value = parseInt($("#editDeveloperDevelopmentTeamsSelectionTree").querySelector('[selected]').id);
+        $($("#sl-tab-panel-3")[0]).on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", () => {
+            $("#editDeveloperSelectedDevelopmentTeamIndex")[0].value = parseInt($("#editDeveloperDevelopmentTeamsSelectionTree [selected]")[0].id);
         });
 
-        $(".edit-developer-button").forEach(editButton => editButton.addEventListener("click", async e => {
+        $(".edit-developer-button").each((index, button) => button.addEventListener("click", async e => {
             window.history.replaceState(null, null, "/developers/edit?".concat(e.currentTarget.value));
             $.ajax({
                 type: "GET",
                 url: "/developers/edit?".concat(e.currentTarget.value),
                 success: response => {
-                    $("#sl-tab-panel-3").innerHTML = response
+                    $("#sl-tab-panel-3")[0].innerHTML = response
                 }
             });
 
-            $("#sl-tab-1").disabled = true;
-            $("#sl-tab-2").disabled = true;
-            $("#sl-tab-3").disabled = false;
-            $("#sl-tab-4").disabled = true;
+            $("#sl-tab-1")[0].disabled = true;
+            $("#sl-tab-2")[0].disabled = true;
+            $("#sl-tab-3")[0].disabled = false;
+            $("#sl-tab-4")[0].disabled = true;
 
-            await Promise.all([!$("#sl-tab-3").disabled]).then(() => $("body > sl-tab-group").show("tab-developers-edit"));
+            await Promise.all([!$("#sl-tab-3")[0].disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-edit"));
         }));
     });
 })
 
-function onResize() {
+function onResize(_event) {
     if (outerWidth > 2100) {
-        $(':root').style.setProperty('--numberOfColumns', 6);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 16 / 9);
+        $(':root')[0].style.setProperty('--numberOfColumns', 6);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 16 / 9);
     } else if (outerWidth <= 2100 && outerWidth > 1920) {
-        $(':root').style.setProperty('--numberOfColumns', 5);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 16 / 9);
+        $(':root')[0].style.setProperty('--numberOfColumns', 5);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 16 / 9);
     } else if (outerWidth <= 1920 && outerWidth > 1500) {
-        $(':root').style.setProperty('--numberOfColumns', 4);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 16 / 9);
+        $(':root')[0].style.setProperty('--numberOfColumns', 4);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 16 / 9);
     } else if (outerWidth <= 1500 && outerWidth > 1100) {
-        $(':root').style.setProperty('--numberOfColumns', 3);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 4 / 3);
+        $(':root')[0].style.setProperty('--numberOfColumns', 3);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 4 / 3);
     } else if (outerWidth <= 1100 && outerWidth > 800) {
-        $(':root').style.setProperty('--numberOfColumns', 2);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 0.75);
+        $(':root')[0].style.setProperty('--numberOfColumns', 2);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 0.75);
     } else if (outerWidth <= 800) {
-        $(':root').style.setProperty('--numberOfColumns', 1);
-        $('.custom-modifications').style.setProperty("--aspect-ratio", 0.5);
+        $(':root')[0].style.setProperty('--numberOfColumns', 1);
+        $('.custom-modifications')[0].style.setProperty("--aspect-ratio", 0.5);
     }
 }
 
 async function cancelEditDeveloper() {
-    $("#sl-tab-1").disabled = false;
-    $("#sl-tab-2").disabled = false;
-    $("#sl-tab-3").disabled = true;
-    $("#sl-tab-4").disabled = false;
+    window.history.replaceState(null, null, "/developers");
+    $("#sl-tab-1")[0].disabled = false;
+    $("#sl-tab-2")[0].disabled = false;
+    $("#sl-tab-3")[0].disabled = true;
+    $("#sl-tab-4")[0].disabled = false;
 
-    await Promise.all([!$("#sl-tab-1").disabled]).then(() => $("body > sl-tab-group").show("tab-developers-view"));
+    await Promise.all([!$("#sl-tab-1")[0].disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-view"));
 }
 
 function deleteDeveloper(developmentTeamIndex, developerIndex) {
@@ -79,5 +80,5 @@ function deleteDeveloper(developmentTeamIndex, developerIndex) {
 }
 
 function clearDevelopmentTeamsSelectionTreeSelection() {
-    $("#developmentTeamsSelectionTree").querySelector('[selected]').removeAttribute("selected");
+    $("#developmentTeamsSelectionTree [selected]")[0].removeAttribute("selected");
 }
