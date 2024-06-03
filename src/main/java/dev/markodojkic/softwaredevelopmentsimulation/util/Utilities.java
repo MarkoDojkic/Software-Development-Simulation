@@ -31,14 +31,6 @@ public class Utilities {
 	@Getter
 	private static int totalDevelopmentTeamsPresent;
 
-	public static <T> T getRandomElementFromList(List<T> list){
-		return list.get(random.nextInt(list.size()));
-	}
-
-	public static void simulatePause(long time){
-		Uninterruptibles.sleepUninterruptibly(time, TimeUnit.MILLISECONDS);
-	}
-
 	public static void generateRandomTasks(int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>("");

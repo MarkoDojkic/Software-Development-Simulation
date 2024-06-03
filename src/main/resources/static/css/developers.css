@@ -1,10 +1,17 @@
 :root {
     --numberOfColumns: -1;
     --aspect-ratio: -1;
+    --sl-input-required-content: " " !important;
+    --sl-input-required-content-offset: 0 !important;
+}
+
+.sl-carousel-custom-modification {
+    height: max(335px, calc(100vh - 100px));
 }
 
 .card-overview {
     height: 100%;
+    --border-color:
 }
 
 sl-tab-group::part(nav) {
@@ -15,7 +22,6 @@ sl-tab-group::part(nav) {
 .user-experience-range {
     --track-color-active: var(--sl-color-warning-600);
     --track-color-inactive: var(--sl-color-warning-100);
-    width: 33%;
 }
 
 .horizontal-divider {
@@ -28,14 +34,7 @@ sl-tab-group::part(nav) {
 }
 
 .label-on-left {
-    --label-width: 65%;
     --gap-width: 1rem;
-    margin-right: 5%;
-}
-
-.label-on-left:not(:nth-child(2)) { /* Styling fix for Developers - Recreate inputs other than: Likelihood of generating female developer input */
-    --label-width: 47%;
-    margin-right: -9.5%;
 }
 
 .label-on-left + .label-on-left {
@@ -43,8 +42,7 @@ sl-tab-group::part(nav) {
 }
 
 .label-on-left::part(form-control) {
-    display: grid;
-    grid: auto / var(--label-width) 1fr;
+    display: inline-grid;
     gap: var(--sl-spacing-3x-small) var(--gap-width);
     align-items: center;
 }
@@ -53,14 +51,73 @@ sl-tab-group::part(nav) {
     text-align: right;
 }
 
-.label-on-left:nth-child(2)::part(form-control-help-text) { /* Styling fix for Developers - Recreate: Likelihood of generating female developer input */
-    margin-left: -60%;
+.label-on-left::part(form-control-label):host([required]) .form-control--has-label .form-control__label::after {
+    content: none !important;
+}
+
+#developer-recreate-form > .label-on-left::part(form-control-help-text) {
+    margin-left: 0px;
 }
 
 .label-on-left::part(form-control-help-text) {
     grid-column-start: 2;
+    margin-left: -33px;
+}
+
+#developer-recreate-form > .label-on-left::part(form-control-input) {
+    width: 90.7px !important;
+    margin-left: 15px;
 }
 
 .label-on-left::part(form-control-input){
-    width: 40%;
+    width: 95px;
+    margin-left: 5px;
+}
+
+#gender-male-radio-button::part(button) {
+    background: var(--sl-color-neutral-0);
+    border-color: rgba(135, 206, 235, 1);
+    color: rgba(135, 206, 235, 1);
+}
+
+#gender-male-radio-button::part(button button--checked) {
+    background-color: rgba(135, 206, 235, 1);
+    border-color: rgba(135, 206, 235, 1);
+    color: black;
+}
+
+#gender-male-radio-button::part(button):hover, #gender-male-radio-button::part(button button--checked):hover {
+    background-color: rgba(135, 206, 235, 0.3);
+    border-color: rgba(135, 206, 235, 0.3);
+    color: black;
+}
+
+#gender-male-radio-button::part(button):active, #gender-male-radio-button::part(button button--checked):active {
+    background-color: rgba(135, 206, 235, 0.6);
+    border-color: rgba(135, 206, 235, 0.6);
+    color: black;
+}
+
+#gender-female-radio-button::part(button) {
+    background: var(--sl-color-neutral-0);
+    border-color: rgba(255, 105, 180, 1);
+    color: rgba(255, 105, 180, 1);
+}
+
+#gender-female-radio-button::part(button button--checked) {
+    background-color: rgba(255, 105, 180, 1);
+    border-color: rgba(255, 105, 180, 1);
+    color: black;
+}
+
+#gender-female-radio-button::part(button):hover, #gender-female-radio-button::part(button button--checked):hover {
+    background-color: rgba(255, 105, 180, 0.6);
+    border-color: rgba(255, 105, 180, 0.6);
+    color: black;
+}
+
+#gender-female-radio-button::part(button):active, #gender-female-radio-button::part(button button--checked):active {
+    background-color: rgba(255, 105, 180, 0.8);
+    border-color: rgba(255, 105, 180, 0.8);
+    color: black;
 }
