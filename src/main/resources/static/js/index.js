@@ -14,13 +14,13 @@ $(window).on("load", async () => {
 
     client.onMessageArrived = message => {
         switch(message.destinationName){
-            case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />') + "</div>"; break;
+            case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;") + "</div>"; break;
 
             case "jiraActivityStreamOutput": $("#jiraActivityStream div")[0].innerHTML += ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
                 return match.replace(/ /g, "&nbsp;");
             }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>'); break;
 
-            case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />') + "</div>"; break;
+            case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;") + "</div>"; break;
         };
     }
 
@@ -54,14 +54,39 @@ $(window).on("load", async () => {
 
     $("#jiraActivityStreamBtn")[0].addEventListener('click', () => $("#jiraActivityStream")[0].show());
 
+    $("#minimalEpicsCount")[0].addEventListener('sl-input', () => {
+        if (parseInt($("#minimalEpicsCount")[0].value) < parseInt($("#maximalEpicsCount")[0].value)) {
+            $("#minimalEpicsCount")[0].setCustomValidity('');
+            $("#maximalEpicsCount")[0].setCustomValidity('');
+        } else if (parseInt($("#minimalEpicsCount")[0].value) < 0 || parseInt($("#minimalEpicsCount")[0].value) > 999){
+            $("#minimalEpicsCount")[0].setCustomValidity("Invalid value - must positive integer less than 1000");
+        } else {
+            $("#minimalEpicsCount")[0].setCustomValidity("Invalid value - must be lower than max value");
+        }
+    });
+
+    $("#maximalEpicsCount")[0].addEventListener('sl-input', () => {
+        if (parseInt($("#maximalEpicsCount")[0].value) > parseInt($("#minimalEpicsCount")[0].value)) {
+            $("#minimalEpicsCount")[0].setCustomValidity('');
+            $("#maximalEpicsCount")[0].setCustomValidity('');
+        } else if (parseInt($("#maximalEpicsCount")[0].value) < 0 || parseInt($("#maximalEpicsCount")[0].value) > 999){
+            $("#maximalEpicsCount")[0].setCustomValidity("Invalid value - must positive integer less than 1000");
+        } else {
+            $("#maximalEpicsCount")[0].setCustomValidity("Invalid value - must be greater than min value");
+        }
+    });
+
     $("#create-epic-form #submit-button")[0].addEventListener("click", async e => {
-        $.ajax({
-            type: "OPTIONS",
-            url: "/api/applicationFlowRandomized?".concat("min=".concat($("#minimalEpicsCount")[0].value).concat("&max=").concat($("#maximalEpicsCount")[0].value)),
-            success: response => {
-                $("#create-epic-form")[0].reset();
-            }
-        });
+        if($("#minimalEpicsCount")[0].hasAttribute("data-valid") && $("#maximalEpicsCount")[0].hasAttribute("data-valid"))
+            $.ajax({
+                type: "OPTIONS",
+                url: "/api/applicationFlowRandomized?".concat("min=".concat($("#minimalEpicsCount")[0].value).concat("&max=").concat($("#maximalEpicsCount")[0].value)),
+                success: response => {
+                    $("#create-epic-form")[0].reset();
+                }
+            });
+        else
+            notify("Cannot start application flow - Data is invalid", "error", "exclamation-octagon");
     });
 });
 

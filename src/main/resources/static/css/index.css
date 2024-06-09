@@ -3,6 +3,21 @@
     --sl-input-required-content-offset: 0 !important;
 }
 
+.popup-active span[slot='anchor'] {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    border: dashed 2px var(--sl-color-neutral-600);
+    margin: 50px;
+}
+
+.popup-active .box {
+    width: 100px;
+    height: 50px;
+    background: var(--sl-color-primary-600);
+    border-radius: var(--sl-border-radius-medium);
+}
+
 .ansi_console_snippet {
     font-family: monospace;
     white-space: pre;

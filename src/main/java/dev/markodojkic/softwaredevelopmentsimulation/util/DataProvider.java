@@ -53,7 +53,8 @@ public class DataProvider {
 	public static void removeDeveloper(int developmentTeamIndex, int developerIndex){
 		List<User> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
 		developmentTeam.remove(developerIndex);
-		currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
+		if(developmentTeam.isEmpty()) currentDevelopmentTeamsSetup.remove(developmentTeamIndex);
+		else currentDevelopmentTeamsSetup.set(developmentTeamIndex, developmentTeam);
 	}
 
 	//Below functions are adapted from https://github.com/borko-rajkovic/ts-jmbg with slight changes for gender and randomized birthdate generation

@@ -10,38 +10,24 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
         <script type="module" th:src="@{/js/index.js}"></script>
-
-        <style>
-            .popup-active span[slot='anchor'] {
-              display: inline-block;
-              width: 150px;
-              height: 150px;
-              border: dashed 2px var(--sl-color-neutral-600);
-              margin: 50px;
-            }
-
-            .popup-active .box {
-              width: 100px;
-              height: 50px;
-              background: var(--sl-color-primary-600);
-              border-radius: var(--sl-border-radius-medium);
-            }
-        </style>
     </head>
     <body>
-        <span style="position: sticky; top: 1.5%; left: 1.5%;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
-        <sl-divider vertical></sl-divider>
-        <sl-button-group label="Alignment">
-            <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
-            <sl-button id="jiraActivityStreamBtn" variant="neutral" outline>Open Jira activity stream</sl-button>
-        </sl-button-group>
-        <sl-divider vertical></sl-divider>
-        <sl-button id="manageCustomEpics" size="small" outline pill disabled>Manage epics</sl-button>
-        <sl-button id="manageCustomUserStories" size="small" outline pill disabled>Manage user stories</sl-button>
-        <sl-button id="manageCustomTechnicalTasks" size="small" outline pill disabled>Manage technical tasks</sl-button>
-        <sl-divider style="--spacing: 2px" vertical></sl-divider>
-        <sl-button id="submit-button-custom" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
-        <sl-divider></sl-divider>
+        <header style="display: inline-flex; text-align: -webkit-center; margin-left: 1vw; margin-top: 8px">
+            <span><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
+            <sl-divider style="--spacing: var(--sl-spacing-large);" vertical></sl-divider>
+            <sl-button-group label="Alignment">
+                <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
+                <sl-button id="jiraActivityStreamBtn" variant="neutral" outline>Open Jira activity stream</sl-button>
+            </sl-button-group>
+            <sl-divider vertical></sl-divider>
+            <sl-button-group style="margin-top: 4px;" label="Alignment">
+                <sl-button id="manageCustomEpics" size="small" outline pill disabled>Manage epics</sl-button>
+                <sl-button id="manageCustomUserStories" size="small" outline pill disabled>Manage user stories</sl-button>
+                <sl-button id="manageCustomTechnicalTasks" size="small" outline pill disabled>Manage technical tasks</sl-button>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-button id="submit-button-custom" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
+            </sl-button-group>
+        </header>
         <form id="create-epic-form" style="text-align: -webkit-center;">
             <div style="display: ruby-text">
                 <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>

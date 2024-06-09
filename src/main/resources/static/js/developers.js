@@ -22,9 +22,19 @@ $(window).on("load", async () => {
             window.history.replaceState(null, null, "/developers/edit?".concat(e.currentTarget.value));
             $.ajax({
                 type: "GET",
-                url: "/api/test?".concat(e.currentTarget.value),
+                url: "/developers/edit?".concat(e.currentTarget.value),
                 success: response => {
                     $("#sl-tab-panel-3")[0].innerHTML = response
+                    $(".edit-developer-reset-button")[0].addEventListener("click", async e => {
+                        window.history.replaceState(null, null, "/developers");
+                        $("#sl-tab-1")[0].disabled = false;
+                        $("#sl-tab-2")[0].disabled = false;
+                        $("#sl-tab-3")[0].disabled = true;
+                        $("#sl-tab-4")[0].disabled = false;
+                        $("#sl-tab-panel-3")[0].innerHTML = "";
+
+                        await Promise.all([!$("#sl-tab-1")[0].disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-view"));
+                    });
                 }
             });
 
@@ -57,7 +67,7 @@ function setupResize() {
         if (matches) {
             $(':root')[0].style.setProperty('--numberOfColumns', 6);
             $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 16 / 9);
-            $('body span')[0].style.setProperty("left", "1.5%");
+            $('body span')[0].style.setProperty("left", "2vw");
             $('body span')[0].style.setProperty("top", "1.5%");
             $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-medium)");
             $('body span a').html($('body > span > a').html().replace("&nbsp;","<br>"));
@@ -69,7 +79,7 @@ function setupResize() {
         if (matches) {
             $(':root')[0].style.setProperty('--numberOfColumns', 5);
             $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 16 / 9);
-            $('body span')[0].style.setProperty("left", "1.5%");
+            $('body span')[0].style.setProperty("left", "2vw");
             $('body span')[0].style.setProperty("top", "1.5%");
             $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-medium)");
             $('body span a').html($('body > span > a').html().replace("&nbsp;","<br>"));
@@ -81,7 +91,7 @@ function setupResize() {
         if (matches) {
             $(':root')[0].style.setProperty('--numberOfColumns', 4);
             $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 16 / 9);
-            $('body span')[0].style.setProperty("left", "1.5%");
+            $('body span')[0].style.setProperty("left", "2vw");
             $('body span')[0].style.setProperty("top", "1.5%");
             $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-medium)");
             $('body span a').html($('body > span > a').html().replace("&nbsp;","<br>"));
@@ -93,7 +103,7 @@ function setupResize() {
         if (matches) {
             $(':root')[0].style.setProperty('--numberOfColumns', 3);
             $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 4 / 3);
-            $('body span')[0].style.setProperty("left", "1.5%");
+            $('body span')[0].style.setProperty("left", "2vw");
             $('body span')[0].style.setProperty("top", "2.5%");
             $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-small)");
             $('body span a').html($('body > span > a').html().replace("&nbsp;","<br>"));
@@ -105,7 +115,7 @@ function setupResize() {
         if (matches) {
             $(':root')[0].style.setProperty('--numberOfColumns', 2);
             $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 0.75);
-            $('body span')[0].style.setProperty("top", "1%");
+            $('body span')[0].style.setProperty("top", "1.5%");
             $('body span')[0].style.setProperty("left", "30%");
             $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-2x-small)");
             $("body span a").html($("body span a").html().replace("<br>", "&nbsp;"));
@@ -117,7 +127,7 @@ function setupResize() {
         if (matches) {
            $(':root')[0].style.setProperty('--numberOfColumns', 1);
            $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 0.75);
-           $('body span')[0].style.setProperty("top", "1%");
+           $('body span')[0].style.setProperty("top", "1.5%");
            $('body span')[0].style.setProperty("left", "23%");
            $('body span a')[0].style.setProperty("font-size", "var(--sl-font-size-2x-small)");
            $("body span a").html($("body span a").html().replace("<br>", "&nbsp;"));
@@ -126,27 +136,4 @@ function setupResize() {
     }
 
     layoutChangedCallback6(viewportBreakpointQuery6.matches);
-}
-
-async function cancelEditDeveloper() {
-    window.history.replaceState(null, null, "/developers");
-    $("#sl-tab-1")[0].disabled = false;
-    $("#sl-tab-2")[0].disabled = false;
-    $("#sl-tab-3")[0].disabled = true;
-    $("#sl-tab-4")[0].disabled = false;
-
-    await Promise.all([!$("#sl-tab-1")[0].disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-view"));
-}
-
-function deleteDeveloper(developmentTeamIndex, developerIndex) {
-    $.ajax({
-        type: "DELETE",
-        async: false,
-        url: "/developers?developmentTeamIndex=" + developmentTeamIndex + "&developerIndex=" + developerIndex,
-        error: () => window.location.href = "/developers"
-    });
-}
-
-function clearDevelopmentTeamsSelectionTreeSelection() {
-    $("#developmentTeamsSelectionTree [selected]")[0]?.removeAttribute("selected");
 }

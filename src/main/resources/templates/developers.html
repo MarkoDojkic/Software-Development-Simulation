@@ -11,7 +11,7 @@
         <script type="module" th:src="@{/js/developers.js}"></script>
     </head>
     <body>
-        <span style="position: absolute;"><a href="/" style="text-decoration: none; color: white; vertical-align: 47%;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
+        <span style="position: absolute;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
         <sl-tab-group>
             <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
             <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
@@ -41,7 +41,7 @@
                             <div slot="footer">
                                 <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
                                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                                <sl-button variant="danger" outline th:onclick="|deleteDeveloper(${developmentTeamIterator.index}, ${developerIteratorator.index})|">Remove</sl-button>
+                                <sl-button variant="danger" outline th:onclick="|$.ajax({type: 'DELETE', async: true, url: '/developers?developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}', success: () => window.location.href = '/developers'});|">Remove</sl-button>
                             </div>
                         </sl-card>
                     </sl-carousel-item>
@@ -94,7 +94,7 @@
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Add developer</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset" onclick="clearDevelopmentTeamsSelectionTreeSelection()">Clear form</sl-button>
+                        <sl-button variant="neutral" outline type="reset" onclick="$('#developmentTeamsSelectionTree [selected]')[0]?.removeAttribute('selected');">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
@@ -188,7 +188,7 @@
             <div style="display: inline-flex">
                 <sl-button variant="success" outline type="submit">Confirm</sl-button>
                 <sl-divider vertical></sl-divider>
-                <sl-button variant="danger" outline onclick="cancelEditDeveloper()">Cancel</sl-button>
+                <sl-button class="edit-developer-reset-button" variant="danger" outline>Cancel</sl-button>
             </div>
         </form>
     </div>
