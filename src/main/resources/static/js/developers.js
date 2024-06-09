@@ -22,7 +22,7 @@ $(window).on("load", async () => {
             window.history.replaceState(null, null, "/developers/edit?".concat(e.currentTarget.value));
             $.ajax({
                 type: "GET",
-                url: "/developers/edit?".concat(e.currentTarget.value),
+                url: "/api/test?".concat(e.currentTarget.value),
                 success: response => {
                     $("#sl-tab-panel-3")[0].innerHTML = response
                 }

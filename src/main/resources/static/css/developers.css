@@ -11,7 +11,6 @@
 
 .card-overview {
     height: 100%;
-    --border-color:
 }
 
 sl-tab-group::part(nav) {
@@ -43,16 +42,12 @@ sl-tab-group::part(nav) {
 
 .label-on-left::part(form-control) {
     display: inline-grid;
-    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    gap: var(--sl-spacing-3x-small) 0.875rem;
     align-items: center;
 }
 
 .label-on-left::part(form-control-label) {
     text-align: right;
-}
-
-.label-on-left::part(form-control-label):host([required]) .form-control--has-label .form-control__label::after {
-    content: none !important;
 }
 
 #developer-recreate-form > .label-on-left::part(form-control-help-text) {

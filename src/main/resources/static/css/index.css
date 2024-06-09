@@ -1,0 +1,199 @@
+:root {
+    --sl-input-required-content: " " !important;
+    --sl-input-required-content-offset: 0 !important;
+}
+
+.ansi_console_snippet {
+    font-family: monospace;
+    white-space: pre;
+    display: block;
+    unicode-bidi: embed;
+    overflow: auto;
+    padding: 5px;
+}
+
+.ansi_console_snippet {
+    background-color: black;
+    color: white;
+}
+
+.ansi_fg_black {
+    color: black
+}
+
+.ansi_fg_red {
+    color: red
+}
+
+.ansi_fg_green {
+    color: green
+}
+
+.ansi_fg_yellow {
+    color: yellow
+}
+
+.ansi_fg_blue {
+    color: blue
+}
+
+.ansi_fg_purple {
+    color: purple
+}
+
+.ansi_fg_cyan {
+    color: cyan
+}
+
+.ansi_fg_white {
+    color: white
+}
+
+.ansi_bg_black {
+    background-color: black
+}
+
+.ansi_bg_red {
+    background-color: red
+}
+
+.ansi_bg_green {
+    background-color: green
+}
+
+.ansi_bg_yellow {
+    background-color: yellow
+}
+
+.ansi_bg_blue {
+    background-color: blue
+}
+
+.ansi_bg_purple {
+    background-color: purple
+}
+
+.ansi_bg_cyan {
+    background-color: cyan
+}
+
+.ansi_bg_white {
+    background-color: white
+}
+
+.ansi_fg_68m {
+    color: rgb(51, 102, 204)
+}
+
+.label-on-left {
+    --gap-width: 0.8rem;
+}
+
+.label-on-left + .label-on-left {
+    margin-top: var(--sl-spacing-medium);
+}
+
+.label-on-left::part(form-control) {
+    display: inline-grid;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+.label-on-left::part(form-control-label) {
+    text-align: right;
+}
+
+#create-epic-form > .label-on-left::part(form-control-help-text) {
+    margin-left: 0px;
+}
+
+.label-on-left::part(form-control-help-text) {
+    grid-column-start: 2;
+    margin-left: -33px;
+}
+
+#create-epic-form > .label-on-left::part(form-control-input) {
+    width: 90.7px !important;
+    margin-left: 15px;
+}
+
+.label-on-left::part(form-control-input) {
+    width: 95px;
+    margin-left: 5px;
+}
+
+#manageCustomEpics::part(base) {
+    background: var(--sl-color-neutral-0);
+    border-color: rgb(130, 2, 131, 1);
+    color: rgba(130, 2, 131, 1);
+}
+
+#manageCustomEpics::part(base):hover:not(:disabled) {
+    background-color: rgba(130, 2, 131, 0.3);
+    border-color: rgba(130, 2, 131, 0.3);
+    color: black;
+}
+
+#manageCustomEpics::part(base):active:not(:disabled) {
+    background-color: rgba(130, 2, 131, 0.6);
+    border-color: rgb(130, 2, 131, 0.6);
+    color: black;
+}
+
+#manageCustomUserStories::part(base) {
+    background: var(--sl-color-neutral-0);
+    border-color: rgba(130, 244, 131, 1);
+    color: rgba(130, 244, 131, 1);
+}
+
+#manageCustomUserStories::part(base):hover:not(:disabled) {
+    background-color: rgba(130, 244, 131, 0.3);
+    border-color: rgba(130, 244, 131, 0.3);
+    color: black;
+}
+
+#manageCustomUserStories::part(base):active:not(:disabled) {
+    background-color: rgba(130, 244, 131, 0.6);
+    border-color: rgba(130, 244, 131, 0.6);
+    color: black;
+}
+
+#manageCustomTechnicalTasks::part(base) {
+    background: var(--sl-color-neutral-0);
+    border-color: rgba(124, 124, 124, 1);
+    color: rgba(124, 124, 124, 1);
+}
+
+#manageCustomTechnicalTasks::part(base):hover:not(:disabled) {
+    background-color: rgba(124, 124, 124, 0.3);
+    border-color: rgba(124, 124, 124, 0.3);
+    color: black;
+}
+
+#manageCustomTechnicalTasks::part(base):active:not(:disabled) {
+    background-color: rgba(124, 124, 124, 0.6);
+    border-color: rgba(124, 124, 124, 0.6);
+    color: black;
+}
+
+#informationLogs {
+    background-color: rgb(30 31 34);
+    width: 48vw;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    row-gap: var(--sl-input-spacing-small);
+    height: max(425px, calc(100vh - 230px));
+    overflow-y: scroll;
+}
+
+#errorLogs {
+    background-color: rgb(30 31 34);
+    width: 48vw;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    row-gap: var(--sl-input-spacing-small);
+    height: max(425px, calc(100vh - 230px));
+    overflow-y: scroll;
+}

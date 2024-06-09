@@ -23,14 +23,12 @@ public class SoftwareDevelopmentSimulationApp
 					Developed by Ⓒ Marko Dojkić 2024$Enjoy using our web application""");
 
 		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
-		//generateRandomTasks(3,16);
 
 		//TODO: Correct JIRA activity stream timings
 
 		//GUI PLANS - thymeleaf
 
-		//TODO: Create GUI viewer for info, error and jira activity stream channels
 		//TODO: Create GUI menu to generate n epics with configurable user stories and technical tasks count generation limits
-		//TODO: Create GUI menu to generate n developers (with optional possibility to add more at runtime)
+		//TODO: Update GUI menu to create custom epics, user stories and technical tasks
 	}
 }

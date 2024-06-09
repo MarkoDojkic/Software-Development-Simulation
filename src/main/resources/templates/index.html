@@ -3,22 +3,66 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>Software development simulator - Home page</title>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
         <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
         <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
+        <link rel="stylesheet" th:href="@{/css/index.css}"/>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+        <script type="module" th:src="@{/js/index.js}"></script>
+
+        <style>
+            .popup-active span[slot='anchor'] {
+              display: inline-block;
+              width: 150px;
+              height: 150px;
+              border: dashed 2px var(--sl-color-neutral-600);
+              margin: 50px;
+            }
+
+            .popup-active .box {
+              width: 100px;
+              height: 50px;
+              background: var(--sl-color-primary-600);
+              border-radius: var(--sl-border-radius-medium);
+            }
+        </style>
     </head>
     <body>
         <span style="position: sticky; top: 1.5%; left: 1.5%;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
         <sl-divider vertical></sl-divider>
         <sl-button-group label="Alignment">
             <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
-            <sl-button variant="neutral" href="#" outline>Open Jira activity stream</sl-button>
+            <sl-button id="jiraActivityStreamBtn" variant="neutral" outline>Open Jira activity stream</sl-button>
         </sl-button-group>
         <sl-divider vertical></sl-divider>
-        <sl-button-group label="Alignment">
-            <sl-button variant="primary" href="#" pill>View console information logs</sl-button>
-            <sl-button variant="danger" href="#" pill>View console error logs</sl-button>
-            <sl-button variant="warning" href="#" pill>View console warning logs</sl-button>
-        </sl-button-group>
+        <sl-button id="manageCustomEpics" size="small" outline pill disabled>Manage epics</sl-button>
+        <sl-button id="manageCustomUserStories" size="small" outline pill disabled>Manage user stories</sl-button>
+        <sl-button id="manageCustomTechnicalTasks" size="small" outline pill disabled>Manage technical tasks</sl-button>
+        <sl-divider style="--spacing: 2px" vertical></sl-divider>
+        <sl-button id="submit-button-custom" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
+        <sl-divider></sl-divider>
+        <form id="create-epic-form" style="text-align: -webkit-center;">
+            <div style="display: ruby-text">
+                <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
+                    <sl-icon name="x" slot="prefix"></sl-icon>
+                </sl-input>
+                <sl-input class="label-on-left" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
+                    <sl-icon name="x" slot="prefix"></sl-icon>
+                </sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-button id="submit-button" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
+            </div>
+        </form>
+        <sl-divider></sl-divider>
+        <div style="display: inline-flex">
+            <div id="informationLogs"></div>
+            <sl-divider vertical></sl-divider>
+            <div id="errorLogs"></div>
+        </div>
     </body>
+
+    <sl-dialog id="jiraActivityStream" label="Jira Activity Stream" style="--width: 96vw">
+        <div style="background-color: rgb(30 31 34); display: ruby-text; font-size: calc(1vw/1.36); overflow-x: clip"></div>
+    </sl-dialog>
 </html>

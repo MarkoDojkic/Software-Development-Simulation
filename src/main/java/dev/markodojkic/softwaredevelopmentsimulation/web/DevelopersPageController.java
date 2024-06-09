@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomTasks;
+
 @Controller
 public class DevelopersPageController {
 
@@ -62,9 +64,15 @@ public class DevelopersPageController {
 	}
 
 	@RequestMapping(value = "/developers", method = RequestMethod.DELETE)
-	public void removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
+	public ModelAndView removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
-		//No redirection, removal is handled via ajax on front-end
+		return null;
+	}
+
+	@RequestMapping(value = "/api/applicationFlowRandomized", method = RequestMethod.OPTIONS)
+	public ModelAndView test(@RequestParam("min") int min, @RequestParam("max") int max){
+		generateRandomTasks(min,max);
+		return null;
 	}
 
 	private String getBackgroundColor(String text) {
