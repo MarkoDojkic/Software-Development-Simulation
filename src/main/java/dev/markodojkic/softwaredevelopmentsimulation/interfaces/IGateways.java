@@ -15,6 +15,15 @@ public interface IGateways {
 	@Gateway(requestChannel = "jiraActivityStream.input")
 	void sendToJiraActivityStream(String message);
 
+	@Gateway(requestChannel = "information.ampq.input")
+	void sendToInfoAMPQ(String message);
+
+	@Gateway(requestChannel = "error.ampq.input")
+	void sendToErrorAMPQ(String message);
+
+	@Gateway(requestChannel = "jiraActivityStream.ampq.input")
+	void sendToJiraActivityStreamAMPQ(String message);
+
 	@Gateway(requestChannel = "epicMessage.input")
 	void generateEpic(Epic epic);
 }

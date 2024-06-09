@@ -2,9 +2,11 @@ package dev.markodojkic.softwaredevelopmentsimulation.test;
 
 import dev.markodojkic.softwaredevelopmentsimulation.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.ProjectManager;
-import dev.markodojkic.softwaredevelopmentsimulation.config.Config;
+import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
+import dev.markodojkic.softwaredevelopmentsimulation.config.SpringIntegrationMessageChannelsConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.TestConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer;
 import org.junit.After;
 import org.junit.Before;
@@ -20,13 +22,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { Config.class, PrintoutFlow.class, PrinterTransformer.class, Developer.class, ProjectManager.class, IGateways.class })
+@ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, TestConfig.class, PrintoutFlow.class, PrinterTransformer.class, Developer.class, ProjectManager.class })
 public class SoftwareDevelopmentSimulationAppTest {
 	@Autowired
 	@Qualifier(value = "information.input")
 	private DirectChannel informationInput;
 
-	@Autowired
+    @Autowired
 	private IGateways iGateways;
 
 	private final ByteArrayOutputStream soutContent = new ByteArrayOutputStream();
@@ -47,7 +49,7 @@ public class SoftwareDevelopmentSimulationAppTest {
 	}
 
 	@Test
-	public void whenSendMessageViaGateway_ChannelReceiveMessageWithSentPayload_and_ConsoleOutputIsCorrect() {
+	public void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload_and_ConsoleOutputIsCorrect() {
 		informationInput.subscribe(message -> {
 			assert(message.getPayload().equals("TEST PASSED"));
 			assert(soutContent.toString().equals(

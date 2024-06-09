@@ -1,5 +1,6 @@
 package dev.markodojkic.softwaredevelopmentsimulation;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -40,7 +41,7 @@ public class ProjectManager {
 	private final Map<String, Boolean> currentSprintUserStories = new HashMap<>();
 	private final Map<String, Boolean> userStoriesTechnicalTasks = new HashMap<>();
 
-	@ServiceActivator(inputChannel = "epicMessage.input", requiresReply = "true", adviceChain = "retryAdvice")
+	@ServiceActivator(inputChannel = "epicMessage.input", adviceChain = "retryAdvice")
 	public void assignEpic(Epic epic){
 		if(inProgressEpicsCount.get() >= getTotalDevelopmentTeamsPresent()) throw new InvalidRequestStateException("All development teams are busy. Cannot assign ERIC:  - ".concat(epic.getId()));
 		new Thread(() -> currentSprintEpic.send(MessageBuilder.withPayload(epic).setHeader("assignedDevelopmentTeamPositionNumber", availableDevelopmentTeamIds.pop()).build())).start();
@@ -61,7 +62,7 @@ public class ProjectManager {
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m changed the status to In progress on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				epic.getAssignee().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().plusSeconds(10+25).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))), String::concat);
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m started sprint for EPIC: \033[3m\033[1m%s\033[21m\033[24m \033[23m ◴ %s$",
-				epic.getAssignee(), Math.abs(userStoryList.get(0).getEpicId().hashCode()), userStoryList.get(0).getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))), String::concat);
+				epic.getAssignee().getDisplayName(), Math.abs(userStoryList.get(0).getEpicId().hashCode()), userStoryList.get(0).getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))), String::concat);
 
 		epic.setUserStories(Streams.mapWithIndex(epic.getUserStories().stream(), (userStory, userStoryIndex) -> {
 			userStory.setReporter(epic.getAssignee());
@@ -112,7 +113,7 @@ public class ProjectManager {
 	public void updateUserStoryStatus(UserStory userStory){
 		assert(userStory != null);
 		iGateways.sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on US: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
-				userStory.getAssignee().getDisplayName(), Math.abs(Math.ceil((double) (UUID.fromString(userStory.getId()).hashCode() % 1000) / userStory.getAssignee().getExperienceCoefficient())), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).concat(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
+				userStory.getAssignee().getDisplayName(), Math.abs(Math.ceil((double) (UUID.nameUUIDFromBytes(userStory.getId().getBytes(StandardCharsets.UTF_8)).hashCode() % 1000) / userStory.getAssignee().getExperienceCoefficient())), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).concat(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
 				userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))).replaceFirst(".$", ""));
 
 		currentSprintUserStories.put(userStory.getId().concat("@").concat(userStory.getEpicId()), true);

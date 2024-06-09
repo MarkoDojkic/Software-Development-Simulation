@@ -106,6 +106,6 @@ public class DataProvider {
 		else if (rr >= 80 && rr <= 89) country = countryMap.get("80-89");
 		else if (rr >= 90 && rr <= 99) country = countryMap.get("90-99");
 
-		return rr < 10 ? "Outside of former Yugoslavia countries, ".concat(regionMap.getOrDefault(rr, "Unknown")) : (rr >= 50 && rr <= 59) ? "Somewhere in Slovenia" : (rr >= 60 && rr <= 69) ? "Outside of former Yugoslavia countries, Has temporary residence" : country + ", " + regionMap.getOrDefault(rr, "Unknown");
+		return rr < 10 ? "Outside of former Yugoslavia, ".concat(regionMap.getOrDefault(rr, "Unknown")) : (rr >= 50 && rr <= 59) ? "Somewhere in Slovenia" : (rr >= 60 && rr <= 69) ? "Outside of former Yugoslavia, Has temporary residence" : country + ", " + regionMap.getOrDefault(rr, "Unknown");
 	}
 }
