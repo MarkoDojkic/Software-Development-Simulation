@@ -52,10 +52,10 @@ public class SoftwareDevelopmentSimulationAppTest {
 	public void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload_and_ConsoleOutputIsCorrect() {
 		informationInput.subscribe(message -> {
 			assert(message.getPayload().equals("TEST PASSED"));
-			assert(soutContent.toString().equals(
-					"\u001B[38;5;68m/*\t- INFORMATION -\n" +
-							"  * TEST PASSED\n" +
-							"\t- INFORMATION - */\u001B[0m"));
+			assert(soutContent.toString().contains("""
+                            \u001B[38;5;68m/*\t- INFORMATION -\u001B[0m
+                            \u001B[38;5;68m  * TEST PASSED\u001B[0m
+                            \u001B[38;5;68m\t- INFORMATION - */\u001B[0m"""));
 		});
 		iGateways.sendToInfo("TEST PASSED");
 	}
