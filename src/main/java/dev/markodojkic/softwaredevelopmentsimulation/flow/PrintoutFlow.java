@@ -5,35 +5,40 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 
+import java.util.logging.Logger;
+
 @Configuration
 public class PrintoutFlow {
+	public static final String PRINTER_TRANSFORMER_BEAN = "printerTransformer";
+	private static final Logger logger = Logger.getLogger(PrintoutFlow.class.getName());
+
 	@Bean
 	public IntegrationFlow informationPrintout(){
 		return IntegrationFlow.from("information.input")
-				.transform("printerTransformer", "infoOutput")
+				.transform(PRINTER_TRANSFORMER_BEAN, "infoOutput")
 				.handle(message -> {
-					System.out.println(message.getPayload());
-					Utilities.iGateways.sendToInfoAMPQ(message.getPayload().toString());
+					logger.info(message.getPayload().toString());
+					Utilities.getIGateways().sendToInfoAMPQ(message.getPayload().toString());
 				}).get();
 	}
 
 	@Bean
 	public IntegrationFlow jiraActivityStreamPrintout(){
 		return IntegrationFlow.from("jiraActivityStream.input")
-				.transform("printerTransformer", "jiraActivityStreamOutput")
+				.transform(PRINTER_TRANSFORMER_BEAN, "jiraActivityStreamOutput")
 				.handle(message -> {
-					System.out.println(message.getPayload());
-					Utilities.iGateways.sendToJiraActivityStreamAMPQ(message.getPayload().toString());
+					logger.info(message.getPayload().toString());
+					Utilities.getIGateways().sendToJiraActivityStreamAMPQ(message.getPayload().toString());
 				}).get();
 	}
 
 	@Bean
 	public IntegrationFlow errorPrintout(){
 		return IntegrationFlow.from("error.input")
-				.transform("printerTransformer", "errorOutput")
+				.transform(PRINTER_TRANSFORMER_BEAN, "errorOutput")
 				.handle(message -> {
-					System.out.println(message.getPayload());
-					Utilities.iGateways.sendToErrorAMPQ(message.getPayload().toString());
+					logger.info(message.getPayload().toString());
+					Utilities.getIGateways().sendToErrorAMPQ(message.getPayload().toString());
 				}).get();
 	}
 }

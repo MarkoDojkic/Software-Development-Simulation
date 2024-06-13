@@ -14,20 +14,46 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
-import java.util.Comparator;
-
 @Configuration
+@SuppressWarnings("unchecked")
 public class SpringIntegrationMessageChannelsConfig {
+	@Bean(name = "information.input")
+	public MessageChannel informationInput() {
+		return new DirectChannel();
+	}
+
+	@Bean(name = "error.input")
+	public MessageChannel errorInput() {
+		return new DirectChannel();
+	}
+
+	@Bean(name = "jiraActivityStream.input")
+	public MessageChannel jiraActivityStreamInput() {
+		return new DirectChannel();
+	}
+
+	@Bean(name = "information.ampq.input")
+	public MessageChannel informationAMPQInput() {
+		return new DirectChannel();
+	}
+
+	@Bean(name = "error.ampq.input")
+	public MessageChannel errorAMPQInput() {
+		return new DirectChannel();
+	}
+
+	@Bean(name = "jiraActivityStream.ampq.input")
+	public MessageChannel jiraActivityStreamAMPQInput() {
+		return new DirectChannel();
+	}
+
 	@Bean(name = "epicMessage.input")
 	public MessageChannel epicInput(){
-		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, new Comparator<>() {
-			@Override
-			public int compare(Message<?> message1, Message<?> message2) {
-				Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1;
-				Message<BaseTask> baseTaskMessage2 = (Message<BaseTask>) message2;
-				return Integer.compare(baseTaskMessage2.getPayload().getPriority().getUrgency(), baseTaskMessage1.getPayload().getPriority().getUrgency());
-			}
-		});
+		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, (message1, message2) -> {
+            Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1;
+            Message<BaseTask> baseTaskMessage2 = (Message<BaseTask>) message2;
+            return Integer.compare(baseTaskMessage2.getPayload().getPriority().getUrgency(), baseTaskMessage1.getPayload().getPriority().getUrgency());
+        });
 		epicInputPriorityChannel.setDatatypes(Epic.class);
 
 		return epicInputPriorityChannel;
@@ -35,49 +61,49 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "currentSprintEpic.input")
 	public MessageChannel currentSprintEpic(){
-		DirectChannel currentSprintEpicChannel = new DirectChannel();;
+		DirectChannel currentSprintEpicChannel = new DirectChannel();
 		currentSprintEpicChannel.setDatatypes(Epic.class);
 		return currentSprintEpicChannel;
 	}
 
 	@Bean(name = "inProgressEpic.intermediate")
 	public MessageChannel inProgressEpic(){
-		DirectChannel inProgressEpicChannel = new DirectChannel();;
+		DirectChannel inProgressEpicChannel = new DirectChannel();
 		inProgressEpicChannel.setDatatypes(Epic.class);
 		return inProgressEpicChannel;
 	}
 
 	@Bean(name = "doneEpics.output")
 	public MessageChannel doneEpics(){
-		DirectChannel doneEpicsChannel = new DirectChannel();;
+		DirectChannel doneEpicsChannel = new DirectChannel();
 		doneEpicsChannel.setDatatypes(Epic.class);
 		return doneEpicsChannel;
 	}
 
 	@Bean(name = "inProgressUserStory.input")
 	public MessageChannel inProgressUserStory(){
-		DirectChannel inProgressUserStoryChannel = new DirectChannel();;
+		DirectChannel inProgressUserStoryChannel = new DirectChannel();
 		inProgressUserStoryChannel.setDatatypes(UserStory.class);
 		return inProgressUserStoryChannel;
 	}
 
 	@Bean(name = "currentSprintUserStories.intermediate")
 	public MessageChannel currentSprintUserStories(){
-		DirectChannel currentSprintUserStoriesChannel = new DirectChannel();;
+		DirectChannel currentSprintUserStoriesChannel = new DirectChannel();
 		currentSprintUserStoriesChannel.setDatatypes(UserStory.class);
 		return currentSprintUserStoriesChannel;
 	}
 
 	@Bean(name = "doneSprintUserStories.output")
 	public MessageChannel doneSprintUserStories(){
-		DirectChannel doneSprintUserStoriesChannel = new DirectChannel();;
+		DirectChannel doneSprintUserStoriesChannel = new DirectChannel();
 		doneSprintUserStoriesChannel.setDatatypes(UserStory.class);
 		return doneSprintUserStoriesChannel;
 	}
 
 	@Bean(name = "toDoTechnicalTasks.input")
 	public MessageChannel toDoTechnicalTasks(){
-		DirectChannel toDoTechnicalTasksChannel = new DirectChannel();;
+		DirectChannel toDoTechnicalTasksChannel = new DirectChannel();
 		toDoTechnicalTasksChannel.setDatatypes(TechnicalTask.class);
 		return toDoTechnicalTasksChannel;
 	}
@@ -174,7 +200,7 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "doneTechnicalTasks.output")
 	public MessageChannel doneTechnicalTasks(){
-		DirectChannel doneTechnicalTasksChannel = new DirectChannel();;
+		DirectChannel doneTechnicalTasksChannel = new DirectChannel();
 		doneTechnicalTasksChannel.setDatatypes(TechnicalTask.class);
 		return doneTechnicalTasksChannel;
 	}

@@ -16,19 +16,20 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.gener
 
 @Controller
 public class DevelopersPageController {
+	private static final String REDIRECT_DEVELOPERS = "redirect:/developers";
 
 	@PutMapping(value = "/developers")
 	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
 		DataProvider.updateDevelopmentTeamsSetup(parameters);
-		return "redirect:/developers";
+		return REDIRECT_DEVELOPERS;
 	}
 
 	@GetMapping("/developers")
 	public ModelAndView getDevelopersPage(){
-		List<String> backgroundColors = DataProvider.currentDevelopmentTeamsSetup.stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
+		List<String> backgroundColors = DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
 		ModelAndView developersPage = new ModelAndView("developers");
 
-		developersPage.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
+		developersPage.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
 		developersPage.addObject("developmentTeamBackgroundColors", backgroundColors);
 		developersPage.addObject("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
 		developersPage.addObject("userTypes", UserType.values());
@@ -41,18 +42,18 @@ public class DevelopersPageController {
 	@PostMapping(value = "/developers")
 	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "gender") int gender){
 		DataProvider.addDeveloper(developmentTeamIndex, gender, newDeveloper);
-		return "redirect:/developers";
+		return REDIRECT_DEVELOPERS;
 	}
 
-	@RequestMapping(value = "/developers/edit", method = RequestMethod.GET)
+	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm");
+		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
 
-		editingDeveloperForm.addObject("developmentTeams", DataProvider.currentDevelopmentTeamsSetup);
+		editingDeveloperForm.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
 		editingDeveloperForm.addObject("developerIndex", developerIndex);
 		editingDeveloperForm.addObject("userTypes", UserType.values());
-		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.currentDevelopmentTeamsSetup.get(developmentTeamIndex).get(developerIndex));
+		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.getCurrentDevelopmentTeamsSetup().get(developmentTeamIndex).get(developerIndex));
 
 		return editingDeveloperForm;
 	}
@@ -60,10 +61,10 @@ public class DevelopersPageController {
 	@PatchMapping(value = "/developers")
 	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") User existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
 		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
-		return "redirect:/developers";
+		return REDIRECT_DEVELOPERS;
 	}
 
-	@RequestMapping(value = "/developers", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/developers")
 	public ModelAndView removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
 		return null;

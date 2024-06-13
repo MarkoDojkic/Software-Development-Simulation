@@ -1,5 +1,8 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
 import dev.markodojkic.softwaredevelopmentsimulation.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.ProjectManager;
 import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
@@ -12,6 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.channel.DirectChannel;
@@ -20,6 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, TestConfig.class, PrintoutFlow.class, PrinterTransformer.class, Developer.class, ProjectManager.class })
@@ -35,6 +46,8 @@ public class SoftwareDevelopmentSimulationAppTest {
 	private final ByteArrayOutputStream serrContent = new ByteArrayOutputStream();
 	private final PrintStream originalSOut = System.out;
 	private final PrintStream originalSErr = System.err;
+    @Autowired
+    private MockConnectionFactory mockConnectionFactory;
 
 	@Before
 	public void setUpStreams() {
@@ -49,14 +62,12 @@ public class SoftwareDevelopmentSimulationAppTest {
 	}
 
 	@Test
-	public void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload_and_ConsoleOutputIsCorrect() {
-		informationInput.subscribe(message -> {
-			assert(message.getPayload().equals("TEST PASSED"));
-			assert(soutContent.toString().contains("""
-                            \u001B[38;5;68m/*\t- INFORMATION -\u001B[0m
-                            \u001B[38;5;68m  * TEST PASSED\u001B[0m
-                            \u001B[38;5;68m\t- INFORMATION - */\u001B[0m"""));
-		});
+	public void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload() {
+		assertNotNull(iGateways);
+		assertNotNull(informationInput);
+
+		informationInput.subscribe(message -> assertEquals("TEST PASSED", message.getPayload()));
+
 		iGateways.sendToInfo("TEST PASSED");
 	}
 }

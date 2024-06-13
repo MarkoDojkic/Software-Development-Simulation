@@ -44,6 +44,8 @@ public class PrinterTransformer {
 
 	@Transformer
 	public String jiraActivityStreamOutput(String output){
-		return colorize(String.format(" %s|%70s%-88s| %s%s %s", SPLITTER_LINE.stripLeading(), " ", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), SPLITTER_LINE, Arrays.stream(output.replace("$", SPLITTER_LINE).split("\\R")).map(value -> SPLITTER_LINE.contains(value) ? value.concat("\n") : ("| " + value + " ".repeat(Math.abs(SPLITTER_LINE.length() - value.replaceAll("\u001B\\[\\d*m", "").length() - (System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH).contains("windows") ? 6 : 4))) + "|\n")).collect(Collectors.joining()).stripTrailing(),SPLITTER_LINE).stripTrailing());
+		int osOffset = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH).contains("windows") ? 6 : 4;
+
+		return colorize(String.format(" %s|%70s%-88s| %s%s %s", SPLITTER_LINE.stripLeading(), " ", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), SPLITTER_LINE, Arrays.stream(output.replace("$", SPLITTER_LINE).split("\\R")).map(value -> SPLITTER_LINE.contains(value) ? value.concat("\n") : ("| " + value + " ".repeat(Math.abs(SPLITTER_LINE.length() - value.replaceAll("\u001B\\[\\d*m", "").length() - osOffset)) + "|\n")).collect(Collectors.joining()).stripTrailing(),SPLITTER_LINE).stripTrailing());
 	}
 }

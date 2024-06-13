@@ -9,6 +9,7 @@ import org.springframework.integration.channel.DirectChannel;
 @Configuration
 public class TestConfig {
 	@Bean(name = "information.input")
+	@Primary
 	DirectChannel informationInput(){
 		return new DirectChannel();
 	}

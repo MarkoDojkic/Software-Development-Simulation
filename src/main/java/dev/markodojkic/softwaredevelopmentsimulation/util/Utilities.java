@@ -13,21 +13,31 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
 
+import java.security.SecureRandom;
+import java.util.logging.Level;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 
 @UtilityClass
 public class Utilities {
-	public static final Random random = new Random();
-	public static final Lorem lorem = LoremIpsum.getInstance();
+	private static final Logger logger = Logger.getLogger(Utilities.class.getName());
+	private static final String STRING_FORMAT = "%s-%s";
+
+	@Getter
+	private static final SecureRandom random = new SecureRandom();
+	@Getter
+	private static final Lorem lorem = LoremIpsum.getInstance();
 	@Setter
-	public static IGateways iGateways;
+	@Getter
+	private static IGateways iGateways;
 	@Getter
 	private static int totalDevelopmentTeamsPresent;
 
@@ -39,7 +49,8 @@ public class Utilities {
 		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
 
 		for (var i = 0; i < totalEpicsCount; i++) {
-			System.out.println(colorize(String.format("* Generating EPIC #%d", i), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(90)));
+			int finalI = i;
+			logger.log(Level.INFO, () -> colorize(String.format("* Generating EPIC #%d", finalI), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(90)));
 			Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
 			String boardName = lorem.getWords(1).toUpperCase(Locale.ROOT);
 			Epic epic = Epic.builder()
@@ -51,14 +62,14 @@ public class Utilities {
 					.userStories(new ArrayList<>())
 					.build();
 
-			epic.setId(String.format("%s-%s", boardName, Math.round((float) Math.abs(epic.hashCode()) /100)));
+			epic.setId(String.format(STRING_FORMAT, boardName, Math.abs(Math.round((float) epic.hashCode() /100))));
 			epic.setUserStories(generateUserStories(epic.getId(), boardName,
 					random.nextInt(epic.getPriority().getUrgency() + 1, epic.getPriority().getUrgency() + 3)));
 			epicList.add(epic);
 			//1 -BOLD, 21 - RESET BOLD / ADDS UNDERLINE, 24 - RESET UNDERLINE, 3 - ITALIC, 23 - RESET ITALIC
 			jiraEpicCreatedOutput.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))), String::concat);
-			System.out.println(colorize(String.format("+ Generated EPIC #%d", i), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(90)));
+			logger.log(Level.INFO, () -> colorize(String.format("+ Generated EPIC #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(90)));
 		}
 
 		iGateways.sendToInfo("""
@@ -76,7 +87,8 @@ public class Utilities {
 		List<UserStory> userStoryList = new ArrayList<>();
 
 		for (var i = 0; i < totalToGenerate; i++) {
-			System.out.println(colorize(String.format("\t* Generating USER STORY #%d", i), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(124)));
+			int finalI = i;
+			logger.log(Level.INFO, () -> colorize(String.format("\t* Generating USER STORY #%d", finalI), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(124)));
 			Uninterruptibles.sleepUninterruptibly(25, TimeUnit.MILLISECONDS);
 			UserStory userStory = UserStory.builder()
 					.name(lorem.getTitle(2, 4))
@@ -88,12 +100,12 @@ public class Utilities {
 					.build();
 			int totalTechnicalTasks = random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8);
 
-			userStory.setId(String.format("%s-%s", boardName, Long.parseLong(epicId.split(boardName.concat("-"))[1]+1)+ (long) i *totalTechnicalTasks));
+			userStory.setId(String.format(STRING_FORMAT, boardName, Long.parseLong(epicId.split(boardName.concat("-"))[1]+1)+ (long) i *totalTechnicalTasks));
 
 			userStory.setTechnicalTasks(generateTechnicalTasks(userStory.getId(), boardName,
 					random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8)));
 			userStoryList.add(userStory);
-			System.out.println(colorize(String.format("\t+ Generated USER STORY #%d", i), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(124)));
+			logger.log(Level.INFO, () -> colorize(String.format("\t+ Generated USER STORY #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(124)));
 		}
 
 		return userStoryList;
@@ -103,17 +115,18 @@ public class Utilities {
 		List<TechnicalTask> technicalTaskList = new ArrayList<>();
 
 		for (var i = 0; i < totalToGenerate; i++) {
-			System.out.println(colorize(String.format("\t\t* Generating TECHNICAL TASK #%d", i), Attribute.BACK_COLOR(244), Attribute.TEXT_COLOR(0)));
+			int finalI = i;
+			logger.log(Level.INFO, () -> colorize(String.format("\t\t* Generating TECHNICAL TASK #%d", finalI), Attribute.BACK_COLOR(244), Attribute.TEXT_COLOR(0)));
 			Uninterruptibles.sleepUninterruptibly(50, TimeUnit.MILLISECONDS);
 			technicalTaskList.add(TechnicalTask.builder()
 					.name(lorem.getTitle(2, 4))
 					.description(lorem.getParagraphs(2, 6))
 					.priority(Priority.values()[random.nextInt(Priority.values().length)])
 					.userStoryId(userStoryId)
-					.id(String.format("%s-%s", boardName, Long.parseLong(userStoryId.split(boardName.concat("-"))[1]+1)+i))
+					.id(String.format(STRING_FORMAT, boardName, Long.parseLong(userStoryId.split(boardName.concat("-"))[1]+1)+i))
 					.createdOn(ZonedDateTime.now())
 					.build());
-			System.out.println(colorize(String.format("\t\t+ Generated TECHNICAL TASK #%d", i), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(244)));
+			logger.log(Level.INFO, () -> colorize(String.format("\t\t+ Generated TECHNICAL TASK #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(244)));
 		}
 
 		return technicalTaskList;
