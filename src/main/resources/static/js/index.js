@@ -14,14 +14,14 @@ $(window).on("load", async () => {
 
     client.onMessageArrived = message => {
         switch(message.destinationName){
-            case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('".concat(System.lineSeparator()).concat("', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("-------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+            case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
 
             case "jiraActivityStreamOutput": $("#jiraActivityStream div")[0].innerHTML += ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
                 return match.replace(/ /g, "&nbsp;");
-            }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('".concat(System.lineSeparator()).concat("', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>'); break;
+            }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>'); break;
 
-            case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('".concat(System.lineSeparator()).concat("', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("-------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
-        };
+            case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+        }
     }
 
     var options = {
@@ -46,7 +46,7 @@ $(window).on("load", async () => {
         }
     };
 
-    if (location.protocol == "https:") {
+    if (location.protocol === "https:") {
         options.useSSL = true;
     }
 
@@ -76,12 +76,12 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#create-epic-form #submit-button")[0].addEventListener("click", async e => {
+    $("#create-epic-form #submit-button")[0].addEventListener("click", async () => {
         if($("#minimalEpicsCount")[0].hasAttribute("data-valid") && $("#maximalEpicsCount")[0].hasAttribute("data-valid"))
             $.ajax({
                 type: "OPTIONS",
                 url: "/api/applicationFlowRandomized?".concat("min=".concat($("#minimalEpicsCount")[0].value).concat("&max=").concat($("#maximalEpicsCount")[0].value)),
-                success: response => {
+                success: () => {
                     $("#create-epic-form")[0].reset();
                 }
             });

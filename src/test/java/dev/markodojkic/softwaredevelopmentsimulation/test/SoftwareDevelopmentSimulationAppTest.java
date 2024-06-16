@@ -1,6 +1,5 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
-import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
 import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl;
 import dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl;
@@ -57,9 +56,6 @@ class SoftwareDevelopmentSimulationAppTest {
 	private final ByteArrayOutputStream serrContent = new ByteArrayOutputStream();
 	private final PrintStream originalSOut = System.out;
 	private final PrintStream originalSErr = System.err;
-
-	@Autowired
-	private MockConnectionFactory mockConnectionFactory;
 
 	@BeforeEach
 	public void setup() {

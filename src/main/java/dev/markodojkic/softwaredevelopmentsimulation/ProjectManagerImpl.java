@@ -61,14 +61,14 @@ public class ProjectManagerImpl {
 		logger.log(Level.INFO, "{0} arrived - Current count: {1}", new String[]{epic.getId(), String.valueOf(inProgressEpicsCount.incrementAndGet())});
 		List<UserStory> userStoryList = epic.getUserStories();
 		long artificialOffsetSeconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(), userStoryList.getFirst().getCreatedOn());
-		AtomicReference<String> output = new AtomicReference<>(Strings.EMPTY);
+		AtomicReference<String> output = new AtomicReference<>("");
 
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m changed the Assignee to '\033[1m%s\033[21m\033[24m' on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				epic.getReporter().getDisplayName(), epic.getAssignee().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().plusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m changed the status to In progress on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				epic.getAssignee().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().plusSeconds(35).format(DATE_TIME_FORMATTER)), String::concat);
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m started sprint for EPIC: \033[3m\033[1m%s\033[21m\033[24m \033[23m ◴ %s$",
-				epic.getAssignee().getDisplayName(), String.valueOf(userStoryList.getFirst().getEpicId().hashCode()).replaceFirst("-", Strings.EMPTY), userStoryList.getFirst().getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
+				epic.getAssignee().getDisplayName(), String.valueOf(userStoryList.getFirst().getEpicId().hashCode()).replaceFirst("-", ""), userStoryList.getFirst().getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
 
 		epic.setUserStories(Streams.mapWithIndex(epic.getUserStories().stream(), (userStory, userStoryIndex) -> {
 			userStory.setReporter(epic.getAssignee());
@@ -88,7 +88,7 @@ public class ProjectManagerImpl {
 			return userStory;
 		}).toList());
 
-		Utilities.getIGateways().sendToJiraActivityStream(output.get().replaceFirst(".$", Strings.EMPTY));
+		Utilities.getIGateways().sendToJiraActivityStream(output.get().replaceFirst(".$", ""));
 
 		new Thread(() -> inProgressEpic.send(epicMessage)).start();
 		return epic.getUserStories();
@@ -110,7 +110,7 @@ public class ProjectManagerImpl {
 	public void printDoneEpic(Message<Epic> epicMessage) {
 		if(epicMessage != null) {
 			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on EPIC: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDone\033[21m\033[24m ◴ %s$",
-					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", Strings.EMPTY)); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
+					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", "")); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
 			logger.log(Level.INFO, "{0} finished - Current count: {1}", new String[]{epicMessage.getPayload().getId(), String.valueOf(inProgressEpicsCount.decrementAndGet())});
 			DataProvider.getAvailableDevelopmentTeamIds().push(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
 		}
@@ -121,7 +121,7 @@ public class ProjectManagerImpl {
 		if(userStory != null) {
 			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on US: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					userStory.getAssignee().getDisplayName(), Math.abs(Math.ceil((double) (UUID.nameUUIDFromBytes(userStory.getId().getBytes(StandardCharsets.UTF_8)).hashCode() % 1000) / userStory.getAssignee().getExperienceCoefficient())), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).concat(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
-					userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", Strings.EMPTY));
+					userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
 
 			currentSprintUserStories.put(userStory.getId().concat("@").concat(userStory.getEpicId()), true);
 		}

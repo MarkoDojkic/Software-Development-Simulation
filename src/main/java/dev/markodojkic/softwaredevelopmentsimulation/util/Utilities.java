@@ -79,7 +79,7 @@ public class Utilities {
 				.replace("{0}", Integer.toString(totalDevelopmentTeamsPresent))
 				.replace("{1}", Integer.toString(totalEpicsCount)));
 
-		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", Strings.EMPTY));
+		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
 
 		epicList.forEach(epic -> iGateways.generateEpic(epic));
 	}

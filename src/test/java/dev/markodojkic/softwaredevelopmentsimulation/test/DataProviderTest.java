@@ -1,19 +1,12 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
-import dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl;
-import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.config.SpringIntegrationMessageChannelsConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
-import dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
-import dev.markodojkic.softwaredevelopmentsimulation.test.Config.TestConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
@@ -21,7 +14,6 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, TestConfig.class, PrintoutFlow.class, PrinterTransformer.class, Developer.class, ProjectManagerImpl.class })
 class DataProviderTest {
     @BeforeAll
     public static void preSetup(){

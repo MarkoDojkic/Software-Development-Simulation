@@ -39,6 +39,9 @@ public class MiscellaneousConfig {
 		cachingConnectionFactory.setHost("localhost");
 		cachingConnectionFactory.setUsername("guest");
 		cachingConnectionFactory.setPassword("guest");
+		cachingConnectionFactory.setPort(5672);
+		cachingConnectionFactory.setCacheMode(CachingConnectionFactory.CacheMode.CONNECTION);
+		cachingConnectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
 		cachingConnectionFactory.setPublisherReturns(true);
 		return cachingConnectionFactory;
 	}
@@ -47,6 +50,7 @@ public class MiscellaneousConfig {
 	public RabbitTemplate rabbitTemplate() {
 		final RabbitTemplate rabbitTemplate = new RabbitTemplate(rabbitConnectionFactory());
 		rabbitTemplate.setMandatory(true);
+		rabbitTemplate.setExchange("amq.topic");
 		return rabbitTemplate;
 	}
 

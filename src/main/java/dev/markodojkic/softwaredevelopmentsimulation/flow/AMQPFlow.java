@@ -8,24 +8,23 @@ import org.springframework.integration.dsl.IntegrationFlow;
 
 @Configuration
 public class AMQPFlow {
-
-	public static final String EXCHANGE_NAME = "amq.topic";
-
 	@Bean(name = "infoOutputAMQFlow")
 	public IntegrationFlow infoOutputAMQFlow(RabbitTemplate rabbitTemplate){
 		return IntegrationFlow.from("information.amq.input")
-				.handle(Amqp.outboundAdapter(rabbitTemplate).routingKey("infoOutput").exchangeName(EXCHANGE_NAME)).get();
+				.handle(Amqp.outboundAdapter(rabbitTemplate).exchangeName(rabbitTemplate.getExchange()).routingKey("infoOutput")).get();
 	}
 
 	@Bean(name = "jiraActivityStreamOutputAMQFlow")
 	public IntegrationFlow jiraActivityStreamOutputAMQFlow(RabbitTemplate rabbitTemplate){
 		return IntegrationFlow.from("jiraActivityStream.amq.input")
-				.handle(Amqp.outboundAdapter(rabbitTemplate).routingKey("jiraActivityStreamOutput").exchangeName(EXCHANGE_NAME)).get();
+				.handle(Amqp.outboundAdapter(rabbitTemplate).exchangeName(rabbitTemplate.getExchange()).routingKey("jiraActivityStreamOutput")).get();
 	}
 
 	@Bean
 	public IntegrationFlow errorOutputAMQFlow(RabbitTemplate rabbitTemplate){
 		return IntegrationFlow.from("error.amq.input")
-				.handle(Amqp.outboundAdapter(rabbitTemplate).routingKey("errorOutput").exchangeName(EXCHANGE_NAME)).get();
+				.handle(Amqp.outboundAdapter(rabbitTemplate).exchangeName(rabbitTemplate.getExchange()).routingKey("errorOutput")).get();
 	}
+
+	//TODO: Intercept queue read message and flush to log file
 }

@@ -62,14 +62,14 @@ function makeString(str) {
                 }
             }
             newStr += '">';
-            return newStr === "<span class=\"\">" ? Strings.EMPTY : newStr;
+            return newStr === "<span class=\"\">" ? "" : newStr;
         }
     );
 
     str = str.replace(/\033\[m/g, '');
     str = str.replace(/\033\[0m/g, '');
     return str.replace(/\033\[39m/g, '</span>');
-};
+}
 
 var foregroundColors = {
     '30': 'black',

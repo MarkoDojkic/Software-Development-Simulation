@@ -5,7 +5,6 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import jakarta.annotation.PostConstruct;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
@@ -62,13 +61,13 @@ public class DeveloperImpl {
 
 	private static void sendToJiraSetStatusToInProgressInfo(TechnicalTask technicalTask) {
 		Utilities.getIGateways().sendToJiraActivityStream(String.format(CHANGED_STATUS_TO_IN_PROGRESS_FORMAT,
-				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", Strings.EMPTY));
+				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", ""));
 	}
 
 	private void sendToJiraCreatedTaskInfo(TechnicalTask technicalTask) {
 		Utilities.getIGateways().sendToJiraActivityStream(String.format(CREATED_TASK_FORMAT,
 				technicalTask.getReporter().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(getArtificialOffsetInSeconds(technicalTask.getCreatedOn())).format(DATE_TIME_FORMATTER)).concat(String.format(CHANGED_THE_ASSIGNEE_TO_FORMAT,
-				technicalTask.getReporter().getDisplayName(), technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(getArtificialOffsetInSeconds(technicalTask.getCreatedOn()) + 10).format(DATE_TIME_FORMATTER))).replaceFirst(".$", Strings.EMPTY));
+				technicalTask.getReporter().getDisplayName(), technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(getArtificialOffsetInSeconds(technicalTask.getCreatedOn()) + 10).format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
 	}
 
 	@ServiceActivator(inputChannel = "normalTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")

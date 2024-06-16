@@ -27,7 +27,7 @@ public class PrintoutFlow {
 		return IntegrationFlow.from("jiraActivityStream.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "jiraActivityStreamOutput")
 				.handle(message -> {
-					logger.fine(System.lineSeparator().concat(message.getPayload().toString()));
+					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
 					Utilities.getIGateways().sendToJiraActivityStreamAMQ(message.getPayload().toString());
 				}).get();
 	}

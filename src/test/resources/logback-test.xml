@@ -2,7 +2,10 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="org.springframework" level="ERROR"/>
-    <logger name="dev.markodojkic.softwaredevelopmentsimulation.flow.util.Utilities" level="ERROR"/>
-    <logger name="dev.markodojkic.softwaredevelopmentsimulation.flow.Developer" level="ERROR"/>
+    <logger name="org.springframework.messaging.MessageDeliveryException" level="OFF"/>
+    <logger name="dev.markodojkic.softwaredevelopmentsimulation.util.Utilities" level="ERROR"/>
+    <logger name="dev.markodojkic.softwaredevelopmentsimulation.Developer" level="ERROR"/>
+    <logger name="dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl" level="ERROR"/>
+    <logger name="dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl" level="ERROR"/>
     <logger name="dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow" level="ERROR"/>
 </configuration>

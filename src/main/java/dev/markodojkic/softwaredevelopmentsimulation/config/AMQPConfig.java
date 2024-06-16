@@ -27,7 +27,7 @@ public class AMQPConfig {
 	}
 
 	@Bean
-	public Binding informationPrintoutQueuegBinding() {
+	public Binding informationPrintoutQueueBinding() {
 		return BindingBuilder.bind(informationPrintoutQueue()).to(topicExchange()).with("infoOutput");
 	}
 

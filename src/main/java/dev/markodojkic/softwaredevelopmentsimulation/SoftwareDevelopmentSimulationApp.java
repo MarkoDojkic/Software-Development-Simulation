@@ -20,7 +20,7 @@ public class SoftwareDevelopmentSimulationApp
 
 		Utilities.getIGateways().sendToInfo("""
 					Welcome to Software development simulator™
-					Developed by Ⓒ Marko Dojkić 2024$Enjoy using our web application""");
+					Developed by Ⓒ Marko Dojkić 2024$Enjoy using mine web application""");
 
 		setupDataProvider(false);
 		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
