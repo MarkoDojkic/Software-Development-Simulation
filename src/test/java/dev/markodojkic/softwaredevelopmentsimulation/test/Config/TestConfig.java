@@ -4,16 +4,9 @@ import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.integration.channel.DirectChannel;
 
 @Configuration
 public class TestConfig {
-	@Bean(name = "information.input")
-	@Primary
-	DirectChannel informationInput(){
-		return new DirectChannel();
-	}
-
 	@Bean
 	@Primary
 	public MockConnectionFactory mockConnectionFactory() {
