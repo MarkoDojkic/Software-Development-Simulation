@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class DevelopmentTeamCreationParameters {
     private int femaleDevelopersPercentage = 45;
     private int minimalDevelopersCount = 30;

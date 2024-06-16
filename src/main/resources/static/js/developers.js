@@ -8,7 +8,7 @@ $(window).on("load", async () => {
         $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container")[0].style.setProperty("overflow-y", "auto");
 
         $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
-        $(".user-experience-range")[0].tooltipFormatter = value => `Developer experience - ${value}/10`;
+        $(".developer-experience-range")[0].tooltipFormatter = value => `Developer experience - ${value}/10`;
 
         $("#developmentTeamsSelectionTree")[0].addEventListener("sl-selection-change", event => {
             $("#selectedDevelopmentTeamIndex")[0].value = parseInt($("#developmentTeamsSelectionTree [selected]")[0].id);

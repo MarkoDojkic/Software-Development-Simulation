@@ -17,8 +17,8 @@ public class PrintoutFlow {
 		return IntegrationFlow.from("information.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "infoOutput")
 				.handle(message -> {
-					logger.info(message.getPayload().toString());
-					Utilities.getIGateways().sendToInfoAMPQ(message.getPayload().toString());
+					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
+					Utilities.getIGateways().sendToInfoAMQ(message.getPayload().toString());
 				}).get();
 	}
 
@@ -27,8 +27,8 @@ public class PrintoutFlow {
 		return IntegrationFlow.from("jiraActivityStream.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "jiraActivityStreamOutput")
 				.handle(message -> {
-					logger.info(message.getPayload().toString());
-					Utilities.getIGateways().sendToJiraActivityStreamAMPQ(message.getPayload().toString());
+					logger.fine(System.lineSeparator().concat(message.getPayload().toString()));
+					Utilities.getIGateways().sendToJiraActivityStreamAMQ(message.getPayload().toString());
 				}).get();
 	}
 
@@ -37,8 +37,8 @@ public class PrintoutFlow {
 		return IntegrationFlow.from("error.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "errorOutput")
 				.handle(message -> {
-					logger.info(message.getPayload().toString());
-					Utilities.getIGateways().sendToErrorAMPQ(message.getPayload().toString());
+					logger.severe(System.lineSeparator().concat(message.getPayload().toString()));
+					Utilities.getIGateways().sendToErrorAMQ(message.getPayload().toString());
 				}).get();
 	}
 }

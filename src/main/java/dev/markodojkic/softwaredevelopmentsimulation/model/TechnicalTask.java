@@ -5,7 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 
-@Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.populateMaps;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.updateDevelopmentTeamsSetup;
 
 @EnableConfigurationProperties
@@ -22,14 +22,13 @@ public class SoftwareDevelopmentSimulationApp
 					Welcome to Software development simulator™
 					Developed by Ⓒ Marko Dojkić 2024$Enjoy using our web application""");
 
-		populateMaps();
+		setupDataProvider(false);
 		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 
 		//TODO: Correct JIRA activity stream timings
 
 		//GUI PLANS - thymeleaf
 
-		//TODO: Create GUI menu to generate n epics with configurable user stories and technical tasks count generation limits
 		//TODO: Update GUI menu to create custom epics, user stories and technical tasks
 	}
 }

@@ -62,7 +62,7 @@ function makeString(str) {
                 }
             }
             newStr += '">';
-            return newStr === "<span class=\"\">" ? "" : newStr;
+            return newStr === "<span class=\"\">" ? Strings.EMPTY : newStr;
         }
     );
 

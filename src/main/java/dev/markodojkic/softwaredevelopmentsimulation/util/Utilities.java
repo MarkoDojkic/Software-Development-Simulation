@@ -12,6 +12,7 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
+import org.apache.logging.log4j.util.Strings;
 
 import java.security.SecureRandom;
 import java.util.logging.Level;
@@ -43,7 +44,7 @@ public class Utilities {
 
 	public static void generateRandomTasks(int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
-		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>("");
+		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
 		int totalEpicsCount = random.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
 		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
@@ -57,7 +58,7 @@ public class Utilities {
 					.name(lorem.getTitle(3, 6))
 					.description(lorem.getParagraphs(5, 15))
 					.priority(Priority.values()[random.nextInt(Priority.values().length)])
-					.reporter(technicalManager)
+					.reporter(getTechnicalManager())
 					.createdOn(ZonedDateTime.now())
 					.userStories(new ArrayList<>())
 					.build();
@@ -78,7 +79,7 @@ public class Utilities {
 				.replace("{0}", Integer.toString(totalDevelopmentTeamsPresent))
 				.replace("{1}", Integer.toString(totalEpicsCount)));
 
-		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
+		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", Strings.EMPTY));
 
 		epicList.forEach(epic -> iGateways.generateEpic(epic));
 	}

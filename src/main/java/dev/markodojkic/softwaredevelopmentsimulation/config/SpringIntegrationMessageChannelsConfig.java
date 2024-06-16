@@ -12,43 +12,42 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PriorityChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 
 @Configuration
 @SuppressWarnings("unchecked")
 public class SpringIntegrationMessageChannelsConfig {
 	@Bean(name = "information.input")
-	public MessageChannel informationInput() {
+	public DirectChannel informationInput() {
 		return new DirectChannel();
 	}
 
 	@Bean(name = "error.input")
-	public MessageChannel errorInput() {
+	public DirectChannel errorInput() {
 		return new DirectChannel();
 	}
 
 	@Bean(name = "jiraActivityStream.input")
-	public MessageChannel jiraActivityStreamInput() {
+	public DirectChannel jiraActivityStreamInput() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "information.ampq.input")
-	public MessageChannel informationAMPQInput() {
+	@Bean(name = "information.amq.input")
+	public DirectChannel informationAMQInput() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "error.ampq.input")
-	public MessageChannel errorAMPQInput() {
+	@Bean(name = "error.amq.input")
+	public DirectChannel errorAMQInput() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "jiraActivityStream.ampq.input")
-	public MessageChannel jiraActivityStreamAMPQInput() {
+	@Bean(name = "jiraActivityStream.amq.input")
+	public DirectChannel jiraActivityStreamAMQInput() {
 		return new DirectChannel();
 	}
 
 	@Bean(name = "epicMessage.input")
-	public MessageChannel epicInput(){
+	public PriorityChannel epicInput(){
 		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, (message1, message2) -> {
             Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1;
             Message<BaseTask> baseTaskMessage2 = (Message<BaseTask>) message2;
@@ -60,56 +59,56 @@ public class SpringIntegrationMessageChannelsConfig {
 	}
 
 	@Bean(name = "currentSprintEpic.input")
-	public MessageChannel currentSprintEpic(){
+	public DirectChannel currentSprintEpic(){
 		DirectChannel currentSprintEpicChannel = new DirectChannel();
 		currentSprintEpicChannel.setDatatypes(Epic.class);
 		return currentSprintEpicChannel;
 	}
 
 	@Bean(name = "inProgressEpic.intermediate")
-	public MessageChannel inProgressEpic(){
+	public DirectChannel inProgressEpic(){
 		DirectChannel inProgressEpicChannel = new DirectChannel();
 		inProgressEpicChannel.setDatatypes(Epic.class);
 		return inProgressEpicChannel;
 	}
 
 	@Bean(name = "doneEpics.output")
-	public MessageChannel doneEpics(){
+	public DirectChannel doneEpics(){
 		DirectChannel doneEpicsChannel = new DirectChannel();
 		doneEpicsChannel.setDatatypes(Epic.class);
 		return doneEpicsChannel;
 	}
 
 	@Bean(name = "inProgressUserStory.input")
-	public MessageChannel inProgressUserStory(){
+	public DirectChannel inProgressUserStory(){
 		DirectChannel inProgressUserStoryChannel = new DirectChannel();
 		inProgressUserStoryChannel.setDatatypes(UserStory.class);
 		return inProgressUserStoryChannel;
 	}
 
 	@Bean(name = "currentSprintUserStories.intermediate")
-	public MessageChannel currentSprintUserStories(){
+	public DirectChannel currentSprintUserStories(){
 		DirectChannel currentSprintUserStoriesChannel = new DirectChannel();
 		currentSprintUserStoriesChannel.setDatatypes(UserStory.class);
 		return currentSprintUserStoriesChannel;
 	}
 
 	@Bean(name = "doneSprintUserStories.output")
-	public MessageChannel doneSprintUserStories(){
+	public DirectChannel doneSprintUserStories(){
 		DirectChannel doneSprintUserStoriesChannel = new DirectChannel();
 		doneSprintUserStoriesChannel.setDatatypes(UserStory.class);
 		return doneSprintUserStoriesChannel;
 	}
 
 	@Bean(name = "toDoTechnicalTasks.input")
-	public MessageChannel toDoTechnicalTasks(){
+	public DirectChannel toDoTechnicalTasks(){
 		DirectChannel toDoTechnicalTasksChannel = new DirectChannel();
 		toDoTechnicalTasksChannel.setDatatypes(TechnicalTask.class);
 		return toDoTechnicalTasksChannel;
 	}
 
 	@Bean(name = "trivialTechnicalTaskQueue.input")
-	public MessageChannel trivialTechnicalTaskQueue(){
+	public QueueChannel trivialTechnicalTaskQueue(){
 		QueueChannel trivialTechnicalTaskQueueChannel = new QueueChannel(8);
 		trivialTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return trivialTechnicalTaskQueueChannel;
@@ -117,14 +116,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "trivialTechnicalTask.intermediate")
 	@BridgeFrom(value = "trivialTechnicalTaskQueue.input", poller = @Poller(fixedRate = "800"))
-	public MessageChannel trivialTechnicalTask(){
+	public DirectChannel trivialTechnicalTask(){
 		DirectChannel trivialTechnicalTaskChannel = new DirectChannel();
 		trivialTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return trivialTechnicalTaskChannel;
 	}
 
 	@Bean(name = "normalTechnicalTaskQueue.input")
-	public MessageChannel normalTechnicalTaskQueue(){
+	public QueueChannel normalTechnicalTaskQueue(){
 		QueueChannel normalTechnicalTaskQueueChannel = new QueueChannel(6);
 		normalTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return normalTechnicalTaskQueueChannel;
@@ -132,14 +131,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "normalTechnicalTask.intermediate")
 	@BridgeFrom(value = "normalTechnicalTaskQueue.input", poller = @Poller(fixedRate = "600"))
-	public MessageChannel normalTechnicalTask(){
+	public DirectChannel normalTechnicalTask(){
 		DirectChannel normalTechnicalTaskChannel = new DirectChannel();
 		normalTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return normalTechnicalTaskChannel;
 	}
 
 	@Bean(name = "minorTechnicalTaskQueue.input")
-	public MessageChannel minorTechnicalTaskQueue(){
+	public QueueChannel minorTechnicalTaskQueue(){
 		QueueChannel minorTechnicalTaskQueueChannel = new QueueChannel(4);
 		minorTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return minorTechnicalTaskQueueChannel;
@@ -147,14 +146,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "minorTechnicalTask.intermediate")
 	@BridgeFrom(value = "minorTechnicalTaskQueue.input", poller = @Poller(fixedRate = "400"))
-	public MessageChannel minorTechnicalTask(){
+	public DirectChannel minorTechnicalTask(){
 		DirectChannel minorTechnicalTaskChannel = new DirectChannel();
 		minorTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return minorTechnicalTaskChannel;
 	}
 
 	@Bean(name = "majorTechnicalTaskQueue.input")
-	public MessageChannel majorTechnicalTaskQueue(){
+	public QueueChannel majorTechnicalTaskQueue(){
 		QueueChannel majorTechnicalTaskQueueChannel = new QueueChannel(2);
 		majorTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return majorTechnicalTaskQueueChannel;
@@ -162,14 +161,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "majorTechnicalTask.intermediate")
 	@BridgeFrom(value = "majorTechnicalTaskQueue.input", poller = @Poller(fixedRate = "200"))
-	public MessageChannel majorTechnicalTask(){
+	public DirectChannel majorTechnicalTask(){
 		DirectChannel majorTechnicalTaskChannel = new DirectChannel();
 		majorTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return majorTechnicalTaskChannel;
 	}
 
 	@Bean(name = "criticalTechnicalTaskQueue.input")
-	public MessageChannel criticalTechnicalTaskQueue(){
+	public QueueChannel criticalTechnicalTaskQueue(){
 		QueueChannel criticalTechnicalTaskQueueChannel = new QueueChannel(1);
 		criticalTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return criticalTechnicalTaskQueueChannel;
@@ -177,14 +176,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "criticalTechnicalTask.intermediate")
 	@BridgeFrom(value = "criticalTechnicalTaskQueue.input", poller = @Poller(fixedRate = "100"))
-	public MessageChannel criticalTechnicalTask(){
+	public DirectChannel criticalTechnicalTask(){
 		DirectChannel criticalTechnicalTaskChannel = new DirectChannel();
 		criticalTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return criticalTechnicalTaskChannel;
 	}
 
 	@Bean(name = "blockerTechnicalTaskQueue.input")
-	public MessageChannel blockerTechnicalTaskQueue(){
+	public QueueChannel blockerTechnicalTaskQueue(){
 		QueueChannel blockerTechnicalTaskQueueChannel = new QueueChannel(1);
 		blockerTechnicalTaskQueueChannel.setDatatypes(TechnicalTask.class);
 		return blockerTechnicalTaskQueueChannel;
@@ -192,14 +191,14 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "blockerTechnicalTask.intermediate")
 	@BridgeFrom(value = "blockerTechnicalTaskQueue.input", poller = @Poller(fixedRate = "100"))
-	public MessageChannel blockerTechnicalTask(){
+	public DirectChannel blockerTechnicalTask(){
 		DirectChannel blockerTechnicalTaskChannel = new DirectChannel();
 		blockerTechnicalTaskChannel.setDatatypes(TechnicalTask.class);
 		return blockerTechnicalTaskChannel;
 	}
 
 	@Bean(name = "doneTechnicalTasks.output")
-	public MessageChannel doneTechnicalTasks(){
+	public DirectChannel doneTechnicalTasks(){
 		DirectChannel doneTechnicalTasksChannel = new DirectChannel();
 		doneTechnicalTasksChannel.setDatatypes(TechnicalTask.class);
 		return doneTechnicalTasksChannel;

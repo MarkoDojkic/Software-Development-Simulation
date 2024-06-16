@@ -7,7 +7,6 @@ import java.io.Serial;
 import java.util.List;
 
 
-@Data
 @SuperBuilder
 @Getter
 @Setter

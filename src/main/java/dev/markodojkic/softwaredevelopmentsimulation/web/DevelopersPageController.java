@@ -1,9 +1,10 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
-import dev.markodojkic.softwaredevelopmentsimulation.enums.UserType;
+import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
-import dev.markodojkic.softwaredevelopmentsimulation.model.User;
+import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,40 +27,40 @@ public class DevelopersPageController {
 
 	@GetMapping("/developers")
 	public ModelAndView getDevelopersPage(){
-		List<String> backgroundColors = DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.get(0).getDisplayName())).toList();
-		ModelAndView developersPage = new ModelAndView("developers");
+		List<String> backgroundColors = DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.getFirst().getDisplayName())).toList();
+		ModelAndView developersPage = new ModelAndView("/developers");
 
 		developersPage.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
 		developersPage.addObject("developmentTeamBackgroundColors", backgroundColors);
 		developersPage.addObject("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
-		developersPage.addObject("userTypes", UserType.values());
-		developersPage.addObject("formDeveloperPlaceholder", new User());
-		developersPage.addObject("formEditDeveloperPlaceholder", new User());
+		developersPage.addObject("developerTypes", DeveloperType.values());
+		developersPage.addObject("formDeveloperPlaceholder", new Developer());
+		developersPage.addObject("formEditDeveloperPlaceholder", new Developer());
 
 		return developersPage;
 	}
 
 	@PostMapping(value = "/developers")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") User newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "gender") int gender){
-		DataProvider.addDeveloper(developmentTeamIndex, gender, newDeveloper);
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
+		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
 
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		ModelAndView editingDeveloperForm = new ModelAndView("developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
+		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
 
 		editingDeveloperForm.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
 		editingDeveloperForm.addObject("developerIndex", developerIndex);
-		editingDeveloperForm.addObject("userTypes", UserType.values());
+		editingDeveloperForm.addObject("developerTypes", DeveloperType.values());
 		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.getCurrentDevelopmentTeamsSetup().get(developmentTeamIndex).get(developerIndex));
 
 		return editingDeveloperForm;
 	}
 
 	@PatchMapping(value = "/developers")
-	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") User existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
+	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
 		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
@@ -71,13 +72,13 @@ public class DevelopersPageController {
 	}
 
 	@RequestMapping(value = "/api/applicationFlowRandomized", method = RequestMethod.OPTIONS)
-	public ModelAndView test(@RequestParam("min") int min, @RequestParam("max") int max){
+	public ModelAndView applicationFlowRandomized(@RequestParam("min") int min, @RequestParam("max") int max){
 		generateRandomTasks(min,max);
 		return null;
 	}
 
 	private String getBackgroundColor(String text) {
-		text = text.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+		text = text.toLowerCase().replaceAll("[^a-zA-Z0-9]", Strings.EMPTY);
 		int hash = 0;
 		for (int i = 0; i < text.length(); i++) {
 			hash = text.charAt(i) + ((hash << 5) - hash);

@@ -18,7 +18,7 @@ sl-tab-group::part(nav) {
     justify-content: center;
 }
 
-.user-experience-range {
+.developer-experience-range {
     --track-color-active: var(--sl-color-warning-600);
     --track-color-inactive: var(--sl-color-warning-100);
 }

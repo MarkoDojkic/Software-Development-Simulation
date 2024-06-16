@@ -15,6 +15,7 @@ import com.sun.jdi.request.InvalidRequestStateException;
 import dev.markodojkic.softwaredevelopmentsimulation.model.*;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.*;
@@ -25,8 +26,8 @@ import org.springframework.messaging.MessageChannel;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @MessageEndpoint
-public class ProjectManager {
-	private static final Logger logger = Logger.getLogger(ProjectManager.class.getName());
+public class ProjectManagerImpl {
+	private static final Logger logger = Logger.getLogger(ProjectManagerImpl.class.getName());
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 	private static final String ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER = "assignedDevelopmentTeamPositionNumber";
 
@@ -35,7 +36,7 @@ public class ProjectManager {
 	private final MessageChannel inProgressUserStory;
 
 	@Autowired
-	public ProjectManager(@Qualifier("currentSprintEpic.input") MessageChannel currentSprintEpic, @Qualifier("inProgressEpic.intermediate") MessageChannel inProgressEpic, @Qualifier("inProgressUserStory.input") MessageChannel inProgressUserStory) {
+	public ProjectManagerImpl(@Qualifier("currentSprintEpic.input") MessageChannel currentSprintEpic, @Qualifier("inProgressEpic.intermediate") MessageChannel inProgressEpic, @Qualifier("inProgressUserStory.input") MessageChannel inProgressUserStory) {
 		this.currentSprintEpic = currentSprintEpic;
 		this.inProgressEpic = inProgressEpic;
 		this.inProgressUserStory = inProgressUserStory;
@@ -55,19 +56,19 @@ public class ProjectManager {
 	@Splitter(inputChannel = "currentSprintEpic.input", outputChannel = "currentSprintUserStories.intermediate")
 	public List<UserStory> assignUserStoriesAndPrepareTechnicalTasks(Message<Epic> epicMessage){
 		Epic epic = epicMessage.getPayload();
-		List<User> assignedDevelopmentTeams = DataProvider.getCurrentDevelopmentTeamsSetup().get((Integer) epicMessage.getHeaders().getOrDefault(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, 0));
-		epic.setAssignee(assignedDevelopmentTeams.get(0));
+		List<Developer> assignedDevelopmentTeams = DataProvider.getCurrentDevelopmentTeamsSetup().get((Integer) epicMessage.getHeaders().getOrDefault(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, 0));
+		epic.setAssignee(assignedDevelopmentTeams.getFirst());
 		logger.log(Level.INFO, "{0} arrived - Current count: {1}", new String[]{epic.getId(), String.valueOf(inProgressEpicsCount.incrementAndGet())});
 		List<UserStory> userStoryList = epic.getUserStories();
-		long artificialOffsetSeconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(), userStoryList.get(0).getCreatedOn());
-		AtomicReference<String> output = new AtomicReference<>("");
+		long artificialOffsetSeconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(), userStoryList.getFirst().getCreatedOn());
+		AtomicReference<String> output = new AtomicReference<>(Strings.EMPTY);
 
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m changed the Assignee to '\033[1m%s\033[21m\033[24m' on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				epic.getReporter().getDisplayName(), epic.getAssignee().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().plusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m changed the status to In progress on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 				epic.getAssignee().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().plusSeconds(35).format(DATE_TIME_FORMATTER)), String::concat);
 		output.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m started sprint for EPIC: \033[3m\033[1m%s\033[21m\033[24m \033[23m ◴ %s$",
-				epic.getAssignee().getDisplayName(), String.valueOf(userStoryList.get(0).getEpicId().hashCode()).replaceFirst("-", ""), userStoryList.get(0).getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
+				epic.getAssignee().getDisplayName(), String.valueOf(userStoryList.getFirst().getEpicId().hashCode()).replaceFirst("-", Strings.EMPTY), userStoryList.getFirst().getCreatedOn().plusSeconds(artificialOffsetSeconds).minusSeconds(10).format(DATE_TIME_FORMATTER)), String::concat);
 
 		epic.setUserStories(Streams.mapWithIndex(epic.getUserStories().stream(), (userStory, userStoryIndex) -> {
 			userStory.setReporter(epic.getAssignee());
@@ -87,7 +88,7 @@ public class ProjectManager {
 			return userStory;
 		}).toList());
 
-		Utilities.getIGateways().sendToJiraActivityStream(output.get().replaceFirst(".$", ""));
+		Utilities.getIGateways().sendToJiraActivityStream(output.get().replaceFirst(".$", Strings.EMPTY));
 
 		new Thread(() -> inProgressEpic.send(epicMessage)).start();
 		return epic.getUserStories();
@@ -109,7 +110,7 @@ public class ProjectManager {
 	public void printDoneEpic(Message<Epic> epicMessage) {
 		if(epicMessage != null) {
 			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on EPIC: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDone\033[21m\033[24m ◴ %s$",
-					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", "")); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
+					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", Strings.EMPTY)); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
 			logger.log(Level.INFO, "{0} finished - Current count: {1}", new String[]{epicMessage.getPayload().getId(), String.valueOf(inProgressEpicsCount.decrementAndGet())});
 			DataProvider.getAvailableDevelopmentTeamIds().push(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
 		}
@@ -120,7 +121,7 @@ public class ProjectManager {
 		if(userStory != null) {
 			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on US: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					userStory.getAssignee().getDisplayName(), Math.abs(Math.ceil((double) (UUID.nameUUIDFromBytes(userStory.getId().getBytes(StandardCharsets.UTF_8)).hashCode() % 1000) / userStory.getAssignee().getExperienceCoefficient())), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).concat(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
-					userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
+					userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", Strings.EMPTY));
 
 			currentSprintUserStories.put(userStory.getId().concat("@").concat(userStory.getEpicId()), true);
 		}
@@ -131,7 +132,7 @@ public class ProjectManager {
 		if(technicalTask != null) {
 			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on TASK: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					technicalTask.getAssignee().getDisplayName(), Math.ceil((double) Math.abs(ChronoUnit.SECONDS.between(ZonedDateTime.now(), technicalTask.getCreatedOn())) / technicalTask.getAssignee().getExperienceCoefficient()), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).concat(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on TASK: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
-					technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
+					technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", Strings.EMPTY));
 
 			userStoriesTechnicalTasks.put(technicalTask.getId().concat("@").concat(technicalTask.getUserStoryId()), true);
 		}

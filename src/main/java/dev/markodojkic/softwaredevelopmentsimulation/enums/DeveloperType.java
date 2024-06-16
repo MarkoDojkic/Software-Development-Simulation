@@ -6,7 +6,7 @@ import org.thymeleaf.util.StringUtils;
 
 @AllArgsConstructor
 @Getter
-public enum UserType {
+public enum DeveloperType {
     TECHNICAL_MANAGER(10.00),
     INTERN_DEVELOPER(1.00),
     JUNIOR_DEVELOPER(2.25),
