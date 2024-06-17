@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-version>3.3.0</spring-version>
         <spring-integration-version>6.3.0</spring-integration-version>
-        <jmockit-version>1.49</jmockit-version>
+        <jmockit-version>1.49.2</jmockit-version>
         <junit-jupiter-version>5.10.2</junit-jupiter-version>
     </properties>
 
@@ -121,7 +121,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jmockit</groupId>
+            <groupId>com.github.hazendaz.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <version>${jmockit-version}</version>
             <scope>test</scope>
@@ -164,14 +164,34 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
                     <argLine>
+                        ${argLine} <!-- Needed for jacoco to run -->
                         -Xshare:off
                         -XX:+EnableDynamicAgentLoading
-                        -javaagent:${user.home}/.m2/repository/org/jmockit/jmockit/${jmockit-version}/jmockit-${jmockit-version}.jar
+                        -javaagent:${user.home}/.m2/repository/com/github/hazendaz/jmockit/jmockit/${jmockit-version}/jmockit-${jmockit-version}.jar
                     </argLine>
                 </configuration>
             </plugin>

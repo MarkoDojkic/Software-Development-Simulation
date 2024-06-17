@@ -34,4 +34,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Software-Development-Simulation -Dsonar.projectName='Software Development Simulation'
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Software-Development-Simulation -Dsonar.projectName='Software Development Simulation' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
