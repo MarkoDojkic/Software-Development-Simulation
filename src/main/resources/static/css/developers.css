@@ -51,7 +51,7 @@ sl-tab-group::part(nav) {
 }
 
 #developer-recreate-form > .label-on-left::part(form-control-help-text) {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 .label-on-left::part(form-control-help-text) {

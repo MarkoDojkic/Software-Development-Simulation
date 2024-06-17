@@ -14,6 +14,7 @@ import com.google.common.collect.Streams;
 import com.sun.jdi.request.InvalidRequestStateException;
 import dev.markodojkic.softwaredevelopmentsimulation.model.*;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
+import dev.markodojkic.softwaredevelopmentsimulation.util.TaskNotDoneException;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,15 +140,15 @@ public class ProjectManagerImpl {
 	}
 
 	@ServiceActivator(inputChannel = "inProgressEpic.intermediate", outputChannel="doneEpics.output", adviceChain = "retryAdvice")
-	public Message<Epic> sendToDoneEpic(Message<Epic> epicMessage) throws InvalidRequestStateException {
-		if(!markEpicAsDone(epicMessage.getPayload())) throw new InvalidRequestStateException("Not done yet - ".concat(epicMessage.getPayload().getId()));
+	public Message<Epic> sendToDoneEpic(Message<Epic> epicMessage) throws TaskNotDoneException {
+		if(!markEpicAsDone(epicMessage.getPayload())) throw new TaskNotDoneException(epicMessage.getPayload());
 
 		return epicMessage;
 	}
 
 	@ServiceActivator(inputChannel="inProgressUserStory.input", outputChannel="doneSprintUserStories.output", adviceChain = "retryAdvice")
-	public UserStory sendToDoneUserStory(UserStory userStory) throws InvalidRequestStateException {
-		if(!markUserStoryAsDone(userStory)) throw new InvalidRequestStateException("Not done yet - ".concat(userStory.getId()));
+	public UserStory sendToDoneUserStory(UserStory userStory) throws TaskNotDoneException {
+		if(!markUserStoryAsDone(userStory)) throw new TaskNotDoneException(userStory);
 
 		return userStory;
 	}

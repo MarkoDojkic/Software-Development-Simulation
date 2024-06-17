@@ -3,37 +3,38 @@ import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/compone
 import {ansi2html_string} from './ansi2html.js';
 
 $(window).on("load", async () => {
-    var wsbroker = location.hostname;
-    var wsport = 15675;
+    const websocketBroker = location.hostname;
+    const websocketPort = 15675;
 
-    var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws", "fe-client_" +  parseInt(Math.random() * 100, 10));
+    const client = new Paho.MQTT.Client(websocketBroker, websocketPort, "/ws", "fe-client_" + (Math.random() * 100).toString(10));
 
     client.onConnectionLost = responseObject => {
-        notify("MQQT connection failure to" + wsbroker + ":" + wsport + "<br />" + responseObject.errorMessage, "warning", "exclamation-triangle");
+        notify("MQTT connection failure to" + websocketBroker + ":" + websocketPort + "<br />" + responseObject.errorMessage, "warning", "exclamation-triangle");
     };
 
     client.onMessageArrived = message => {
+        const jiraActivityStreamDiv  = $("#jiraActivityStream div")[0];
         switch(message.destinationName){
             case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
 
-            case "jiraActivityStreamOutput": $("#jiraActivityStream div")[0].innerHTML += ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
+            case "jiraActivityStreamOutput": jiraActivityStreamDiv.innerHTML = ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
                 return match.replace(/ /g, "&nbsp;");
-            }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>'); break;
+            }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>') + jiraActivityStreamDiv.innerHTML; break;
 
             case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
         }
     }
 
-    var options = {
+    const options = {
         timeout: 10,
         keepAliveInterval: 3600,
-        onSuccess: function() {
-            notify("MQQT connected successfully to " + wsbroker + ":" + wsport, "success", "check2-circle");
-            client.subscribe("infoOutput", { qos: 1 });
-            client.subscribe("jiraActivityStreamOutput", { qos: 1 });
-            client.subscribe("errorOutput", { qos: 1 });
+        onSuccess: function () {
+            notify("MQTT connected successfully to " + websocketBroker + ":" + websocketPort, "success", "check2-circle");
+            client.subscribe("infoOutput", {qos: 1});
+            client.subscribe("jiraActivityStreamOutput", {qos: 1});
+            client.subscribe("errorOutput", {qos: 1});
 
-            notify(`MQQT subscribed to:
+            notify(`MQTT subscribed to:
                 <ul>
                     <li>infoOutput</li>
                     <li>jiraActivityStreamOutput</li>
@@ -41,8 +42,8 @@ $(window).on("load", async () => {
                 </ul>
             `);
         },
-        onFailure: function(message) {
-            notify("MQQT connection failure to" + wsbroker + ":" + wsport + "<br />" + message.errorMessage, "error", "exclamation-octagon");
+        onFailure: function (message) {
+            notify("MQQT connection failure to" + websocketBroker + ":" + websocketPort + "<br />" + message.errorMessage, "error", "exclamation-octagon");
         }
     };
 
@@ -52,35 +53,38 @@ $(window).on("load", async () => {
 
     client.connect(options);
 
+    const minimalEpicsCount = $("#minimalEpicsCount")[0];
+    const maximalEpicsCount = $("#maximalEpicsCount")[0];
+
     $("#jiraActivityStreamBtn")[0].addEventListener('click', () => $("#jiraActivityStream")[0].show());
 
-    $("#minimalEpicsCount")[0].addEventListener('sl-input', () => {
-        if (parseInt($("#minimalEpicsCount")[0].value) < parseInt($("#maximalEpicsCount")[0].value)) {
-            $("#minimalEpicsCount")[0].setCustomValidity('');
-            $("#maximalEpicsCount")[0].setCustomValidity('');
-        } else if (parseInt($("#minimalEpicsCount")[0].value) < 0 || parseInt($("#minimalEpicsCount")[0].value) > 999){
-            $("#minimalEpicsCount")[0].setCustomValidity("Invalid value - must positive integer less than 1000");
+    minimalEpicsCount.addEventListener('sl-input', () => {
+        if (parseInt(minimalEpicsCount.value) < parseInt(maximalEpicsCount.value)) {
+            minimalEpicsCount.setCustomValidity('');
+            maximalEpicsCount.setCustomValidity('');
+        } else if (parseInt(minimalEpicsCount.value) < 0 || parseInt(minimalEpicsCount.value) > 999){
+            minimalEpicsCount.setCustomValidity("Invalid value - must positive integer less than 1000");
         } else {
-            $("#minimalEpicsCount")[0].setCustomValidity("Invalid value - must be lower than max value");
+            minimalEpicsCount.setCustomValidity("Invalid value - must be lower than max value");
         }
     });
 
-    $("#maximalEpicsCount")[0].addEventListener('sl-input', () => {
-        if (parseInt($("#maximalEpicsCount")[0].value) > parseInt($("#minimalEpicsCount")[0].value)) {
-            $("#minimalEpicsCount")[0].setCustomValidity('');
-            $("#maximalEpicsCount")[0].setCustomValidity('');
-        } else if (parseInt($("#maximalEpicsCount")[0].value) < 0 || parseInt($("#maximalEpicsCount")[0].value) > 999){
-            $("#maximalEpicsCount")[0].setCustomValidity("Invalid value - must positive integer less than 1000");
+    maximalEpicsCount.addEventListener('sl-input', () => {
+        if (parseInt(maximalEpicsCount.value) > parseInt(minimalEpicsCount.value)) {
+            minimalEpicsCount.setCustomValidity('');
+            maximalEpicsCount.setCustomValidity('');
+        } else if (parseInt(maximalEpicsCount.value) < 0 || parseInt(maximalEpicsCount.value) > 999){
+            maximalEpicsCount.setCustomValidity("Invalid value - must positive integer less than 1000");
         } else {
-            $("#maximalEpicsCount")[0].setCustomValidity("Invalid value - must be greater than min value");
+            maximalEpicsCount.setCustomValidity("Invalid value - must be greater than min value");
         }
     });
 
     $("#create-epic-form #submit-button")[0].addEventListener("click", async () => {
-        if($("#minimalEpicsCount")[0].hasAttribute("data-valid") && $("#maximalEpicsCount")[0].hasAttribute("data-valid"))
+        if(minimalEpicsCount.hasAttribute("data-valid") && maximalEpicsCount.hasAttribute("data-valid"))
             $.ajax({
                 type: "OPTIONS",
-                url: "/api/applicationFlowRandomized?".concat("min=".concat($("#minimalEpicsCount")[0].value).concat("&max=").concat($("#maximalEpicsCount")[0].value)),
+                url: "/api/applicationFlowRandomized?".concat("min=".concat(minimalEpicsCount.value).concat("&max=").concat(maximalEpicsCount.value)),
                 success: () => {
                     $("#create-epic-form")[0].reset();
                 }

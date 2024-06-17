@@ -1,15 +1,15 @@
 export function processString(inputString) {
-    var str = makeString(inputString);
+    let str = makeString(inputString);
     while (true) {
-        var openSpanCount = (str.match(/<span/g) || []).length;
-        var closeSpanCount = (str.match(/<\/span/g) || []).length;
+        const openSpanCount = (str.match(/<span/g) || []).length;
+        const closeSpanCount = (str.match(/<\/span/g) || []).length;
         if (openSpanCount >= closeSpanCount) {
             break;
         }
         // we may have some extra closing escape sequence that doesn't really close anything
         // especially on end of line but not only
-        var underReplace = '<\/span>';
-        var idx = str.lastIndexOf(underReplace);
+        const underReplace = '<\/span>';
+        const idx = str.lastIndexOf(underReplace);
         if (idx > -1) {
             str = str.substring(0, idx) + str.substring(idx + underReplace.length);
         }
@@ -25,6 +25,29 @@ export function processString(inputString) {
 export function ansi2html_string(inputString) {
     return processString(inputString).trim();
 }
+
+const foregroundColors = {
+    '30': 'black',
+    '31': 'red',
+    '32': 'green',
+    '33': 'yellow',
+    '34': 'blue',
+    '35': 'purple',
+    '36': 'cyan',
+    '38': 'white'
+};
+
+const backgroundColors = {
+    '40': 'black',
+    '196': 'red',
+    '42': 'green',
+    '43': 'yellow',
+    '44': 'blue',
+    '45': 'purple',
+    '46': 'cyan',
+    '47': 'white',
+    '68': '68m'
+};
 
 function makeString(str) {
     //
@@ -48,15 +71,15 @@ function makeString(str) {
     str = str.replace(
         /(\033\[(\d+)(;\d+)?m)/gm,
         function (match, fullMatch, m1, m2) {
-            var fgColor = m1;
-            var bgColor = m2;
+            const fgColor = m1;
+            let bgColor = m2;
 
-            var newStr = '<span class="';
+            let newStr = '<span class="';
             if (fgColor && foregroundColors[fgColor]) {
                 newStr += 'ansi_fg_' + foregroundColors[fgColor];
             }
             if (bgColor) {
-                bgColor = bgColor.substr(1); // remove leading ;
+                bgColor = bgColor.substring(1); // remove leading ;
                 if (backgroundColors[bgColor]) {
                     newStr += ' ansi_bg_' + backgroundColors[bgColor];
                 }
@@ -70,26 +93,3 @@ function makeString(str) {
     str = str.replace(/\033\[0m/g, '');
     return str.replace(/\033\[39m/g, '</span>');
 }
-
-var foregroundColors = {
-    '30': 'black',
-    '31': 'red',
-    '32': 'green',
-    '33': 'yellow',
-    '34': 'blue',
-    '35': 'purple',
-    '36': 'cyan',
-    '38': 'white'
-};
-
-var backgroundColors = {
-    '40': 'black',
-    '196': 'red',
-    '42': 'green',
-    '43': 'yellow',
-    '44': 'blue',
-    '45': 'purple',
-    '46': 'cyan',
-    '47': 'white',
-    '68': '68m'
-};

@@ -8,4 +8,5 @@
     <logger name="dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl" level="ERROR"/>
     <logger name="dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl" level="ERROR"/>
     <logger name="dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow" level="ERROR"/>
+    <logger name="dev.markodojkic.softwaredevelopmentsimulation.util.TaskNotDoneException" level="OFF"/>
 </configuration>
