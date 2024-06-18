@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @Configuration
@@ -18,7 +19,7 @@ public class PrintoutFlow {
 				.transform(PRINTER_TRANSFORMER_BEAN, "infoOutput")
 				.handle(message -> {
 					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToInfoAMQ(message.getPayload().toString());
+					Utilities.getIGateways().sendToInfoMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
 				}).get();
 	}
 
@@ -28,7 +29,7 @@ public class PrintoutFlow {
 				.transform(PRINTER_TRANSFORMER_BEAN, "jiraActivityStreamOutput")
 				.handle(message -> {
 					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToJiraActivityStreamAMQ(message.getPayload().toString());
+					Utilities.getIGateways().sendToJiraActivityStreamMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
 				}).get();
 	}
 
@@ -38,7 +39,7 @@ public class PrintoutFlow {
 				.transform(PRINTER_TRANSFORMER_BEAN, "errorOutput")
 				.handle(message -> {
 					logger.severe(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToErrorAMQ(message.getPayload().toString());
+					Utilities.getIGateways().sendToErrorMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
 				}).get();
 	}
 }

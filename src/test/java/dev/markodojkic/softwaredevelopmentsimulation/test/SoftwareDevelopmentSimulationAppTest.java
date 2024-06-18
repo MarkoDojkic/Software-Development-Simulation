@@ -5,13 +5,12 @@ import dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl;
 import dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl;
 import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.config.SpringIntegrationMessageChannelsConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.flow.AMQPFlow;
+import dev.markodojkic.softwaredevelopmentsimulation.flow.MQTTFlow;
 import dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
-import dev.markodojkic.softwaredevelopmentsimulation.test.Config.TestConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.up
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, TestConfig.class, AMQPFlow.class, PrintoutFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class })
+@ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class })
 class SoftwareDevelopmentSimulationAppTest {
 	@Autowired
 	@Qualifier(value = "information.input")

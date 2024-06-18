@@ -7,10 +7,15 @@
     <groupId>dev.markodojkic</groupId>
     <artifactId>softwaredevelopmentsimulation</artifactId>
     <name>Software development simulator™</name>
-    <version>1.1.1</version>
-    <url>
-        https://github.com/MarkoDojkic/Software-Development-Simulation
-    </url>
+    <version>1.1.2</version>
+    <url>https://github.com/MarkoDojkic/Software-Development-Simulation</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <developers>
         <developer>
             <id>markodojkic</id>
@@ -45,22 +50,26 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
             <version>${spring-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${spring-version}</version>
+            <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>${spring-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,16 +83,19 @@
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
             <version>${spring-integration-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-stream</artifactId>
             <version>${spring-integration-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-amqp</artifactId>
+            <artifactId>spring-integration-mqtt</artifactId>
             <version>${spring-integration-version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Other -->
@@ -91,26 +103,31 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>3.0.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.32</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.diogonunes</groupId>
             <artifactId>JColor</artifactId>
             <version>5.5.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.thedeanda</groupId>
             <artifactId>lorem</artifactId>
             <version>2.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.2.1-jre</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Tests -->
@@ -142,12 +159,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.12.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.fridujo</groupId>
-            <artifactId>rabbitmq-mock</artifactId>
-            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

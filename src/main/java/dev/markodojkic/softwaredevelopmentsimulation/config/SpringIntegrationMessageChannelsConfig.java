@@ -31,18 +31,18 @@ public class SpringIntegrationMessageChannelsConfig {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "information.amq.input")
-	public DirectChannel informationAMQInput() {
+	@Bean(name = "information.mqtt.input")
+	public DirectChannel informationMQTTInput() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "error.amq.input")
-	public DirectChannel errorAMQInput() {
+	@Bean(name = "error.mqtt.input")
+	public DirectChannel errorMQTTInput() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "jiraActivityStream.amq.input")
-	public DirectChannel jiraActivityStreamAMQInput() {
+	@Bean(name = "jiraActivityStream.mqtt.input")
+	public DirectChannel jiraActivityStreamMQTTInput() {
 		return new DirectChannel();
 	}
 

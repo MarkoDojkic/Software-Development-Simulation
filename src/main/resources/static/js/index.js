@@ -6,7 +6,7 @@ $(window).on("load", async () => {
     const websocketBroker = location.hostname;
     const websocketPort = 15675;
 
-    const client = new Paho.MQTT.Client(websocketBroker, websocketPort, "/ws", "fe-client_" + (Math.random() * 100).toString(10));
+    const client = new Paho.MQTT.Client(websocketBroker, websocketPort, "/ws", "fe-client_".concat(generateUUID()));
 
     client.onConnectionLost = responseObject => {
         notify("MQTT connection failure to" + websocketBroker + ":" + websocketPort + "<br />" + responseObject.errorMessage, "warning", "exclamation-triangle");
@@ -15,24 +15,24 @@ $(window).on("load", async () => {
     client.onMessageArrived = message => {
         const jiraActivityStreamDiv  = $("#jiraActivityStream div")[0];
         switch(message.destinationName){
-            case "infoOutput": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+            case "information-printout-topic": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
 
-            case "jiraActivityStreamOutput": jiraActivityStreamDiv.innerHTML = ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
+            case "java-activity-stream-printout-topic": jiraActivityStreamDiv.innerHTML = ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
                 return match.replace(/ /g, "&nbsp;");
             }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>') + jiraActivityStreamDiv.innerHTML; break;
 
-            case "errorOutput": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+            case "error-printout-topic": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
         }
     }
 
     const options = {
-        timeout: 10,
         keepAliveInterval: 3600,
+        mqttVersion: 4, // Identification for version 3.1.1
         onSuccess: function () {
             notify("MQTT connected successfully to " + websocketBroker + ":" + websocketPort, "success", "check2-circle");
-            client.subscribe("infoOutput", {qos: 1});
-            client.subscribe("jiraActivityStreamOutput", {qos: 1});
-            client.subscribe("errorOutput", {qos: 1});
+            client.subscribe("information-printout-topic", {qos: 1});
+            client.subscribe("java-activity-stream-printout-topic", {qos: 1});
+            client.subscribe("error-printout-topic", {qos: 1});
 
             notify(`MQTT subscribed to:
                 <ul>
@@ -108,4 +108,19 @@ function notify(message, variant = 'primary', icon = 'info-circle', duration = 1
     document.body.append(alert);
 
     alert.toast();
+}
+
+function generateUUID() {
+    const crypto = window.crypto || window.msCrypto;
+    if (!crypto) {
+        console.error("Crypto API not available");
+        return (Math.random() * 1000).toFixed(0);
+    }
+    const array = new Uint32Array(4);
+    crypto.getRandomValues(array);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = (array[0] + Math.random() * 16) % 16 | 0;
+        array[0] = Math.floor(array[0] / 16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
 }

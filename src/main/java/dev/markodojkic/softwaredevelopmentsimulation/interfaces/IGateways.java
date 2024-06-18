@@ -15,14 +15,14 @@ public interface IGateways {
 	@Gateway(requestChannel = "jiraActivityStream.input")
 	void sendToJiraActivityStream(String message);
 
-	@Gateway(requestChannel = "information.amq.input")
-	void sendToInfoAMQ(String message);
+	@Gateway(requestChannel = "information.mqtt.input")
+	void sendToInfoMQTT(byte[] message);
 
-	@Gateway(requestChannel = "error.amq.input")
-	void sendToErrorAMQ(String message);
+	@Gateway(requestChannel = "error.mqtt.input")
+	void sendToErrorMQTT(byte[] message);
 
-	@Gateway(requestChannel = "jiraActivityStream.amq.input")
-	void sendToJiraActivityStreamAMQ(String message);
+	@Gateway(requestChannel = "jiraActivityStream.mqtt.input")
+	void sendToJiraActivityStreamMQTT(byte[] message);
 
 	@Gateway(requestChannel = "epicMessage.input")
 	void generateEpic(Epic epic);

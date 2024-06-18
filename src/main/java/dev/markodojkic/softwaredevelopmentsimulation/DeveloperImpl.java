@@ -51,10 +51,10 @@ public class DeveloperImpl {
 	public TechnicalTask trivialTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on trivial technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on trivial technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(trivialTaskTypicalResolutionTimeCoefficient  / technicalTask.getAssignee().getExperienceCoefficient(), TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on trivial technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on trivial technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -74,10 +74,10 @@ public class DeveloperImpl {
 	public TechnicalTask normalTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on normal technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on normal technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / normalTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on normal technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on normal technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -86,10 +86,10 @@ public class DeveloperImpl {
 	public TechnicalTask minorTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on minor technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on minor technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / minorTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on minor technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on minor technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -98,10 +98,10 @@ public class DeveloperImpl {
 	public TechnicalTask majorTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on major technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on major technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / majorTaskTypicalResolutionTimeCoefficient , TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on major technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on major technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -110,10 +110,10 @@ public class DeveloperImpl {
 	public TechnicalTask criticalTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on critical technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on critical technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / criticalTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on critical technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on critical technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -122,10 +122,10 @@ public class DeveloperImpl {
 	public TechnicalTask blockerTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s started working on blocker technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on blocker technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		Uninterruptibles.sleepUninterruptibly(technicalTask.getAssignee().getExperienceCoefficient() / blockerTaskTypicalResolutionTimeCoefficient, TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("###Developer %s finished working on blocker technical task %s",
+		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on blocker technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
