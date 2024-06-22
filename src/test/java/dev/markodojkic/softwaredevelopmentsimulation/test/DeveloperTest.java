@@ -57,8 +57,8 @@ class DeveloperTest {
 
     @Test
     void testToString() {
-        Developer developer = new Developer("Bob Smith", "9876543210987", DeveloperType.INTERN_DEVELOPER, false, 1L);
-        String expectedString = "Developer(id=" + developer.getId() + ", name=Bob, surname=Smith, yugoslavianUMCN=9876543210987, placeOfBirth=Montenegro, Podgorica, Danilovgrad, Kolašin, developerType=INTERN_DEVELOPER, experienceCoefficient=1)";
+        Developer developer = new Developer("123", "Bob", "Smith", "9876543210987", "Test area", DeveloperType.INTERN_DEVELOPER, 1L, false);
+        String expectedString = "Developer(id=123, name=Bob, surname=Smith, yugoslavianUMCN=9876543210987, placeOfBirth=Test area, developerType=INTERN_DEVELOPER, experienceCoefficient=1)";
 
         assertEquals(expectedString, developer.toString());
     }

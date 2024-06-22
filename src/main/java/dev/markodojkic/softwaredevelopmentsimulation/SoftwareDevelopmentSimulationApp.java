@@ -14,21 +14,22 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.up
 @SpringBootApplication
 public class SoftwareDevelopmentSimulationApp
 {
-	public static void main(String[] args)
-	{
-		Utilities.setIGateways(new SpringApplication(SoftwareDevelopmentSimulationApp.class).run(args).getBean(IGateways.class));
+    public static void main(String[] args)
+    {
+        Utilities.setIGateways(new SpringApplication(SoftwareDevelopmentSimulationApp.class).run(args).getBean(IGateways.class));
 
-		Utilities.getIGateways().sendToInfo("""
+        setupDataProvider(false);
+        updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
+
+        Utilities.getIGateways().sendToInfo("""
 					Welcome to Software development simulator™
-					Developed by Ⓒ Marko Dojkić 2024$Enjoy using mine web application""");
+					Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using mine spring integration web based application""");
 
-		setupDataProvider(false);
-		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
+        //TODO: Correct JIRA activity stream timings
+        //TODO: Fix issues with some MQTT messages not reaching FE nor being saved in log file
 
-		//TODO: Correct JIRA activity stream timings
+        //GUI PLANS - thymeleaf
 
-		//GUI PLANS - thymeleaf
-
-		//TODO: Update GUI menu to create custom epics, user stories and technical tasks
-	}
+        //TODO: Update GUI menu to create custom epics, user stories and technical tasks
+    }
 }

@@ -11,15 +11,24 @@ import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.TestConfig;
 import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
+import io.moquette.broker.Server;
+import io.moquette.broker.config.MemoryConfig;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PriorityChannel;
+import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -30,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
@@ -37,7 +47,8 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.up
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ContextConfiguration(classes = { MiscellaneousConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class })
+@ContextConfiguration(classes = { MiscellaneousConfig.class, TestConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class })
+@ExtendWith(MockitoExtension.class)
 class SoftwareDevelopmentSimulationAppTest {
 	@Autowired
 	@Qualifier(value = "information.input")
@@ -55,6 +66,29 @@ class SoftwareDevelopmentSimulationAppTest {
 	private final ByteArrayOutputStream serrContent = new ByteArrayOutputStream();
 	private final PrintStream originalSOut = System.out;
 	private final PrintStream originalSErr = System.err;
+
+	private static Server mqttServer;
+
+	@BeforeAll
+	public static void preSetup() throws Exception {
+		Properties properties = new Properties();
+		properties.setProperty("port", "21681");
+		properties.setProperty("host", "0.0.0.0");
+		properties.setProperty("password_file", ""); //No password
+		properties.setProperty("allow_anonymous", "true");
+		properties.setProperty("authenticator_class", "");
+		properties.setProperty("authorizator_class", "");
+		properties.setProperty("netty.mqtt.message_size", "32368");
+
+		MemoryConfig memoryConfig = new MemoryConfig(properties);
+		mqttServer = new Server();
+		mqttServer.startServer(memoryConfig); //In memory MQTT server
+	}
+
+	@AfterAll
+	public static void tearDown() {
+		mqttServer.stopServer();
+	}
 
 	@BeforeEach
 	public void setup() {

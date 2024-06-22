@@ -38,10 +38,11 @@
     </issueManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>3.3.0</spring-version>
-        <spring-integration-version>6.3.0</spring-integration-version>
+        <spring-version>3.3.1</spring-version>
+        <spring-integration-version>6.3.1</spring-integration-version>
         <jmockit-version>1.49.2</jmockit-version>
         <junit-jupiter-version>5.10.2</junit-jupiter-version>
+        <application.version>${project.version}</application.version>
     </properties>
 
     <dependencies>
@@ -94,6 +95,12 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
+            <version>${spring-integration-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-file</artifactId>
             <version>${spring-integration-version}</version>
             <scope>compile</scope>
         </dependency>
@@ -161,10 +168,57 @@
             <version>5.12.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.moquette</groupId>
+            <artifactId>moquette-broker</artifactId>
+            <version>0.15</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-version}</version>
+                <configuration>
+                    <mainClass>dev.markodojkic.softwaredevelopmentsimulation.SoftwareDevelopmentSimulationApp</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

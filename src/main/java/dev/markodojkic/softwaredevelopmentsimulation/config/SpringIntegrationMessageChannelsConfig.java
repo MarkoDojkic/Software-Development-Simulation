@@ -16,13 +16,13 @@ import org.springframework.messaging.Message;
 @Configuration
 @SuppressWarnings("unchecked")
 public class SpringIntegrationMessageChannelsConfig {
-	@Bean(name = "information.input")
-	public DirectChannel informationInput() {
+	@Bean(name = "errorChannel")
+	public DirectChannel errorChannel() {
 		return new DirectChannel();
 	}
 
-	@Bean(name = "error.input")
-	public DirectChannel errorInput() {
+	@Bean(name = "information.input")
+	public DirectChannel informationInput() {
 		return new DirectChannel();
 	}
 

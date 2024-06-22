@@ -112,6 +112,14 @@ class BaseTaskTest {
                 "', createdOn=" + createdOn + '}';
 
         assertEquals(expectedToString, task.toString());
+
+        task.setAssignee(null);
+        task.setReporter(null);
+
+        expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
+                ", assignee='UNASSIGNED', reporter='UNASSIGNED', createdOn=" + createdOn + '}';
+
+        assertEquals(expectedToString, task.toString());
     }
 
     @Test

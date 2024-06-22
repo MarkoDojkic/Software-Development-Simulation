@@ -33,8 +33,8 @@ public class BaseTask implements Serializable {
 				", name='" + name + '\'' +
 				", description='" + description + '\'' +
 				", priority=" + priority +
-				", assignee='" + assignee.getDisplayName() +
-				"', reporter='" + reporter.getDisplayName() +
+				", assignee='" + (assignee != null ? assignee.getDisplayName() : "UNASSIGNED") +
+				"', reporter='" + (reporter != null ? reporter.getDisplayName() : "UNASSIGNED") +
 				"', createdOn=" + createdOn +
 				'}';
 	}
