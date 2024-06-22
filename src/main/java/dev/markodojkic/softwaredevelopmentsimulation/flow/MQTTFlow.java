@@ -9,13 +9,15 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 @Configuration
+@SuppressWarnings("unchecked")
 public class MQTTFlow {
 	@Bean(name = "infoOutputMQTTFlow")
 	public IntegrationFlow infoOutputMQTTFlow(MqttPahoMessageHandler rabbitMQMessageHandler){
 		return IntegrationFlow.from("information.mqtt.input")
+				//Unchecked cast cannot be resolved since Message<String> throws ClassCastException
 				.transform(Message.class, message -> MessageBuilder.fromMessage(message)
-                        .setHeader(MqttHeaders.TOPIC, "information-printout-topic")
-                        .build()).handle(rabbitMQMessageHandler).get();
+						.setHeader(MqttHeaders.TOPIC, "information-printout-topic")
+						.build()).handle(rabbitMQMessageHandler).get();
 	}
 
 	@Bean(name = "jiraActivityStreamOutputMQTTFlow")
@@ -35,6 +37,4 @@ public class MQTTFlow {
 						.setHeader(MqttHeaders.TOPIC, "error-printout-topic")
 						.build()).handle(rabbitMQMessageHandler).get();
 	}
-
-	//TODO: Intercept queue read message and flush to log file
 }

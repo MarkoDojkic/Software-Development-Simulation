@@ -116,3 +116,9 @@ sl-tab-group::part(nav) {
     border-color: rgba(255, 105, 180, 0.8);
     color: black;
 }
+
+sl-icon[name='gender-male'], sl-icon[name='gender-female'] {
+    position: relative;
+    top: 4px;
+    right: 1.4px;
+}

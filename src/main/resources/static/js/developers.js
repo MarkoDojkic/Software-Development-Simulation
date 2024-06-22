@@ -76,7 +76,7 @@ function setupResize() {
         bodySpan.style.setProperty("left", "2vw");
         bodySpan.style.setProperty("top", "1.5%");
         bodySpanA.style.setProperty("font-size", "var(--sl-font-size-medium)");
-        bodySpanA.html(bodySpanA.html().replace("&nbsp;","<br>"));
+        $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
         $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
     }
 
@@ -111,7 +111,7 @@ function setupResize() {
             bodySpan.style.setProperty("left", "2vw");
             bodySpan.style.setProperty("top", "2.5%");
             bodySpanA.style.setProperty("font-size", "var(--sl-font-size-small)");
-            bodySpanA.html(bodySpanA.html().replace("&nbsp;","<br>"));
+            $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
             $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
         } else layoutChangedCallback3(viewportBreakpointQuery3.matches);
     }
@@ -123,7 +123,7 @@ function setupResize() {
             bodySpan.style.setProperty("top", "1.5%");
             bodySpan.style.setProperty("left", "30%");
             bodySpanA.style.setProperty("font-size", "var(--sl-font-size-2x-small)");
-            bodySpanA.html(bodySpanA.html().replace("&nbsp;","<br>"));
+            $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
             $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
         } else layoutChangedCallback4(viewportBreakpointQuery4.matches);
     }
@@ -135,7 +135,7 @@ function setupResize() {
            bodySpan.style.setProperty("top", "1.5%");
            bodySpan.style.setProperty("left", "23%");
            bodySpanA.style.setProperty("font-size", "var(--sl-font-size-2x-small)");
-            bodySpanA.html(bodySpanA.html().replace("&nbsp;","<br>"));
+           $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-block");
         } else layoutChangedCallback5(viewportBreakpointQuery5.matches);
     }

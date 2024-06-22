@@ -118,6 +118,10 @@
     text-align: right;
 }
 
+#create-epic-form {
+    margin-top: 4%;
+}
+
 #create-epic-form > .label-on-left::part(form-control-help-text) {
     margin-left: 0;
 }
@@ -193,12 +197,12 @@
 
 #informationLogs {
     background-color: rgb(30 31 34);
-    width: 48vw;
+    width: 49vw;
     grid-auto-flow: row;
     grid-template-columns: 1fr 1fr;
     display: grid;
     row-gap: var(--sl-input-spacing-small);
-    height: max(425px, calc(100vh - 230px));
+    height: calc(100vh - 300px);
     overflow-y: scroll;
 }
 
@@ -209,6 +213,12 @@
     grid-template-columns: 1fr 1fr;
     display: grid;
     row-gap: var(--sl-input-spacing-small);
-    height: max(425px, calc(100vh - 230px));
+    height: calc(100vh - 300px);
     overflow-y: scroll;
+}
+
+sl-icon[name='gender-male'], sl-icon[name='gender-female'] {
+    position: relative;
+    top: 4px;
+    right: 1.4px;
 }

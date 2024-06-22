@@ -1,45 +1,35 @@
 package dev.markodojkic.softwaredevelopmentsimulation.flow;
 
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
-
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
+import org.springframework.integration.handler.LoggingHandler;
 
 @Configuration
 public class PrintoutFlow {
-	public static final String PRINTER_TRANSFORMER_BEAN = "printerTransformer";
-	private static final Logger logger = Logger.getLogger(PrintoutFlow.class.getName());
+	private static final String PRINTER_TRANSFORMER_BEAN = "printerTransformer";
 
 	@Bean
-	public IntegrationFlow informationPrintout(){
+	public IntegrationFlow informationPrintoutFlow(){
 		return IntegrationFlow.from("information.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "infoOutput")
-				.handle(message -> {
-					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToInfoMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
-				}).get();
+				.log(LoggingHandler.Level.INFO, message -> System.lineSeparator().concat(message.getPayload().toString()))
+				.channel("information.mqtt.input").channel("information.logFile.input").get();
 	}
 
 	@Bean
-	public IntegrationFlow jiraActivityStreamPrintout(){
+	public IntegrationFlow jiraActivityStreamPrintoutFlow(){
 		return IntegrationFlow.from("jiraActivityStream.input")
 				.transform(PRINTER_TRANSFORMER_BEAN, "jiraActivityStreamOutput")
-				.handle(message -> {
-					logger.info(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToJiraActivityStreamMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
-				}).get();
+				.log(LoggingHandler.Level.INFO, message -> System.lineSeparator().concat(message.getPayload().toString()))
+				.channel("jiraActivityStream.mqtt.input").channel("jiraActivityStream.logFile.input").get();
 	}
 
 	@Bean
-	public IntegrationFlow errorPrintout(){
-		return IntegrationFlow.from("error.input")
+	public IntegrationFlow errorPrintoutFlow(){
+		return IntegrationFlow.from("errorChannel")
 				.transform(PRINTER_TRANSFORMER_BEAN, "errorOutput")
-				.handle(message -> {
-					logger.severe(System.lineSeparator().concat(message.getPayload().toString()));
-					Utilities.getIGateways().sendToErrorMQTT(message.getPayload().toString().getBytes(StandardCharsets.UTF_8));
-				}).get();
+				.log(LoggingHandler.Level.ERROR, message -> System.lineSeparator().concat(message.getPayload().toString()))
+				.channel("error.mqtt.input").channel("error.logFile.input").get();
 	}
 }

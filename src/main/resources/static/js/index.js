@@ -12,18 +12,7 @@ $(window).on("load", async () => {
         notify("MQTT connection failure to" + websocketBroker + ":" + websocketPort + "<br />" + responseObject.errorMessage, "warning", "exclamation-triangle");
     };
 
-    client.onMessageArrived = message => {
-        const jiraActivityStreamDiv  = $("#jiraActivityStream div")[0];
-        switch(message.destinationName){
-            case "information-printout-topic": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
-
-            case "java-activity-stream-printout-topic": jiraActivityStreamDiv.innerHTML = ansi2html_string(message.payloadString).replace(/  +/mg, function (match) {
-                return match.replace(/ /g, "&nbsp;");
-            }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>') + jiraActivityStreamDiv.innerHTML; break;
-
-            case "error-printout-topic": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(message.payloadString.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
-        }
-    }
+    client.onMessageArrived = message => appendDataToMQTTTopicDivs(message.destinationName, message.payloadString);
 
     const options = {
         keepAliveInterval: 3600,
@@ -92,6 +81,38 @@ $(window).on("load", async () => {
         else
             notify("Cannot start application flow - Data is invalid", "error", "exclamation-octagon");
     });
+
+    $.ajax({
+        type: "GET",
+        url: "/api/logs?filename=informationData",
+        success: response => {
+            response.split("%$").forEach(instance => {
+                appendDataToMQTTTopicDivs("information-printout-topic", instance);
+            });
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "/api/logs?filename=jiraActivityStreamData",
+        success: response => {
+            response.split("%$").forEach(instance => {
+                appendDataToMQTTTopicDivs("java-activity-stream-printout-topic", instance);
+            });
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "/api/logs?filename=errorData",
+        success: response => {
+            response.split("%$").forEach(instance => {
+                appendDataToMQTTTopicDivs("error-printout-topic", instance);
+            });
+        }
+    });
+
+    $('#sl-rating-developer')[0].getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>');
 });
 
 function notify(message, variant = 'primary', icon = 'info-circle', duration = 1500) {
@@ -123,4 +144,17 @@ function generateUUID() {
         array[0] = Math.floor(array[0] / 16);
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
+}
+
+function appendDataToMQTTTopicDivs(topicName, data){
+    const jiraActivityStreamDiv  = $("#jiraActivityStream div")[0];
+    switch(topicName){
+        case "information-printout-topic": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(data.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+
+        case "java-activity-stream-printout-topic": jiraActivityStreamDiv.innerHTML = ansi2html_string(data).replace(/  +/mg, function (match) {
+            return match.replace(/ /g, "&nbsp;");
+        }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>') + jiraActivityStreamDiv.innerHTML; break;
+
+        case "error-printout-topic": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(data.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+    }
 }

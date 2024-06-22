@@ -36,6 +36,8 @@ public class DevelopersPageController {
 		developersPage.addObject("developerTypes", DeveloperType.values());
 		developersPage.addObject("formDeveloperPlaceholder", new Developer());
 		developersPage.addObject("formEditDeveloperPlaceholder", new Developer());
+		developersPage.addObject("developerIndex");
+		developersPage.addObject("developmentTeamIndex");
 
 		return developersPage;
 	}

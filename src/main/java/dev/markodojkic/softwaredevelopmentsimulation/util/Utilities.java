@@ -14,6 +14,8 @@ import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import org.apache.logging.log4j.util.Strings;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.logging.Level;
 
@@ -32,6 +34,9 @@ public class Utilities {
 	private static final Logger logger = Logger.getLogger(Utilities.class.getName());
 	private static final String STRING_FORMAT = "%s-%s";
 
+	@Setter
+	@Getter
+	private static Path currentApplicationLogsPath = Path.of("/");
 	@Getter
 	private static final SecureRandom random = new SecureRandom();
 	@Getter
@@ -41,6 +46,17 @@ public class Utilities {
 	private static IGateways iGateways;
 	@Getter
 	private static int totalDevelopmentTeamsPresent;
+
+	static {
+		ZonedDateTime now = ZonedDateTime.now();
+		Utilities.setCurrentApplicationLogsPath(Paths.get(System.getProperty("user.home"),
+				System.getProperty("app.groupId", "dev.markodojkic"),
+				System.getProperty("app.artifactId", "softwaredevelopmentsimulation"),
+				System.getProperty("app.version", "0.0.0-TESTING"),
+				"logs",
+				now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				now.format(DateTimeFormatter.ofPattern("HH.mm.ss"))));
+	}
 
 	public static void generateRandomTasks(int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
@@ -68,8 +84,8 @@ public class Utilities {
 					random.nextInt(epic.getPriority().getUrgency() + 1, epic.getPriority().getUrgency() + 3)));
 			epicList.add(epic);
 			//1 -BOLD, 21 - RESET BOLD / ADDS UNDERLINE, 24 - RESET UNDERLINE, 3 - ITALIC, 23 - RESET ITALIC
-			jiraEpicCreatedOutput.accumulateAndGet(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
-					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))), String::concat);
+				jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
+					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).concat(jiraEpicCreatedOutput.get()));
 			logger.log(Level.INFO, () -> colorize(String.format("+ Generated EPIC #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(90)));
 		}
 

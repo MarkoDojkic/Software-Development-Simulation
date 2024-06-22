@@ -28,18 +28,32 @@
                 <sl-button id="submit-button-custom" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
             </sl-button-group>
         </header>
-        <form id="create-epic-form" style="text-align: -webkit-center;">
-            <div style="display: ruby-text">
-                <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-                <sl-input class="label-on-left" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
-                    <sl-icon name="x" slot="prefix"></sl-icon>
-                </sl-input>
-                <sl-divider vertical></sl-divider>
-                <sl-button id="submit-button" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
+        <div style="display: inline-flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium);">
+            <form id="create-epic-form">
+                <div style="display: ruby-text">
+                    <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                    <sl-input class="label-on-left" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
+                        <sl-icon name="x" slot="prefix"></sl-icon>
+                    </sl-input>
+                    <sl-divider vertical></sl-divider>
+                    <sl-button id="submit-button" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
+                </div>
+            </form>
+            <sl-divider vertical></sl-divider>
+            <div style="border: 2px solid rebeccapurple; padding: 1.25rem;">
+                <strong th:text="|ID: ${developer.id}|"></strong>
+                <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
+                <span th:text="|${developer.getDisplayName()} (UMCN: ${developer.yugoslavianUMCN}) |"></span>&nbsp;
+                <sl-icon th:name="${!developer.isFemale ? 'gender-male' : 'gender-female'}"></sl-icon>&nbsp;
+                <sl-badge style="background-color: rebeccapurple;" th:text="${developer.developerType.displayName}"></sl-badge>
+                <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
+                <span th:text="|Place of birth: ${developer.placeOfBirth}|"></span>
+                <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
+                <sl-rating id="sl-rating-developer" th:value="${ ((developer.experienceCoefficient * developer.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly></sl-rating>
             </div>
-        </form>
+        </div>
         <sl-divider></sl-divider>
         <div style="display: inline-flex">
             <div id="informationLogs"></div>
