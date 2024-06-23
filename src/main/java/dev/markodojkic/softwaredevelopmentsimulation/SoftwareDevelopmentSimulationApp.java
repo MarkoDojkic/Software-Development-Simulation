@@ -21,12 +21,9 @@ public class SoftwareDevelopmentSimulationApp
         setupDataProvider(false);
         updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 
-        Utilities.getIGateways().sendToInfo("""
-					Welcome to Software development simulator™
-					Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using mine spring integration web based application""");
+        Utilities.getIGateways().sendToInfo("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using mine spring integration web based application");
 
         //TODO: Correct JIRA activity stream timings
-        //TODO: Fix issues with some MQTT messages not reaching FE nor being saved in log file
 
         //GUI PLANS - thymeleaf
 

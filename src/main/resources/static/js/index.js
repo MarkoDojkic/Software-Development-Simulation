@@ -148,23 +148,24 @@ function generateUUID() {
 }
 
 function appendDataToMQTTTopicDivs(topicName, data) {
+    if(data.length === 0 || data === "\n") return;
     switch (topicName) {
         case "information-printout-topic":
         {
             const sanitizedData = sanitizeInformationData(data);
-            $("#informationLogs").append(`<div>${sanitizedData}</div>`);
+            $("#informationLogs").append(`<div>${sanitizedData.replace(/^<br\s*\/?>/, '')}</div>`);
             break;
         }
         case "java-activity-stream-printout-topic":
         {
             const sanitizedData = sanitizeJavaActivityStreamData(data);
-            $("#jiraActivityStream div").prepend(sanitizedData);
+            $("#jiraActivityStream div").prepend(sanitizedData.replace(/^<br\s*\/?>/, ''));
             break;
         }
         case "error-printout-topic":
         {
             const sanitizedData = sanitizeErrorData(data);
-            $("#errorLogs").append(`<div>${sanitizedData}</div>`);
+            $("#errorLogs").append(`<div>${sanitizedData.replace(/^<br\s*\/?>/, '')}</div>`);
             break;
         }
     }
