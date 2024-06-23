@@ -6,8 +6,7 @@ export function processString(inputString) {
         if (openSpanCount >= closeSpanCount) {
             break;
         }
-        // we may have some extra closing escape sequence that doesn't really close anything
-        // especially on end of line but not only
+        // we may have some extra closing escape sequence that doesn't really close anything, especially on end of line but not only
         const underReplace = '<\/span>';
         const idx = str.lastIndexOf(underReplace);
         if (idx > -1) {
@@ -50,24 +49,16 @@ const backgroundColors = {
 };
 
 function makeString(str) {
-    //
     // `\033[1m` enables bold font, `\033[21m` disables it, '\033[24m` - disables italic (introduced by 21) - not here
-    //
     str = str.replace(/\033\[1m/g, '<b>').replace(/\033\[21m/g, '</b>').replace(/\033\[24m/g, '');
 
-    //
     // `\033[3m` enables italics font, `\033[23m` disables it
-    //
     str = str.replace(/\033\[3m/g, '<i>').replace(/\033\[23m/g, '</i>');
 
-    //
     // `\033[9m` enables strikethrough, `\033[29m` disables it
-    //
     str = str.replace(/\033\[9m/g, '<s>').replace(/\033\[29m/g, '</s>');
 
-    //
     // `\033[Xm` == `\033[0;Xm` sets foreground color to `X`.
-    //
     str = str.replace(
         /(\033\[(\d+)(;\d+)?m)/gm,
         function (match, fullMatch, m1, m2) {

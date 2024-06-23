@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serial;
 import java.util.List;
 
-
 @SuperBuilder
 @Getter
 @Setter

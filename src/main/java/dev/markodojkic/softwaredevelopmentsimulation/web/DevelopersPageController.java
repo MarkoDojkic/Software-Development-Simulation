@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomTasks;
@@ -101,14 +100,10 @@ public class DevelopersPageController {
 	}
 
 	private List<Integer> hexToRBG(String colorStr) {
-		if (colorStr == null) {
-			return Arrays.asList(128, 128, 128);
-		}
 		ArrayList<Integer> rbg = new ArrayList<>();
 		rbg.add(Integer.valueOf(colorStr.substring(1, 3), 16));
 		rbg.add(Integer.valueOf(colorStr.substring(3, 5), 16));
 		rbg.add(Integer.valueOf(colorStr.substring(5, 7), 16));
 		return rbg;
 	}
-
 }

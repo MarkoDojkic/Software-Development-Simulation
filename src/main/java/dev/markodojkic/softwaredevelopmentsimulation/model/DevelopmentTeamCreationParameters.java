@@ -2,7 +2,6 @@ package dev.markodojkic.softwaredevelopmentsimulation.model;
 
 import lombok.*;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
