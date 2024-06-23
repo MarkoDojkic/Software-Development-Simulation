@@ -4,6 +4,8 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
+import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
+import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.BridgeFrom;
@@ -11,11 +13,22 @@ import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PriorityChannel;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.IN_PROGRESS_EPICS_COUNT;
 
 @Configuration
 @SuppressWarnings("unchecked")
 public class SpringIntegrationMessageChannelsConfig {
+	private static final Logger logger = Logger.getLogger(SpringIntegrationMessageChannelsConfig.class.getName());
+
 	@Bean(name = "errorChannel")
 	public DirectChannel errorChannel() {
 		return new DirectChannel();
@@ -58,6 +71,22 @@ public class SpringIntegrationMessageChannelsConfig {
 		return epicInputPriorityChannel;
 	}
 
+	@Bean(name = "assignEpicFlow")
+	public IntegrationFlow assignEpicFlow(){
+		PollerMetadata pollerMetadata = new PollerMetadata();
+		pollerMetadata.setMaxMessagesPerPoll(1);
+		return IntegrationFlow.from("epicMessage.input").handle(message -> {
+			logger.log(Level.INFO, "{0} arrived - Current count: {1}", new String[]{((Epic) message.getPayload()).getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.incrementAndGet())});
+			new Thread(() -> currentSprintEpic().send(MessageBuilder.withPayload(message.getPayload()).setHeader(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, DataProvider.getAvailableDevelopmentTeamIds().pop()).build())).start();
+			if(IN_PROGRESS_EPICS_COUNT.get() == Utilities.getTotalDevelopmentTeamsPresent()) controlBusInput().send(MessageBuilder.withPayload("@assignEpicFlow.stop()").build());
+		}, sourcePoolingChannelAdapter -> sourcePoolingChannelAdapter.poller(pollerMetadata)).get();
+	}
+
+	@Bean(name = "controlBus.input")
+	public DirectChannel controlBusInput() {
+		return new DirectChannel();
+	}
+
 	@Bean(name = "currentSprintEpic.input")
 	public DirectChannel currentSprintEpic(){
 		DirectChannel currentSprintEpicChannel = new DirectChannel();
@@ -79,14 +108,14 @@ public class SpringIntegrationMessageChannelsConfig {
 		return doneEpicsChannel;
 	}
 
-	@Bean(name = "inProgressUserStory.input")
+	@Bean(name = "inProgressUserStory.intermediate")
 	public DirectChannel inProgressUserStory(){
 		DirectChannel inProgressUserStoryChannel = new DirectChannel();
 		inProgressUserStoryChannel.setDatatypes(UserStory.class);
 		return inProgressUserStoryChannel;
 	}
 
-	@Bean(name = "currentSprintUserStories.intermediate")
+	@Bean(name = "currentSprintUserStories.preIntermediate")
 	public DirectChannel currentSprintUserStories(){
 		DirectChannel currentSprintUserStoriesChannel = new DirectChannel();
 		currentSprintUserStoriesChannel.setDatatypes(UserStory.class);

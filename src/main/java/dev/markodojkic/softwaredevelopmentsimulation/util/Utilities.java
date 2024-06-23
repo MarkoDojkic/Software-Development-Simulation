@@ -17,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import java.time.ZonedDateTime;
@@ -32,17 +33,18 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 @UtilityClass
 public class Utilities {
 	private static final Logger logger = Logger.getLogger(Utilities.class.getName());
-	private static final String STRING_FORMAT = "%s-%s";
+	public static final String STRING_FORMAT = "%s-%s";
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+	public static final String ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER = "assignedDevelopmentTeamPositionNumber";
+	public static final SecureRandom SECURE_RANDOM = new SecureRandom();
+	public static final Lorem LOREM = LoremIpsum.getInstance();
+	public static final AtomicInteger IN_PROGRESS_EPICS_COUNT = new AtomicInteger(0);
 
-	@Setter
 	@Getter
+	@Setter
 	private static Path currentApplicationLogsPath = Path.of("/");
 	@Getter
-	private static final SecureRandom random = new SecureRandom();
-	@Getter
-	private static final Lorem lorem = LoremIpsum.getInstance();
 	@Setter
-	@Getter
 	private static IGateways iGateways;
 	@Getter
 	private static int totalDevelopmentTeamsPresent;
@@ -61,7 +63,7 @@ public class Utilities {
 	public static void generateRandomTasks(int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		int totalEpicsCount = random.nextInt(epicCountDownLimit,epicCountUpperLimit);
+		int totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
 		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
 
@@ -69,11 +71,11 @@ public class Utilities {
 			int finalI = i;
 			logger.log(Level.INFO, () -> colorize(String.format("* Generating EPIC #%d", finalI), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(90)));
 			Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
-			String boardName = lorem.getWords(1).toUpperCase(Locale.ROOT);
+			String boardName = LOREM.getWords(1).toUpperCase(Locale.ROOT);
 			Epic epic = Epic.builder()
-					.name(lorem.getTitle(3, 6))
-					.description(lorem.getParagraphs(5, 15))
-					.priority(Priority.values()[random.nextInt(Priority.values().length)])
+					.name(LOREM.getTitle(3, 6))
+					.description(LOREM.getWords(3, 6))
+					.priority(Priority.values()[SECURE_RANDOM.nextInt(Priority.values().length)])
 					.reporter(getTechnicalManager())
 					.createdOn(ZonedDateTime.now())
 					.userStories(new ArrayList<>())
@@ -81,11 +83,11 @@ public class Utilities {
 
 			epic.setId(String.format(STRING_FORMAT, boardName, Math.abs(Math.round((float) epic.hashCode() /100))));
 			epic.setUserStories(generateUserStories(epic.getId(), boardName,
-					random.nextInt(epic.getPriority().getUrgency() + 1, epic.getPriority().getUrgency() + 3)));
+					SECURE_RANDOM.nextInt(epic.getPriority().getUrgency() + 1, epic.getPriority().getUrgency() + 3)));
 			epicList.add(epic);
 			//1 -BOLD, 21 - RESET BOLD / ADDS UNDERLINE, 24 - RESET UNDERLINE, 3 - ITALIC, 23 - RESET ITALIC
 				jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
-					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))).concat(jiraEpicCreatedOutput.get()));
+					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get()));
 			logger.log(Level.INFO, () -> colorize(String.format("+ Generated EPIC #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(90)));
 		}
 
@@ -108,19 +110,19 @@ public class Utilities {
 			logger.log(Level.INFO, () -> colorize(String.format("\t* Generating USER STORY #%d", finalI), Attribute.TEXT_COLOR(232), Attribute.BACK_COLOR(124)));
 			Uninterruptibles.sleepUninterruptibly(25, TimeUnit.MILLISECONDS);
 			UserStory userStory = UserStory.builder()
-					.name(lorem.getTitle(2, 4))
-					.description(lorem.getParagraphs(2, 6))
-					.priority(Priority.values()[random.nextInt(Priority.values().length)])
+					.name(LOREM.getTitle(2, 4))
+					.description(LOREM.getWords(2, 4))
+					.priority(Priority.values()[SECURE_RANDOM.nextInt(Priority.values().length)])
 					.epicId(epicId)
 					.createdOn(ZonedDateTime.now())
 					.technicalTasks(new ArrayList<>())
 					.build();
-			int totalTechnicalTasks = random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8);
+			int totalTechnicalTasks = SECURE_RANDOM.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8);
 
 			userStory.setId(String.format(STRING_FORMAT, boardName, Long.parseLong(epicId.split(boardName.concat("-"))[1]+1)+ (long) i *totalTechnicalTasks));
 
 			userStory.setTechnicalTasks(generateTechnicalTasks(userStory.getId(), boardName,
-					random.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8)));
+					SECURE_RANDOM.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8)));
 			userStoryList.add(userStory);
 			logger.log(Level.INFO, () -> colorize(String.format("\t+ Generated USER STORY #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(124)));
 		}
@@ -136,9 +138,9 @@ public class Utilities {
 			logger.log(Level.INFO, () -> colorize(String.format("\t\t* Generating TECHNICAL TASK #%d", finalI), Attribute.BACK_COLOR(244), Attribute.TEXT_COLOR(0)));
 			Uninterruptibles.sleepUninterruptibly(50, TimeUnit.MILLISECONDS);
 			technicalTaskList.add(TechnicalTask.builder()
-					.name(lorem.getTitle(2, 4))
-					.description(lorem.getParagraphs(2, 6))
-					.priority(Priority.values()[random.nextInt(Priority.values().length)])
+					.name(LOREM.getWords(2, 4))
+					.description(LOREM.getParagraphs(2, 4))
+					.priority(Priority.values()[SECURE_RANDOM.nextInt(Priority.values().length)])
 					.userStoryId(userStoryId)
 					.id(String.format(STRING_FORMAT, boardName, Long.parseLong(userStoryId.split(boardName.concat("-"))[1]+1)+i))
 					.createdOn(ZonedDateTime.now())

@@ -10,7 +10,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "userStories")
 @EqualsAndHashCode(callSuper = true)
 public class Epic extends BaseTask {
 	@Serial

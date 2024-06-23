@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "technicalTasks")
 @EqualsAndHashCode(callSuper = true)
 public class UserStory extends BaseTask {
 	@Serial

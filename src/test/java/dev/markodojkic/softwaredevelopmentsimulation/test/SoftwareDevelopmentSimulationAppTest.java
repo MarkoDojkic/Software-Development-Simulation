@@ -1,6 +1,5 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl;
 import dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl;
 import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
@@ -16,7 +15,6 @@ import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransfor
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,11 +26,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PriorityChannel;
-import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.ExecutorChannelInterceptor;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.ByteArrayOutputStream;
@@ -40,6 +37,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
@@ -114,7 +112,6 @@ class SoftwareDevelopmentSimulationAppTest {
 
 		System.setOut(originalSOut);
 		System.setErr(originalSErr);
-		Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
 		informationInput.unsubscribe(messageHandler);
 	}
 
@@ -122,28 +119,34 @@ class SoftwareDevelopmentSimulationAppTest {
 	void when_generateRandomTasks_epicsAreCorrectlyCreated() {
 		assertNotNull(epicMessageInput);
 
-		// Define parameters for testing
-		int epicCountDownLimit = 2; // Example lower limit of epic count
-		int epicCountUpperLimit = 5; // Example upper limit of epic count
+		CountDownLatch interceptorLatch = new CountDownLatch(4);
+		int epicCountDownLimit = 4;
+		int epicCountUpperLimit = 5;
 
-		// Get the total number of epics generated
 		List<Epic> epics = new ArrayList<>();
 
-		epicMessageInput.addInterceptor(new ChannelInterceptor() {
+		epicMessageInput.addInterceptor(new ExecutorChannelInterceptor() {
 			@Override
-			public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
 				epics.add((Epic) message.getPayload());
-				return ChannelInterceptor.super.postReceive(message, channel);
+				interceptorLatch.countDown(); // Decrease latch count when a message is processed
+				return ExecutorChannelInterceptor.super.preSend(message, channel);
 			}
 		});
 
 		// Call the method to generate random tasks
 		Utilities.generateRandomTasks(epicCountDownLimit, epicCountUpperLimit);
 
-		Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
+		// Wait for interceptors to process messages
+		try {
+			assertTrue(interceptorLatch.await(10, TimeUnit.MILLISECONDS)); // Adjust timeout as needed
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
+		}
 
 		// Test that the total number of generated epics is within the specified limits
-		assertTrue(epics.size() >= epicCountDownLimit && epics.size() <= epicCountUpperLimit);
+		assertTrue(epics.size() >= epicCountDownLimit && epics.size() < epicCountUpperLimit);
 
 		// Test each generated epic
 		for (Epic epic : epics) {

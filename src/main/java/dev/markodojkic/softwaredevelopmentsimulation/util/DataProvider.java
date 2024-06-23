@@ -55,9 +55,9 @@ public class DataProvider {
 	public static void updateDevelopmentTeamsSetup(DevelopmentTeamCreationParameters parameters){
 		if(!parameters.isRetainOld()) currentDevelopmentTeamsSetup = Collections.emptyList();
 		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> {
-			boolean isFemale = getRandom().nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
-			return new Developer((isFemale ? getLorem().getNameFemale() : getLorem().getNameMale()), Strings.EMPTY, Arrays.stream(DeveloperType.values()).skip(getRandom().nextInt(1, DeveloperType.values().length)).findAny().orElse(DeveloperType.INTERN_DEVELOPER), isFemale, getRandom().nextLong(1, 10));
-	}).limit(getRandom().nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), getRandom().nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
+			boolean isFemale = SECURE_RANDOM.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
+			return new Developer((isFemale ? LOREM.getNameFemale() : LOREM.getNameMale()), Strings.EMPTY, Arrays.stream(DeveloperType.values()).skip(SECURE_RANDOM.nextInt(1, DeveloperType.values().length)).findAny().orElse(DeveloperType.INTERN_DEVELOPER), isFemale, SECURE_RANDOM.nextLong(1, 10));
+	}).limit(SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
 		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 	} //Generate between <min - default 30> and <max - default 100> developers ('Developer' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
 
@@ -87,10 +87,10 @@ public class DataProvider {
 
 	//Below functions are adapted from https://github.com/borko-rajkovic/ts-jmbg with slight changes for gender and randomized birthdate generation
 	public static String generateRandomYugoslavianUMCN(boolean isFemale, boolean isTest) {
-		LocalDateTime dateOfBirth = getLorem().getPriorDate(Duration.ofSeconds((long) 31536000 * 47)).minusYears(18);
+		LocalDateTime dateOfBirth = LOREM.getPriorDate(Duration.ofSeconds((long) 31536000 * 47)).minusYears(18);
 
-		int rr = isTest ? 20 : getRandom().nextInt(97);
-		int bbb = !isFemale ? getRandom().nextInt(0, 500) : getRandom().nextInt(500, 1000);
+		int rr = isTest ? 20 : SECURE_RANDOM.nextInt(97);
+		int bbb = !isFemale ? SECURE_RANDOM.nextInt(0, 500) : SECURE_RANDOM.nextInt(500, 1000);
 
 		String withoutControlNumber = String.format("%02d", dateOfBirth.getDayOfMonth()) + String.format("%02d", dateOfBirth.getMonth().getValue()) + String.format("%03d", dateOfBirth.getYear() % 1000) + String.format("%02d", rr == 20 || rr == 90 ? rr+1 : rr) + String.format("%03d", bbb);
 		//Political region codes 20 and 90 are not used
