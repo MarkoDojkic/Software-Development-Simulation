@@ -18,10 +18,8 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.integration.router.ErrorMessageExceptionTypeRouter;
-import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.retry.support.RetryTemplateBuilder;
-import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -42,13 +40,6 @@ public class MiscellaneousConfig {
 	private String password;
 	@Value("${mqtt.defaultTopic}")
 	private String defaultTopic;
-
-	@Bean(name = PollerMetadata.DEFAULT_POLLER)
-	public PollerMetadata defaultPoller() {
-		PollerMetadata pollerMetadata = new PollerMetadata();
-		pollerMetadata.setTrigger(new PeriodicTrigger(Duration.of(5, ChronoUnit.SECONDS)));
-		return pollerMetadata;
-	}
 
 	@Bean(name = "retryAdvice")
 	public Advice retryAdvice(){
@@ -82,8 +73,8 @@ public class MiscellaneousConfig {
 		mqttConnectOptions.setPassword(password.toCharArray());
 		mqttConnectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
 		mqttConnectOptions.setAutomaticReconnect(true);
-		mqttConnectOptions.setWill("information-printout-topic", "Session ended".getBytes(StandardCharsets.UTF_8), 1, false);
-		mqttConnectOptions.setKeepAliveInterval(60);
+		mqttConnectOptions.setWill("information-printout-topic", "Session ended".getBytes(StandardCharsets.UTF_8), 2, false);
+		mqttConnectOptions.setKeepAliveInterval(300);
 		mqttConnectOptions.setCleanSession(false);
 		DefaultMqttPahoClientFactory defaultMqttPahoClientFactory = new DefaultMqttPahoClientFactory();
 		defaultMqttPahoClientFactory.setConnectionOptions(mqttConnectOptions);
@@ -96,7 +87,7 @@ public class MiscellaneousConfig {
 		mqttPahoMessageHandler.setDefaultTopic(defaultTopic);
 		mqttPahoMessageHandler.setAsync(true);
 		mqttPahoMessageHandler.setDefaultRetained(false);
-		mqttPahoMessageHandler.setDefaultQos(1);
+		mqttPahoMessageHandler.setDefaultQos(2);
 		mqttPahoMessageHandler.setConverter(new DefaultPahoMessageConverter());
 		return mqttPahoMessageHandler;
 	}

@@ -24,7 +24,6 @@ class DevelopersPageControllerTest {
 
     @BeforeEach
     public void setup() {
-        // Now initialize JMockit (if not initialized automatically)
         DataProvider.setupDataProvider(true);
         new MockUp<DataProvider>() {
             @Mock
@@ -41,7 +40,7 @@ class DevelopersPageControllerTest {
 
     @Test
     void when_addDeveloperMethodIsCalled_providedUserIsAddedToProvidedDevelopmentTeam() throws Exception {
-        Developer newUser = new Developer("Test Developer 4", "0101999710771", DeveloperType.MEDIOCRE_DEVELOPER, true, (long) 4.55);
+        Developer newUser = new Developer("Test Developer 4", "", DeveloperType.MEDIOCRE_DEVELOPER, true, (long) 4.55);
 
         mockMvc.perform(post("/developers")
                         .flashAttr("formDeveloperPlaceholder", newUser)
@@ -56,7 +55,7 @@ class DevelopersPageControllerTest {
     }
 
     @Test
-    void when_getRequestIsSentToAppropriateEndpoint_editingDeveloperFormViewIsReturned() throws Exception {
+    void when_getRequestIsSentToDevelopersEditEndpoint_editingDeveloperFormViewIsReturned() throws Exception {
         mockMvc.perform(get("/developers/edit")
                         .param("developmentTeamIndex", "0")
                         .param("developerIndex", "0"))
@@ -102,7 +101,7 @@ class DevelopersPageControllerTest {
     @Test
     void when_updateDevelopmentTeamsSetup_currentDevelopmentTeamsSetupIsPopulated_withReplacementOfOldValues() throws Exception {
         DevelopmentTeamCreationParameters parameters = new DevelopmentTeamCreationParameters();
-        parameters.setRetainOld(true); // Set any necessary parameters
+        parameters.setRetainOld(true);
 
         mockMvc.perform(put("/developers")
                         .flashAttr("parameters", parameters))
@@ -116,7 +115,7 @@ class DevelopersPageControllerTest {
     }
 
     @Test
-    void when_getRequestIsSentToAppropriateEndpoint_developersPageViewIsReturned() throws Exception {
+    void when_getRequestIsSentToDevelopersEndpoint_developersPageViewIsReturned() throws Exception {
         mockMvc.perform(get("/developers"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/developers"))

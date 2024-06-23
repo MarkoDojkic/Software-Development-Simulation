@@ -15,13 +15,14 @@ $(window).on("load", async () => {
     client.onMessageArrived = message => appendDataToMQTTTopicDivs(message.destinationName, message.payloadString);
 
     const options = {
-        keepAliveInterval: 3600,
+        keepAliveInterval: 300,
+        cleanSession: false,
         mqttVersion: 4, // Identification for version 3.1.1
         onSuccess: function () {
             notify("MQTT connected successfully to " + websocketBroker + ":" + websocketPort, "success", "check2-circle");
-            client.subscribe("information-printout-topic", {qos: 1});
-            client.subscribe("java-activity-stream-printout-topic", {qos: 1});
-            client.subscribe("error-printout-topic", {qos: 1});
+            client.subscribe("information-printout-topic", {qos: 2});
+            client.subscribe("java-activity-stream-printout-topic", {qos: 2});
+            client.subscribe("error-printout-topic", {qos: 2});
 
             notify(`MQTT subscribed to:
                 <ul>
@@ -84,7 +85,7 @@ $(window).on("load", async () => {
 
     $.ajax({
         type: "GET",
-        url: "/api/logs?filename=informationData",
+        url: "/api/logs?filename=informationChannel",
         success: response => {
             response.split("%$").forEach(instance => {
                 appendDataToMQTTTopicDivs("information-printout-topic", instance);
@@ -94,7 +95,7 @@ $(window).on("load", async () => {
 
     $.ajax({
         type: "GET",
-        url: "/api/logs?filename=jiraActivityStreamData",
+        url: "/api/logs?filename=jiraActivityStreamChannel",
         success: response => {
             response.split("%$").forEach(instance => {
                 appendDataToMQTTTopicDivs("java-activity-stream-printout-topic", instance);
@@ -104,7 +105,7 @@ $(window).on("load", async () => {
 
     $.ajax({
         type: "GET",
-        url: "/api/logs?filename=errorData",
+        url: "/api/logs?filename=errorChannel",
         success: response => {
             response.split("%$").forEach(instance => {
                 appendDataToMQTTTopicDivs("error-printout-topic", instance);
@@ -146,15 +147,56 @@ function generateUUID() {
     });
 }
 
-function appendDataToMQTTTopicDivs(topicName, data){
-    const jiraActivityStreamDiv  = $("#jiraActivityStream div")[0];
-    switch(topicName){
-        case "information-printout-topic": $("#informationLogs")[0].innerHTML += "<div>" + ansi2html_string(data.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-').replace('\t- INFORMATION - */','&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
-
-        case "java-activity-stream-printout-topic": jiraActivityStreamDiv.innerHTML = ansi2html_string(data).replace(/  +/mg, function (match) {
-            return match.replace(/ /g, "&nbsp;");
-        }).replaceAll('&nbsp;|&nbsp;', '|').replaceAll('/', '').replaceAll('\n', '<br />').replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─').concat('<br/>') + jiraActivityStreamDiv.innerHTML; break;
-
-        case "error-printout-topic": $("#errorLogs")[0].innerHTML += "<div>" + ansi2html_string(data.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t').replace(/\033\[0m/g, '</span>')).replace(/\033/g, '').replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-').replace('\t- !ERROR! - */','&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/').replaceAll('\n', '<br />').replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;").replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------") + "</div>"; break;
+function appendDataToMQTTTopicDivs(topicName, data) {
+    switch (topicName) {
+        case "information-printout-topic":
+        {
+            const sanitizedData = sanitizeInformationData(data);
+            $("#informationLogs").append(`<div>${sanitizedData}</div>`);
+            break;
+        }
+        case "java-activity-stream-printout-topic":
+        {
+            const sanitizedData = sanitizeJavaActivityStreamData(data);
+            $("#jiraActivityStream div").prepend(sanitizedData);
+            break;
+        }
+        case "error-printout-topic":
+        {
+            const sanitizedData = sanitizeErrorData(data);
+            $("#errorLogs").append(`<div>${sanitizedData}</div>`);
+            break;
+        }
     }
+}
+
+function sanitizeInformationData(data) {
+    return ansi2html_string(data.replaceAll('[38;5;68m', '<span class="ansi_fg_68m">\t')
+        .replace(/\033\[0m/g, '</span>')
+        .replace(/\033/g, '')
+        .replace('/*\t- INFORMATION -', '/*&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-')
+        .replace('\t- INFORMATION - */', '&nbsp;&nbsp;-&nbsp;INFORMATION&nbsp;-&nbsp;*/')
+        .replaceAll('\n', '<br />')
+        .replaceAll("* ", "&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;")
+        .replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------"));
+}
+
+function sanitizeJavaActivityStreamData(data) {
+    return ansi2html_string(data.replace(/  +/mg, match => match.replace(/ /g, "&nbsp;"))
+        .replaceAll('&nbsp;|&nbsp;', '|')
+        .replaceAll('/', '')
+        .replaceAll('\n', '<br />')
+        .replaceAll(/^─|( ─)/g, '&nbsp;&nbsp;─')
+        .concat('<br/>'));
+}
+
+function sanitizeErrorData(data) {
+    return ansi2html_string(data.replaceAll('[38;5;196m', '<span class="ansi_fg_red">\t')
+        .replace(/\033\[0m/g, '</span>')
+        .replace(/\033/g, '')
+        .replace('/*\t- !ERROR! -', '/*&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-')
+        .replace('\t- !ERROR! - */', '&nbsp;&nbsp;-&nbsp;!ERROR!&nbsp;-&nbsp;*/')
+        .replaceAll('\n', '<br />')
+        .replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;")
+        .replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------"));
 }
