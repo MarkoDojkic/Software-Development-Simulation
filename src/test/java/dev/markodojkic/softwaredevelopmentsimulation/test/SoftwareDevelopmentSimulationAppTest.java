@@ -91,7 +91,7 @@ class SoftwareDevelopmentSimulationAppTest {
 	}
 
 	@Test
-	void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload() throws InterruptedException {
+	void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload() {
 		assertNotNull(informationMQTTInput);
 
 		CountDownLatch interceptorLatch = new CountDownLatch(1);
@@ -107,9 +107,9 @@ class SoftwareDevelopmentSimulationAppTest {
 			}
 		});
 
-		String mmessage = "Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using mine spring integration web based application";
+		String message = "Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using my spring integration web based application";
 
-		Utilities.getIGateways().sendToInfo(mmessage);
+		Utilities.getIGateways().sendToInfo(message);
 
 		// Wait for interceptors to process messages
 		try {
@@ -122,7 +122,7 @@ class SoftwareDevelopmentSimulationAppTest {
 		assertEquals(1, infoMessages.size());
 
 		assertEquals("/*\t- INFORMATION -\n\s\s* " +
-				mmessage.replace("$", String.format("%n***%s%n", "-".repeat(80))).replace("\n", "\n\s\s* ").replace("* ***", "\r") +
+				message.replace("$", String.format("%n***%s%n", "-".repeat(80))).replace("\n", "\n\s\s* ").replace("* ***", "\r") +
 				"\n\t- INFORMATION - */", infoMessages.getFirst().replaceAll("\u001B\\[[;\\d]*m", "").trim());
 
 		((DirectChannel) informationMQTTInput).removeInterceptor(0);

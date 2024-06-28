@@ -41,14 +41,14 @@
                             <div slot="footer">
                                 <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
                                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                                <sl-button variant="danger" outline th:onclick="|$.ajax({type: 'DELETE', async: true, url: '/developers?developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}', success: () => window.location.href = '/developers'});|">Remove</sl-button>
+                                <sl-button variant="danger" outline th:onclick="|$.ajax({type: 'DELETE', async: true, url: '/api/removeDeveloper?developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}', success: () => window.location.href = '/developers'});|">Remove</sl-button>
                             </div>
                         </sl-card>
                     </sl-carousel-item>
                 </sl-carousel>
             </sl-tab-panel>
             <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
-                <form id="developer-create-form" th:action="@{/developers}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
+                <form id="developer-create-form" th:action="@{/api/addDeveloper}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex">
                         <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
                         <sl-divider vertical></sl-divider>
@@ -100,7 +100,7 @@
             </sl-tab-panel>
             <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
             <sl-tab-panel name="tab-developers-recreate">
-                <form id="developer-recreate-form" th:action="@{/developers}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
+                <form id="developer-recreate-form" th:action="@{/api/recreateDevelopmentTeams}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
                     <sl-input class="label-on-left" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" value="45" size="medium" help-text="Default value is 45%" min="0" max="100" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="percent" slot="suffix"></sl-icon>
                     </sl-input>
@@ -137,7 +137,7 @@
     </body>
 
     <div style="display: none"> <!-- Fragment containers -->
-        <form id="developer-edit-form" th:action="@{/developers}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
+        <form id="developer-edit-form" th:action="@{/api/editDeveloper}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
             <div style="display: inline-flex">
                 <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" th:value="${formEditDeveloperPlaceholder.name}" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
                 <sl-divider vertical></sl-divider>

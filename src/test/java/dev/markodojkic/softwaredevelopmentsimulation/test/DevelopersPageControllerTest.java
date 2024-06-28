@@ -42,7 +42,7 @@ class DevelopersPageControllerTest {
     void when_addDeveloperMethodIsCalled_providedUserIsAddedToProvidedDevelopmentTeam() throws Exception {
         Developer newUser = new Developer("Test Developer 4", "", DeveloperType.MEDIOCRE_DEVELOPER, true, (long) 4.55);
 
-        mockMvc.perform(post("/developers")
+        mockMvc.perform(post("/api/addDeveloper")
                         .flashAttr("formDeveloperPlaceholder", newUser)
                         .flashAttr("selectedDevelopmentTeamIndex", 0))
                 .andExpect(status().is3xxRedirection())
@@ -71,7 +71,7 @@ class DevelopersPageControllerTest {
         Developer existingUser = DataProvider.getCurrentDevelopmentTeamsSetup().getFirst().getFirst();
         existingUser.setExperienceCoefficient((long) 2.45);
 
-        mockMvc.perform(patch("/developers")
+        mockMvc.perform(patch("/api/editDeveloper")
                         .flashAttr("formEditDeveloperPlaceholder", existingUser)
                         .flashAttr("editDeveloperSelectedDevelopmentTeamIndex", 0)
                         .flashAttr("developerIndex", 0)
@@ -87,7 +87,7 @@ class DevelopersPageControllerTest {
 
     @Test
     void when_removeDeveloperMethodIsCalled_providedUserIsRemovedFromProvidedDevelopmentTeam() throws Exception {
-        mockMvc.perform(delete("/developers")
+        mockMvc.perform(delete("/api/removeDeveloper")
                         .param("developmentTeamIndex", "0")
                         .param("developerIndex", "0"))
                 .andExpect(status().isOk());
@@ -103,7 +103,7 @@ class DevelopersPageControllerTest {
         DevelopmentTeamCreationParameters parameters = new DevelopmentTeamCreationParameters();
         parameters.setRetainOld(true);
 
-        mockMvc.perform(put("/developers")
+        mockMvc.perform(put("/api/recreateDevelopmentTeams")
                         .flashAttr("parameters", parameters))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/developers"));

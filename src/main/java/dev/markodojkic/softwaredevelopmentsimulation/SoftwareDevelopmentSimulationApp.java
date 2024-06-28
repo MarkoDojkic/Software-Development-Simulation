@@ -21,7 +21,7 @@ public class SoftwareDevelopmentSimulationApp
         setupDataProvider(false);
         updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 
-        Utilities.getIGateways().sendToInfo("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using mine spring integration web based application");
+        Utilities.getIGateways().sendToInfo("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using my spring integration web based application");
 
         //TODO: Correct JIRA activity stream timings
 

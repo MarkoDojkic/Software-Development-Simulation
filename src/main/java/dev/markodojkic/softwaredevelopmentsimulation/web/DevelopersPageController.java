@@ -18,7 +18,7 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.gener
 public class DevelopersPageController {
 	private static final String REDIRECT_DEVELOPERS = "redirect:/developers";
 
-	@PutMapping(value = "/developers")
+	@PutMapping(value = "/api/recreateDevelopmentTeams")
 	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
 		DataProvider.updateDevelopmentTeamsSetup(parameters);
 		return REDIRECT_DEVELOPERS;
@@ -41,7 +41,7 @@ public class DevelopersPageController {
 		return developersPage;
 	}
 
-	@PostMapping(value = "/developers")
+	@PostMapping(value = "/api/addDeveloper")
 	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
 		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
 		return REDIRECT_DEVELOPERS;
@@ -60,13 +60,13 @@ public class DevelopersPageController {
 		return editingDeveloperForm;
 	}
 
-	@PatchMapping(value = "/developers")
+	@PatchMapping(value = "/api/editDeveloper")
 	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
 		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
 
-	@DeleteMapping(value = "/developers")
+	@DeleteMapping(value = "/api/removeDeveloper")
 	public ModelAndView removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
 		return null;

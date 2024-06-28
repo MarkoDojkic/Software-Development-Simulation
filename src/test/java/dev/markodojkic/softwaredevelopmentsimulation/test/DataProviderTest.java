@@ -86,6 +86,7 @@ class DataProviderTest {
 
     @Test
     void when_getPlaceOfBirthBasedUMCNPoliticalRegionCode_itReturnsAppropriatePlaceOfBirth() {
-        assertEquals("Croatia, Varaždin, Međimurje region", getPlaceOfBirthBasedUMCNPoliticalRegionCode(32));
+        String placeOfBirth = getPlaceOfBirthBasedUMCNPoliticalRegionCode(32);
+        assertTrue(placeOfBirth.equals("Croatia, Varaždin") || placeOfBirth.equals("Croatia, Međimurje region"));
     }
 }

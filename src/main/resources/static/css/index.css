@@ -118,10 +118,6 @@
     text-align: right;
 }
 
-#create-epic-form {
-    margin-top: 4%;
-}
-
 #create-epic-form > .label-on-left::part(form-control-help-text) {
     margin-left: 0;
 }
@@ -141,58 +137,58 @@
     margin-left: 5px;
 }
 
-#manageCustomEpics::part(base) {
+#manageCustomEpicsBtn::part(base) {
     background: var(--sl-color-neutral-0);
-    border-color: rgb(130, 2, 131, 1);
-    color: rgba(130, 2, 131, 1);
+    border-color: rgb(150, 2, 253, 1);
+    color: rgba(150, 2, 253, 1);
 }
 
-#manageCustomEpics::part(base):hover:not(:disabled) {
-    background-color: rgba(130, 2, 131, 0.3);
-    border-color: rgba(130, 2, 131, 0.3);
-    color: black;
+#manageCustomEpicsBtn:hover:not([disabled])::part(base) {
+    background-color: rgba(150, 2, 253, 0.3);
+    border-color: rgba(150, 2, 253, 0.3);
+    color: white;
 }
 
-#manageCustomEpics::part(base):active:not(:disabled) {
-    background-color: rgba(130, 2, 131, 0.6);
-    border-color: rgb(130, 2, 131, 0.6);
-    color: black;
+#manageCustomEpicsBtn:active:not([disabled])::part(base) {
+    background-color: rgba(150, 2, 253, 0.6);
+    border-color: rgb(150, 2, 253, 0.6);
+    color: white;
 }
 
-#manageCustomUserStories::part(base) {
+#manageCustomUserStoriesBtn::part(base) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(130, 244, 131, 1);
     color: rgba(130, 244, 131, 1);
 }
 
-#manageCustomUserStories::part(base):hover:not(:disabled) {
+#manageCustomUserStoriesBtn:hover:not([disabled])::part(base) {
     background-color: rgba(130, 244, 131, 0.3);
     border-color: rgba(130, 244, 131, 0.3);
-    color: black;
+    color: white;
 }
 
-#manageCustomUserStories::part(base):active:not(:disabled) {
+#manageCustomUserStoriesBtn:active:not([disabled])::part(base) {
     background-color: rgba(130, 244, 131, 0.6);
     border-color: rgba(130, 244, 131, 0.6);
-    color: black;
+    color: white;
 }
 
-#manageCustomTechnicalTasks::part(base) {
+#manageCustomTechnicalTasksBtn::part(base) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(124, 124, 124, 1);
     color: rgba(124, 124, 124, 1);
 }
 
-#manageCustomTechnicalTasks::part(base):hover:not(:disabled) {
+#manageCustomTechnicalTasksBtn:hover:not([disabled])::part(base) {
     background-color: rgba(124, 124, 124, 0.3);
     border-color: rgba(124, 124, 124, 0.3);
-    color: black;
+    color: white;
 }
 
-#manageCustomTechnicalTasks::part(base):active:not(:disabled) {
+#manageCustomTechnicalTasksBtn:active:not([disabled])::part(base) {
     background-color: rgba(124, 124, 124, 0.6);
     border-color: rgba(124, 124, 124, 0.6);
-    color: black;
+    color: white;
 }
 
 #informationLogs {

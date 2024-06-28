@@ -12,7 +12,7 @@
         <script type="module" th:src="@{/js/index.js}"></script>
     </head>
     <body>
-        <header style="display: inline-flex; text-align: -webkit-center; margin-left: 1vw; margin-top: 8px">
+        <header style="display: flex; align-items: center; justify-content: center;">
             <span><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
             <sl-divider style="--spacing: var(--sl-spacing-large);" vertical></sl-divider>
             <sl-button-group label="Alignment">
@@ -21,14 +21,13 @@
             </sl-button-group>
             <sl-divider vertical></sl-divider>
             <sl-button-group style="margin-top: 4px;" label="Alignment">
-                <sl-button id="manageCustomEpics" size="small" outline pill disabled>Manage epics</sl-button>
-                <sl-button id="manageCustomUserStories" size="small" outline pill disabled>Manage user stories</sl-button>
-                <sl-button id="manageCustomTechnicalTasks" size="small" outline pill disabled>Manage technical tasks</sl-button>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-button id="manageCustomEpicsBtn" size="small" outline pill>Manage epics</sl-button>
+                <sl-button id="manageCustomUserStoriesBtn" size="small" outline pill>Manage user stories</sl-button>
+                <sl-button id="manageCustomTechnicalTasksBtn" size="small" outline pill>Manage technical tasks</sl-button>
                 <sl-button id="submit-button-custom" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
             </sl-button-group>
         </header>
-        <div style="display: inline-flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium);">
+        <div style="display: flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium); align-items: center; justify-content: center;">
             <form id="create-epic-form">
                 <div style="display: ruby-text">
                     <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
@@ -64,5 +63,41 @@
 
     <sl-dialog id="jiraActivityStream" label="Jira Activity Stream" style="--width: 96vw">
         <div style="background-color: rgb(30 31 34); display: ruby-text; font-size: calc(1vw/1.36); overflow-x: clip"></div>
+    </sl-dialog>
+
+    <sl-dialog id="customEpics" label="Manage epics for predefined application flow" style="--width: 96vw">
+        <sl-tab-group>
+            <sl-tab slot="nav" panel="tab-epics-view">View</sl-tab>
+            <sl-tab slot="nav" panel="tab-epics-add">Add</sl-tab>
+            <sl-tab slot="nav" panel="tab-epics-edit">Edit</sl-tab>
+
+            <sl-tab-panel name="tab-epics-view"></sl-tab-panel>
+            <sl-tab-panel name="tab-epics-add"></sl-tab-panel>
+            <sl-tab-panel name="tab-epics-edit"></sl-tab-panel>
+        </sl-tab-group>
+    </sl-dialog>
+
+    <sl-dialog id="customUserStories" label="Manage user stories for predefined application flow" style="--width: 96vw">
+        <sl-tab-group>
+            <sl-tab slot="nav" panel="tab-userStories-view">View</sl-tab>
+            <sl-tab slot="nav" panel="tab-userStories-add">Add</sl-tab>
+            <sl-tab slot="nav" panel="tab-userStories-edit">Edit</sl-tab>
+
+            <sl-tab-panel name="tab-userStories-view"></sl-tab-panel>
+            <sl-tab-panel name="tab-userStories-add"></sl-tab-panel>
+            <sl-tab-panel name="tab-userStories-edit"></sl-tab-panel>
+        </sl-tab-group>
+    </sl-dialog>
+
+    <sl-dialog id="customTechnicalTasks" label="Manage technical tasks for predefined application flow" style="--width: 96vw">
+        <sl-tab-group>
+            <sl-tab slot="nav" panel="tab-technicalTasks-view">View</sl-tab>
+            <sl-tab slot="nav" panel="tab-technicalTasks-add">Add</sl-tab>
+            <sl-tab slot="nav" panel="tab-technicalTasks-edit">Edit</sl-tab>
+
+            <sl-tab-panel name="tab-technicalTasks-view"></sl-tab-panel>
+            <sl-tab-panel name="tab-technicalTasks-add"></sl-tab-panel>
+            <sl-tab-panel name="tab-technicalTasks-edit"></sl-tab-panel>
+        </sl-tab-group>
     </sl-dialog>
 </html>

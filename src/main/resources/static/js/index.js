@@ -48,6 +48,10 @@ $(window).on("load", async () => {
 
     $("#jiraActivityStreamBtn")[0].addEventListener('click', () => $("#jiraActivityStream")[0].show());
 
+    $("#manageCustomEpicsBtn")[0].addEventListener('click', () => $("#customEpics")[0].show());
+    $("#manageCustomUserStoriesBtn")[0].addEventListener('click', () => $("#customUserStories")[0].show());
+    $("#manageCustomTechnicalTasksBtn")[0].addEventListener('click', () => $("#customTechnicalTasks")[0].show());
+
     minimalEpicsCount.addEventListener('sl-input', () => {
         if (parseInt(minimalEpicsCount.value) < parseInt(maximalEpicsCount.value)) {
             minimalEpicsCount.setCustomValidity('');
