@@ -43,16 +43,16 @@ $(window).on("load", async () => {
 
     client.connect(options);
 
-    const minimalEpicsCount = $("#minimalEpicsCount")[0];
-    const maximalEpicsCount = $("#maximalEpicsCount")[0];
+    const minimalEpicsCount = $("#minimalEpicsCount");
+    const maximalEpicsCount = $("#maximalEpicsCount");
 
-    $("#jiraActivityStreamBtn")[0].addEventListener('click', () => $("#jiraActivityStream")[0].show());
+    $("#jiraActivityStreamBtn").on('click', () => $("#jiraActivityStream")[0].show());
 
-    $("#manageCustomEpicsBtn")[0].addEventListener('click', () => $("#customEpics")[0].show());
-    $("#manageCustomUserStoriesBtn")[0].addEventListener('click', () => $("#customUserStories")[0].show());
-    $("#manageCustomTechnicalTasksBtn")[0].addEventListener('click', () => $("#customTechnicalTasks")[0].show());
+    $("#manageCustomEpicsBtn").on('click', () => $("#customEpics")[0].show());
+    $("#manageCustomUserStoriesBtn").on('click', () => $("#customUserStories")[0].show());
+    $("#manageCustomTechnicalTasksBtn").on('click', () => $("#customTechnicalTasks")[0].show());
 
-    minimalEpicsCount.addEventListener('sl-input', () => {
+    minimalEpicsCount.on('sl-input', () => {
         if (parseInt(minimalEpicsCount.value) < parseInt(maximalEpicsCount.value)) {
             minimalEpicsCount.setCustomValidity('');
             maximalEpicsCount.setCustomValidity('');
@@ -63,7 +63,7 @@ $(window).on("load", async () => {
         }
     });
 
-    maximalEpicsCount.addEventListener('sl-input', () => {
+    maximalEpicsCount.on('sl-input', () => {
         if (parseInt(maximalEpicsCount.value) > parseInt(minimalEpicsCount.value)) {
             minimalEpicsCount.setCustomValidity('');
             maximalEpicsCount.setCustomValidity('');
@@ -74,13 +74,13 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#create-epic-form #submit-button")[0].addEventListener("click", async () => {
+    $("#generate-random-data-flow-form #randomized-button").on("click", async () => {
         if(minimalEpicsCount.hasAttribute("data-valid") && maximalEpicsCount.hasAttribute("data-valid"))
             $.ajax({
                 type: "OPTIONS",
                 url: "/api/applicationFlowRandomized?".concat("min=".concat(minimalEpicsCount.value).concat("&max=").concat(maximalEpicsCount.value)),
                 success: () => {
-                    $("#create-epic-form")[0].reset();
+                    $("#generate-random-data-flow-form")[0].reset();
                 }
             });
         else
@@ -118,6 +118,51 @@ $(window).on("load", async () => {
     });
 
     $('#sl-rating-developer')[0].getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>');
+
+    const epicReporter = $("sl-select[name='epicReporter']");
+    const epicAssignee = $("sl-select[name='epicAssignee']");
+
+    $("sl-select[name='selectedEpicDevelopmentTeam']").on("sl-change", (event) => {
+        epicReporter.prop("disabled", false);
+        epicAssignee.prop("disabled", false);
+        epicReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+        epicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+    });
+
+    $("#epics-create-form").on("submit", event => {
+        event.preventDefault();
+
+        // Create a plain object to hold the form data
+        const form = $('#epics-create-form');
+        const formData = {"userStories" : []};
+
+        // Collect data from Shoelace elements manually
+        form.find('sl-input, sl-select, sl-textarea').each(function() {
+            const input = this;
+            formData[input.name] = input.value;
+        });
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        customData.push(formData)
+
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        notify("New epic added. Total epics present: " + customData.length);
+
+        form.trigger('reset');
+
+        updateCustomEpicsList();
+    });
+
+    updateCustomEpicsList();
+
+    $(".remove-customEpic-button").each((index, button) => $(button).on("click", async () => {
+        const current = JSON.parse(sessionStorage.getItem("customData"));
+        current.splice(index, 1);
+        sessionStorage.setItem("customData", JSON.stringify(current));
+        $("sl-tab-panel[name='tab-epics-view']").children().eq(index).remove();
+    }));
 });
 
 function notify(message, variant = 'primary', icon = 'info-circle', duration = 1500) {
@@ -204,4 +249,61 @@ function sanitizeErrorData(data) {
         .replaceAll('\n', '<br />')
         .replaceAll("!-- ", "&nbsp;&nbsp;&nbsp;&nbsp;!--&nbsp;&nbsp;")
         .replaceAll("--------------------------------------------------------------------------------", "-------------------------------------------------------------"));
+}
+
+function updateCustomEpicsList(){
+    const currentDate = new Date();
+
+    const year = currentDate.getFullYear(); // Full year (YYYY)
+    const month = currentDate.getMonth() + 1; // Month (0-11, so we add 1 for 1-12)
+    const day = currentDate.getDate(); // Day of the month (1-31)
+
+    const customData = JSON.parse(sessionStorage.getItem('customData'));
+    const epicsViewTab = $("sl-tab-panel[name='tab-epics-view']");
+
+    if(customData.length === 0){
+        epicsViewTab.append(`<p>There aren't any epics created in this session</p>`);
+        return;
+    }
+
+    epicsViewTab.empty();
+
+    customData.forEach((value, key) => {
+        epicsViewTab.append(`<sl-card id="${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1)">
+            <strong>ID: ${value.epicId}</strong>
+            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+            <span>Name: <i>${value.epicName}</i></span>
+            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+            <span>Count of user stories: ${value.userStories.length}</span>
+            <sl-divider></sl-divider>
+            <span>(Priority: ${$("#priorityBadges #" + value.epicPriority)[0].outerHTML})</span>
+            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+            <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.epicCreatedAt}</span>
+            <sl-divider></sl-divider>
+            <sl-badge variant="danger">
+                Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter+"]")[0].innerHTML}
+            </sl-badge>
+            <sl-badge variant="warning">
+                Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee+"]")[0].innerHTML}
+            </sl-badge>
+            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+            <sl-divider></sl-divider>
+            <sl-details summary="Description">
+              ${value.epicDescription}
+            </sl-details>
+            <div slot="footer">
+                <sl-button class="edit-customEpic-button" variant="warning" outline>Edit</sl-button>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-button class="remove-customEpic-button" variant="danger" value="${key}" outline>Remove</sl-button>
+            </div>
+        </sl-card>`);
+    });
+}
+
+function updateCustomUserStoriesList(userStories){
+    //TODO: Finish function
+}
+
+function updateCustomTechnicalTasksList(technicalTasks){
+    //TODO: Finish function
 }

@@ -36,10 +36,6 @@ sl-tab-group::part(nav) {
     --gap-width: 1rem;
 }
 
-.label-on-left + .label-on-left {
-    margin-top: var(--sl-spacing-medium);
-}
-
 .label-on-left::part(form-control) {
     display: inline-grid;
     gap: var(--sl-spacing-3x-small) 0.875rem;

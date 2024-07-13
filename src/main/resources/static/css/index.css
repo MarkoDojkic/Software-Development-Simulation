@@ -104,10 +104,6 @@
     --gap-width: 0.8rem;
 }
 
-.label-on-left + .label-on-left {
-    margin-top: var(--sl-spacing-medium);
-}
-
 .label-on-left::part(form-control) {
     display: inline-grid;
     gap: var(--sl-spacing-3x-small) var(--gap-width);
@@ -118,7 +114,7 @@
     text-align: right;
 }
 
-#create-epic-form > .label-on-left::part(form-control-help-text) {
+#generate-random-data-flow-form > .label-on-left::part(form-control-help-text) {
     margin-left: 0;
 }
 
@@ -127,14 +123,67 @@
     margin-left: -33px;
 }
 
-#create-epic-form > .label-on-left::part(form-control-input) {
+#generate-random-data-flow-form > .label-on-left::part(form-control-input) {
     width: 90.7px !important;
     margin-left: 15px;
+}
+
+sl-select.label-on-left::part(form-control-input) {
+    width: 160px;
+    margin-left: 5px;
 }
 
 .label-on-left::part(form-control-input) {
     width: 95px;
     margin-left: 5px;
+}
+
+.ansi_fg_7m::part(base) {
+    color: rgb(117, 116, 116);
+}
+
+.ansi_fg_15m::part(base) {
+    color: rgb(255, 255, 255);
+}
+
+.ansi_fg_37m::part(base) {
+    color: rgb(0, 55, 218);
+}
+
+.ansi_fg_50m::part(base) {
+    color: rgb(0, 135, 135);
+}
+
+.ansi_fg_124m::part(base) {
+    color: rgb(135, 0, 0);
+}
+
+.ansi_fg_160m::part(base) {
+    color: rgb(255, 0, 0);
+}
+
+.ansi_bg_7m {
+    background-color: rgb(117, 116, 116);
+}
+
+.ansi_bg_15m {
+    background-color: rgb(255, 255, 255);
+}
+
+.ansi_bg_37m {
+    background-color: rgb(0, 55, 218);
+}
+
+.ansi_bg_50m {
+    background-color: rgb(0, 135, 135);
+}
+
+.ansi_bg_124m {
+    background-color: rgb(135, 0, 0);
+}
+
+.ansi_bg_160m {
+    background-color: rgb(255, 0, 0);
 }
 
 #manageCustomEpicsBtn::part(base) {
@@ -211,10 +260,4 @@
     row-gap: var(--sl-input-spacing-small);
     height: calc(100vh - 300px);
     overflow-y: scroll;
-}
-
-sl-icon[name='gender-male'], sl-icon[name='gender-female'] {
-    position: relative;
-    top: 4px;
-    right: 1.4px;
 }

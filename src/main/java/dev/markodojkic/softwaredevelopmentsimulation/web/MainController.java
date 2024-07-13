@@ -1,5 +1,6 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
+import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,12 @@ public class MainController {
     @GetMapping(value = "")
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("/index");
-        modelAndView.addObject("developer", DataProvider.getTechnicalManager());
+        modelAndView.addObject("technicalManager", DataProvider.getTechnicalManager());
+        modelAndView.addObject("selectedEpicDevelopmentTeam", null);
+        modelAndView.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
+        modelAndView.addObject("developmentTeamsSummary", DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> String.format("%d (%.2f)", developmentTeam.size(), developmentTeam.stream().mapToDouble(developer -> (developer.getExperienceCoefficient() * developer.getDeveloperType().getSeniorityCoefficient() - 1) / (73.5 - 1) * (12 - 1) + 1).sum() / developmentTeam.size())).toList());
+        modelAndView.addObject("priorities", Priority.values());
+
         return modelAndView;
     }
 }

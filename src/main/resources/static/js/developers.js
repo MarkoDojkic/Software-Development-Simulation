@@ -10,11 +10,11 @@ $(window).on("load", async () => {
         $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
         $(".developer-experience-range")[0].tooltipFormatter = value => `Developer experience - ${value}/10`;
 
-        $("#developmentTeamsSelectionTree")[0].addEventListener("sl-selection-change", () => {
+        $("#developmentTeamsSelectionTree").on("sl-selection-change", () => {
             $("#selectedDevelopmentTeamIndex")[0].value = parseInt($("#developmentTeamsSelectionTree [selected]")[0].id);
         });
 
-        $($("#sl-tab-panel-3")[0]).on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", () => {
+        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", () => {
             $("#editDeveloperSelectedDevelopmentTeamIndex")[0].value = parseInt($("#editDeveloperDevelopmentTeamsSelectionTree [selected]")[0].id);
         });
 
@@ -48,7 +48,7 @@ $(window).on("load", async () => {
             editTab.disabled = false;
             recreateTab.disabled = true;
 
-            await Promise.all([!editTab[0].disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-edit"));
+            await Promise.all([!editTab.disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-edit"));
         }));
     });
 })
