@@ -13,16 +13,16 @@
     <body>
         <span style="position: absolute;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
         <sl-tab-group>
-            <sl-tab slot="nav" panel="tab-developers-view">Developers - View</sl-tab>
-            <sl-tab slot="nav" panel="tab-developers-create">Developers - Create</sl-tab>
-            <sl-tab slot="nav" panel="tab-developers-edit" disabled>Developers - Edit</sl-tab>
-            <sl-tab slot="nav" panel="tab-developers-recreate">Developers - Recreate</sl-tab>
+            <sl-tab slot="nav" panel="tabDevelopersView">Developers - View</sl-tab>
+            <sl-tab slot="nav" panel="tabDevelopersCreate">Developers - Create</sl-tab>
+            <sl-tab slot="nav" panel="tabDevelopersEdit" disabled>Developers - Edit</sl-tab>
+            <sl-tab slot="nav" panel="tabDevelopersRecreate">Developers - Recreate</sl-tab>
 
-            <sl-tab-panel name="tab-developers-view">
+            <sl-tab-panel name="tabDevelopersView">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
-                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" class="sl-carousel-custom-modification" pagination>
+                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" class="slCarouselCustomModification" pagination>
                     <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
-                        <sl-card th:each="developer, developerIteratorator : ${developmentTeam}" th:style="|height:100%; --border-color: ${!developer.isFemale ? 'skyblue' : 'hotpink'};|">
+                        <sl-card th:each="developer, developerIterator : ${developmentTeam}" th:style="|height:100%; --border-color: ${!developer.isFemale ? 'skyblue' : 'hotpink'};|">
                             <strong th:text="|ID: ${developer.id}|"></strong><br /><br />
                             <span th:text="|${developer.getDisplayName()} (UMCN: ${developer.yugoslavianUMCN}) |"></span>&nbsp;
                             <sl-icon th:name="${!developer.isFemale ? 'gender-male' : 'gender-female'}"></sl-icon><br /><br />
@@ -39,15 +39,15 @@
                             </th:block><br /><br />
                             <sl-rating class="sl-rating-developer" th:value="${ ((developer.experienceCoefficient * developer.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly></sl-rating>
                             <div slot="footer">
-                                <sl-button class="edit-developer-button" variant="warning" outline th:value="|developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}|">Edit</sl-button>
+                                <sl-button class="editDeveloperSlButton" th:data-developer-index="${developerIterator.index}" th:data-development-team-index="${developmentTeamIterator.index}" variant="warning" outline>Edit</sl-button>
                                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                                <sl-button variant="danger" outline th:onclick="|$.ajax({type: 'DELETE', async: true, url: '/api/removeDeveloper?developmentTeamIndex=${developmentTeamIterator.index}&developerIndex=${developerIteratorator.index}', success: () => window.location.href = '/developers'});|">Remove</sl-button>
+                                <sl-button class="removeDeveloperSlButton" th:data-developer-index="${developerIterator.index}" th:data-development-team-index="${developmentTeamIterator.index}" variant="danger" outline>Remove</sl-button>
                             </div>
                         </sl-card>
                     </sl-carousel-item>
                 </sl-carousel>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-developers-create"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
+            <sl-tab-panel name="tabDevelopersCreate"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
                 <form id="developer-create-form" th:action="@{/api/addDeveloper}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex">
                         <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
@@ -55,17 +55,17 @@
                         <sl-input type="text" name="surname" placeholder="Surname" size="medium" maxlength="128" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
                         <sl-divider vertical></sl-divider>
                         <sl-radio-group size="medium" name="gender" required>
-                            <sl-radio-button id="gender-male-radio-button" pill value="0">Male&nbsp;<sl-icon name="gender-male"></sl-icon></sl-radio-button>
-                            <sl-radio-button id="gender-female-radio-button" pill value="1">Female&nbsp;<sl-icon name="gender-female"></sl-icon></sl-radio-button>
+                            <sl-radio-button id="maleGenderSlRadio" pill value="0">Male&nbsp;<sl-icon name="gender-male"></sl-icon></sl-radio-button>
+                            <sl-radio-button id="femaleGenderSlRadio" pill value="1">Female&nbsp;<sl-icon name="gender-female"></sl-icon></sl-radio-button>
                         </sl-radio-group>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-select pill style="width: clamp(450px, calc(100vw - 50px), 670px);" placeholder="Select developer type (ex. Intern developer)" placement="bottom" name="developerType" required>
                         <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |" th:unless="${developerTypeIterator.index} == 0"></sl-option>
                     </sl-select>
-                    <sl-divider class="horizontal-divider"></sl-divider>
-                    <sl-range name="experienceCoefficient" class="developer-experience-range" style="width: clamp(450px, calc(100vw - 50px), 670px);" min="0" max="10" required></sl-range>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
+                    <sl-range name="experienceCoefficient" class="developerExperienceSlRange" style="width: clamp(450px, calc(100vw - 50px), 670px);" min="0" max="10" required></sl-range>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div>
                         <span style="font-size: var(--sl-font-size-large);">Select development team to assign to:</span><br /><br />
                         <sl-tree id="developmentTeamsSelectionTree" style="width: clamp(450px, calc(100vw - 50px), 670px);">
@@ -74,7 +74,7 @@
 
                             <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;">
                                 <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
-                                <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" disabled>
+                                <sl-tree-item th:each="developer, developerIterator : ${developmentTeam}" disabled>
                                     <span th:text="|${developer.getDisplayName()} |"></span>
                                     <sl-divider vertical></sl-divider>
                                     <th:block th:switch="${developer.developerType.ordinal}">
@@ -90,42 +90,42 @@
                         </sl-tree>
                         <input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" required/>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Add developer</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset" onclick="$('#developmentTeamsSelectionTree [selected]')[0]?.removeAttribute('selected');">Clear form</sl-button>
+                        <sl-button variant="neutral" outline type="reset" onclick="$('#developmentTeamsSelectionTree [selected]').removeAttr('selected');">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-developers-edit"></sl-tab-panel>
-            <sl-tab-panel name="tab-developers-recreate">
-                <form id="developer-recreate-form" th:action="@{/api/recreateDevelopmentTeams}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
-                    <sl-input class="label-on-left" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" value="45" size="medium" help-text="Default value is 45%" min="0" max="100" inputmode="number" required no-spin-buttons pill>
+            <sl-tab-panel name="tabDevelopersEdit"></sl-tab-panel>
+            <sl-tab-panel name="tabDevelopersRecreate">
+                <form id="developersRecreateForm" th:action="@{/api/recreateDevelopmentTeams}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
+                    <sl-input class="labelOnLeftModification" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" value="45" size="medium" help-text="Default value is 45%" min="0" max="100" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="percent" slot="suffix"></sl-icon>
                     </sl-input>
                     <sl-divider vertical></sl-divider>
                     <div style="display: ruby-text">
-                        <sl-input class="label-on-left" label="Created developers count" name="minimalDevelopersCount" type="number" value="30" size="medium" help-text="Default values are min: x30" min="0" max="999" inputmode="number" required no-spin-buttons pill>
+                        <sl-input class="labelOnLeftModification" label="Created developers count" name="minimalDevelopersCount" type="number" value="30" size="medium" help-text="Default values are min: x30" min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
-                        <sl-input class="label-on-left" label="—" name="maximalDevelopersCount" type="number" value="100" size="medium" help-text="and max: x100. Limit is 999." min="0" max="999" inputmode="number" required no-spin-buttons pill>
+                        <sl-input class="labelOnLeftModification" label="—" name="maximalDevelopersCount" type="number" value="100" size="medium" help-text="and max: x100. Limit is 999." min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: ruby-text">
-                        <sl-input class="label-on-left" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" value="5" size="medium" help-text="Default values are min: x5" min="0" max="999" inputmode="number" required no-spin-buttons pill>
+                        <sl-input class="labelOnLeftModification" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" value="5" size="medium" help-text="Default values are min: x5" min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
-                        <sl-input class="label-on-left" label="—" name="maximalDevelopersInTeamCount" type="number" value="15" size="medium" help-text="and max: x15. Limit is 999." min="0" max="999" inputmode="number" required no-spin-buttons pill>
+                        <sl-input class="labelOnLeftModification" label="—" name="maximalDevelopersInTeamCount" type="number" value="15" size="medium" help-text="and max: x15. Limit is 999." min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <input type="hidden" id="retainOld" name="retainOld" value="true">
                     <sl-checkbox checked="true" onclick="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Recreate development teams</sl-button>
                         <sl-divider vertical></sl-divider>
@@ -143,18 +143,18 @@
                 <sl-divider vertical></sl-divider>
                 <sl-input type="text" name="surname" placeholder="Surname" size="medium" maxlength="128" th:value="${formEditDeveloperPlaceholder.surname}" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
             </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-divider class="horizontalDivider"></sl-divider>
             <div th:style="|color: ${!formEditDeveloperPlaceholder.isFemale ? 'skyblue' : 'hotpink'};|">
                 <span th:text="|Place of birth: ${formEditDeveloperPlaceholder.placeOfBirth}, Gender: ${!formEditDeveloperPlaceholder.isFemale ? 'Male' : 'Female'} |"></span>
                 <sl-icon th:name="${!formEditDeveloperPlaceholder.isFemale ? 'gender-male' : 'gender-female'}"></sl-icon>
             </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-divider class="horizontalDivider"></sl-divider>
             <sl-select pill style="width: clamp(450px, calc(100vw - 50px), 470px)" placeholder="Select developer type (ex. Intern developer)" placement="bottom" name="developerType" th:value="${formEditDeveloperPlaceholder.developerType}" required>
                 <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient})|" th:unless="${developerTypeIterator.index} == 0"></sl-option>
             </sl-select>
-            <sl-divider class="horizontal-divider"></sl-divider>
-            <sl-range name="experienceCoefficient" class="developer-experience-range" style="width: clamp(450px, calc(100vw - 50px), 470px)" min="1" max="10" th:value="${formEditDeveloperPlaceholder.experienceCoefficient}"></sl-range>
-            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <sl-range name="experienceCoefficient" class="developerExperienceSlRange" style="width: clamp(450px, calc(100vw - 50px), 470px)" min="1" max="10" th:value="${formEditDeveloperPlaceholder.experienceCoefficient}"></sl-range>
+            <sl-divider class="horizontalDivider"></sl-divider>
             <div>
                 <span style="font-size: var(--sl-font-size-large);">Select development team to assign to:</span><br /><br />
                 <sl-tree id="editDeveloperDevelopmentTeamsSelectionTree" style="width: clamp(450px, calc(100vw - 50px), 470px)">
@@ -163,7 +163,7 @@
                     <sl-tree-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}" style="margin: 0 auto;" th:selected="${developmentTeamIndex} == ${developmentTeamIterator.index}">
                         <span th:text="|Development team #${developmentTeamIterator.count}|"></span>
                         <sl-tag variant="success" th:if="${developmentTeamIndex} == ${developmentTeamIterator.index}">Currently assigned</sl-tag>
-                        <sl-tree-item th:each="developer, developerIteratorator : ${developmentTeam}" th:style="(${developmentTeamIndex} == ${developmentTeamIterator.index} and ${developerIndex} == ${developerIteratorator.index}) ? 'border: 2px solid yellow' : 'border: none'" disabled>
+                        <sl-tree-item th:each="developer, developerIterator : ${developmentTeam}" th:style="(${developmentTeamIndex} == ${developmentTeamIterator.index} and ${developerIndex} == ${developerIterator.index}) ? 'border: 2px solid yellow' : 'border: none'" disabled>
                             <span th:text="|${developer.getDisplayName()} |"></span>
                             <sl-divider vertical></sl-divider>
                             <th:block th:switch="${developer.developerType.ordinal}">
@@ -184,11 +184,11 @@
                 <input type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
                 <input type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
             </div>
-            <sl-divider class="horizontal-divider"></sl-divider>
+            <sl-divider class="horizontalDivider"></sl-divider>
             <div style="display: inline-flex">
                 <sl-button variant="success" outline type="submit">Confirm</sl-button>
                 <sl-divider vertical></sl-divider>
-                <sl-button class="edit-developer-reset-button" variant="danger" outline>Cancel</sl-button>
+                <sl-button class="editDeveloperResetSlButt" variant="danger" outline>Cancel</sl-button>
             </div>
         </form>
     </div>

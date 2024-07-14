@@ -17,28 +17,28 @@
             <sl-divider style="--spacing: var(--sl-spacing-large);" vertical></sl-divider>
             <sl-button-group label="Alignment">
                 <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
-                <sl-button id="jiraActivityStreamBtn" variant="neutral" outline>Open Jira activity stream</sl-button>
+                <sl-button id="jiraActivityStreamSlButton" variant="neutral" outline>Open Jira activity stream</sl-button>
             </sl-button-group>
             <sl-divider vertical></sl-divider>
             <sl-button-group style="margin-top: 4px;">
-                <sl-button id="manageCustomEpicsBtn" size="small" outline pill>Manage epics</sl-button>
-                <sl-button id="manageCustomUserStoriesBtn" size="small" outline pill>Manage user stories</sl-button>
-                <sl-button id="manageCustomTechnicalTasksBtn" size="small" outline pill>Manage technical tasks</sl-button>
-                <sl-button id="loadFromSavedSessionFileBtn" variant="warning" size="small" outline pill disabled>Load from file</sl-button>
-                <sl-button id="predefined-button" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
+                <sl-button id="manageCustomEpicsSlButton" size="small" outline pill>Manage epics</sl-button>
+                <sl-button id="manageCustomUserStoriesSlButton" size="small" outline pill>Manage user stories</sl-button>
+                <sl-button id="manageCustomTechnicalTasksSlButton" size="small" outline pill>Manage technical tasks</sl-button>
+                <sl-button id="loadFromSavedSessionFileSlButton" variant="warning" size="small" outline pill disabled>Load from file</sl-button>
+                <sl-button id="predefinedSlButton" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
             </sl-button-group>
         </header>
         <div style="display: flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium); align-items: center; justify-content: center;">
-            <form id="generate-random-data-flow-form">
+            <form id="generateRandomDataFlowForm">
                 <div style="display: ruby-text">
-                    <sl-input class="label-on-left" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
+                    <sl-input class="labelOnLeftModification" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="x" slot="prefix"></sl-icon>
                     </sl-input>
-                    <sl-input class="label-on-left" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
+                    <sl-input class="labelOnLeftModification" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="x" slot="prefix"></sl-icon>
                     </sl-input>
                     <sl-divider vertical></sl-divider>
-                    <sl-button id="randomized-button" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
+                    <sl-button id="randomizedSlButton" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
                 </div>
             </form>
             <sl-divider vertical></sl-divider>
@@ -68,13 +68,13 @@
 
     <sl-dialog id="customEpics" label="Manage epics for predefined application flow" style="--width: 96vw">
         <sl-tab-group placement="start">
-            <sl-tab slot="nav" panel="tab-epics-view">View</sl-tab>
-            <sl-tab slot="nav" panel="tab-epics-add">Add</sl-tab>
-            <sl-tab slot="nav" panel="tab-epics-edit" disabled>Edit</sl-tab>
+            <sl-tab slot="nav" panel="customEpicsViewTab">View</sl-tab>
+            <sl-tab slot="nav" panel="customEpicsAddTab">Add</sl-tab>
+            <sl-tab slot="nav" panel="customEpicsEditTab" disabled>Edit</sl-tab>
 
-            <sl-tab-panel style="text-align: -webkit-center;" name="tab-epics-view"></sl-tab-panel>
-            <sl-tab-panel name="tab-epics-add">
-                <form id="epics-create-form" style="text-align: -webkit-center;" action="#" method="post">
+            <sl-tab-panel style="text-align: -webkit-center;" name="customEpicsViewTab"></sl-tab-panel>
+            <sl-tab-panel name="customEpicsAddTab">
+                <form id="customEpicsCreateForm" style="text-align: -webkit-center;" action="#" method="post">
                     <div style="display: inline-flex;">
                         <sl-input style="max-width: 15%" name="epicId" placeholder="ID" type="text" size="medium" help-text=" " maxlength="16" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" required pill></sl-input>
                         <sl-divider vertical></sl-divider>
@@ -84,20 +84,20 @@
                             <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
                         </sl-select>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="label-on-left" label="Development team" help-text="<size> (<average_developer_rating (max 12)>)" pill placement="bottom" name="selectedEpicDevelopmentTeam" required>
+                        <sl-select class="labelOnLeftModification" label="Development team" help-text="<size> (<average_developer_rating (max 12)>)" pill placement="bottom" name="selectedEpicDevelopmentTeam" required>
                             <sl-option th:each="developmentTeamSummary, developerTeamIterator : ${developmentTeamsSummary}" th:value="${developerTeamIterator.index}" th:text="|#${developerTeamIterator.index}: ${developmentTeamSummary}"></sl-option>
                         </sl-select>
-                        <sl-select class="label-on-left" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Reporter" name="epicReporter" required disabled></sl-select>
+                        <sl-select class="labelOnLeftModification" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Reporter" name="epicReporter" required disabled></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="label-on-left" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Assignee" name="epicAssignee" required disabled></sl-select>
+                        <sl-select class="labelOnLeftModification" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Assignee" name="epicAssignee" required disabled></sl-select>
                         <sl-divider vertical></sl-divider>
                         <sl-input help-text=" " type="time" label="Creation time" name="epicCreatedAt" required></sl-input>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea name="epicDescription" help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Add epic task</sl-button>
                         <sl-divider vertical></sl-divider>
@@ -105,7 +105,7 @@
                     </div>
                 </form>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-epics-edit"></sl-tab-panel>
+            <sl-tab-panel name="customEpicsEditTab"></sl-tab-panel>
         </sl-tab-group>
     </sl-dialog>
 
@@ -133,22 +133,22 @@
                             <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
                         </sl-select>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="label-on-left" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
+                        <sl-select class="labelOnLeftModification" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
                             <sl-option text="SELECTED BY UserStory ASSIGNEE" value="predefined"></sl-option>
                         </sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="label-on-left" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
+                        <sl-select class="labelOnLeftModification" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
                             <!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
                             <sl-option>DEV-TEAM-LIST-OF-REPORTER</sl-option>
                         </sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input class="label-on-left" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
+                        <sl-input class="labelOnLeftModification" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Create technical task</sl-button>
                         <sl-divider vertical></sl-divider>
@@ -184,22 +184,22 @@
                             <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
                         </sl-select>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="label-on-left" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
+                        <sl-select class="labelOnLeftModification" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
                             <sl-option text="SELECTED BY UserStory ASSIGNEE" value="predefined"></sl-option>
                         </sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="label-on-left" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
+                        <sl-select class="labelOnLeftModification" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
 <!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
                             <sl-option>DEV-TEAM-LIST-OF-REPORTER</sl-option>
                         </sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input class="label-on-left" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
+                        <sl-input class="labelOnLeftModification" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
                     </div>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
-                    <sl-divider class="horizontal-divider"></sl-divider>
+                    <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Create technical task</sl-button>
                         <sl-divider vertical></sl-divider>

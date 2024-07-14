@@ -5,7 +5,7 @@
     --sl-input-required-content-offset: 0 !important;
 }
 
-.sl-carousel-custom-modification {
+.slCarouselCustomModification {
     height: max(335px, calc(100vh - 100px));
 }
 
@@ -18,12 +18,12 @@ sl-tab-group::part(nav) {
     justify-content: center;
 }
 
-.developer-experience-range {
+.developerExperienceSlRange {
     --track-color-active: var(--sl-color-warning-600);
     --track-color-inactive: var(--sl-color-warning-100);
 }
 
-.horizontal-divider {
+.horizontalDivider {
     --spacing: 2rem;
     --width: 0px;
 }
@@ -32,88 +32,88 @@ sl-tab-group::part(nav) {
     --indent-guide-width: 1px;
 }
 
-.label-on-left {
+.labelOnLeftModification {
     --gap-width: 1rem;
 }
 
-.label-on-left::part(form-control) {
+.labelOnLeftModification::part(form-control) {
     display: inline-grid;
     gap: var(--sl-spacing-3x-small) 0.875rem;
     align-items: center;
 }
 
-.label-on-left::part(form-control-label) {
+.labelOnLeftModification::part(form-control-label) {
     text-align: right;
 }
 
-#developer-recreate-form > .label-on-left::part(form-control-help-text) {
+#developersRecreateForm > .labelOnLeftModification::part(form-control-help-text) {
     margin-left: 0;
 }
 
-.label-on-left::part(form-control-help-text) {
+.labelOnLeftModification::part(form-control-help-text) {
     grid-column-start: 2;
     margin-left: -33px;
 }
 
-#developer-recreate-form > .label-on-left::part(form-control-input) {
+#developersRecreateForm > .labelOnLeftModification::part(form-control-input) {
     width: 90.7px !important;
     margin-left: 15px;
 }
 
-.label-on-left::part(form-control-input){
+.labelOnLeftModification::part(form-control-input){
     width: 95px;
     margin-left: 5px;
 }
 
-#gender-male-radio-button::part(button) {
+#maleGenderSlRadio::part(button) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(135, 206, 235, 1);
     color: rgba(135, 206, 235, 1);
 }
 
-#gender-male-radio-button::part(button button--checked) {
+#maleGenderSlRadio::part(button button--checked) {
     background-color: rgba(135, 206, 235, 1);
     border-color: rgba(135, 206, 235, 1);
     color: white;
 }
 
-#gender-male-radio-button::part(button):hover, #gender-male-radio-button::part(button button--checked):hover {
+#maleGenderSlRadio::part(button):hover, #maleGenderSlRadio::part(button button--checked):hover {
     background-color: rgba(135, 206, 235, 0.3);
     border-color: rgba(135, 206, 235, 0.3);
     color: white;
 }
 
-#gender-male-radio-button::part(button):active, #gender-male-radio-button::part(button button--checked):active {
+#maleGenderSlRadio::part(button):active, #maleGenderSlRadio::part(button button--checked):active {
     background-color: rgba(135, 206, 235, 0.6);
     border-color: rgba(135, 206, 235, 0.6);
     color: white;
 }
 
-#gender-female-radio-button::part(button) {
+#femaleGenderSlRadio::part(button) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(255, 105, 180, 1);
     color: rgba(255, 105, 180, 1);
 }
 
-#gender-female-radio-button::part(button button--checked) {
+#femaleGenderSlRadio::part(button button--checked) {
     background-color: rgba(255, 105, 180, 1);
     border-color: rgba(255, 105, 180, 1);
     color: white;
 }
 
-#gender-female-radio-button::part(button):hover, #gender-female-radio-button::part(button button--checked):hover {
+#femaleGenderSlRadio::part(button):hover, #femaleGenderSlRadio::part(button button--checked):hover {
     background-color: rgba(255, 105, 180, 0.6);
     border-color: rgba(255, 105, 180, 0.6);
     color: white;
 }
 
-#gender-female-radio-button::part(button):active, #gender-female-radio-button::part(button button--checked):active {
+#femaleGenderSlRadio::part(button):active, #femaleGenderSlRadio::part(button button--checked):active {
     background-color: rgba(255, 105, 180, 0.8);
     border-color: rgba(255, 105, 180, 0.8);
     color: white;
 }
 
-sl-icon[name='gender-male'], sl-icon[name='gender-female'] {
+span + sl-icon[name='gender-male'], span + sl-icon[name='gender-female'] {
     position: relative;
     top: 4px;
     right: 1.4px;

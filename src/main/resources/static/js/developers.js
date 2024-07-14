@@ -5,51 +5,85 @@ $(window).on("load", async () => {
     ]).then(() => {
         setupResize();
 
-        $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container")[0].style.setProperty("overflow-y", "auto");
+        $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
 
         $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
-        $(".developer-experience-range")[0].tooltipFormatter = value => `Developer experience - ${value}/10`;
+        $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); //Change tooltip message on each slRange instances*
 
-        $("#developmentTeamsSelectionTree").on("sl-selection-change", () => {
-            $("#selectedDevelopmentTeamIndex")[0].value = parseInt($("#developmentTeamsSelectionTree [selected]")[0].id);
+        $("#developmentTeamsSelectionTree").on("sl-selection-change", event => { //Mimic select element on tree element
+            $("#selectedDevelopmentTeamIndex").val(parseInt($(event.originalEvent.detail.selection[0]).attr("id")));
         });
 
-        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", () => {
-            $("#editDeveloperSelectedDevelopmentTeamIndex")[0].value = parseInt($("#editDeveloperDevelopmentTeamsSelectionTree [selected]")[0].id);
+        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", event => { //Mimic select element on tree element
+            $("#editDeveloperSelectedDevelopmentTeamIndex").val(parseInt($(event.originalEvent.detail.selection[0]).attr("id")));
         });
 
-        $(".edit-developer-button").each((index, button) => button.addEventListener("click", async e => {
-            const viewTab =  $("#sl-tab-1")[0];
-            const createTab =  $("#sl-tab-2")[0];
-            const editTab =  $("#sl-tab-3")[0];
-            const recreateTab =  $("#sl-tab-4")[0];
+        //Below is referenced via $(document) since they are dynamically created buttons
+        $(document).on("click", ".editDeveloperSlButton", async function (){
+            const developmentTeamIndex = $(this).data("development-team-index");
+            const developerIndex = $(this).data("developer-index");
 
-            window.history.replaceState(null, null, "/developers/edit?".concat(e.currentTarget.value));
+            const viewTab =  $("#sl-tab-1");
+            const createTab =  $("#sl-tab-2");
+            const editTab =  $("#sl-tab-3");
+            const recreateTab =  $("#sl-tab-4");
+
+            window.history.replaceState(null, null, `/developers/edit?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`);
             $.ajax({
                 type: "GET",
-                url: "/developers/edit?".concat(e.currentTarget.value),
+                url: `/developers/edit?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
                 success: response => {
-                    $("#sl-tab-panel-3")[0].innerHTML = response
-                    $(".edit-developer-reset-button")[0].addEventListener("click", async () => {
+                    $("#sl-tab-panel-3").html(response);
+                    $("#sl-tab-panel-3 .developerExperienceSlRange")[0].tooltipFormatter = value => `Developer experience - ${value}/10`; //*Here needs to be reinitialize since new sl-range is created
+                    $(document).on("click", ".editDeveloperResetSlButt", async () => {
                         window.history.replaceState(null, null, "/developers");
-                        viewTab.disabled = false;
-                        createTab.disabled = false;
-                        editTab.disabled = true;
-                        recreateTab.disabled = false;
-                        $("#sl-tab-panel-3")[0].innerHTML = "";
+                        viewTab.prop("disabled", false);
+                        createTab.prop("disabled", false)
+                        editTab.prop("disabled", true)
+                        recreateTab.prop("disabled", false)
+                        $("#sl-tab-panel-3").empty();
 
-                        await Promise.all([!viewTab.disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-view"));
+                        await Promise.all([!viewTab.prop("disabled")]).then(() => $("body sl-tab-group")[0].show("tabDevelopersView"));
                     });
                 }
             });
 
-            viewTab.disabled = true;
-            createTab.disabled = true;
-            editTab.disabled = false;
-            recreateTab.disabled = true;
+            viewTab.prop("disabled", true)
+            createTab.prop("disabled", true)
+            editTab.prop("disabled", false)
+            recreateTab.prop("disabled", true)
 
-            await Promise.all([!editTab.disabled]).then(() => $("body sl-tab-group")[0].show("tab-developers-edit"));
-        }));
+            await Promise.all([!editTab.prop("disabled")]).then(() => $("body sl-tab-group")[0].show("tabDevelopersEdit"));
+        });
+
+        $(document).on('click', '.removeDeveloperSlButton', function() {
+            const currentRemoveSlButton = $(this);
+            const otherDevelopersFooterSlButtons = currentRemoveSlButton.parent().parent().nextAll('sl-card').find("developerExperienceSlRange slSlButt");
+            const developmentTeamIndex = currentRemoveSlButton.data("development-team-index");
+            const developerIndex = currentRemoveSlButton.data("developer-index");
+
+            $.ajax({
+                type: 'DELETE',
+                async: true,
+                url: `/api/removeDeveloper?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
+                success: function() {
+                    if (developerIndex === 0 && otherDevelopersFooterSlButtons.length === 0) { //If is only one remove sl-carousel-item of removed developer's team
+                        currentRemoveSlButton.parent().parent().parent().nextAll('sl-carousel-item').each(function(index, slCarouselItem) {
+                            $(slCarouselItem).children('sl-card').find("div[slot='footer'] sl-button").each(function(index, slButton) {
+                                $(slButton).data("development-team-index", $(slButton).data("development-team-index") - 1);
+                            });
+                        }); //Update indexes for fallowing development teams
+                        currentRemoveSlButton.parent().parent().parent().remove();
+                    } else { //Update indexes for fallowing developers
+                        otherDevelopersFooterSlButtons.each(function(index, slButton) {
+                            $(slButton).data("developer-index", $(slButton).data("developer-index") - 1);
+                        });
+                    }
+
+                    currentRemoveSlButton.parent().parent().remove(); //Remove sl-card of removed developer
+                }
+            });
+        });
     });
 })
 
@@ -68,75 +102,75 @@ function setupResize() {
     viewportBreakpointQuery5.addEventListener('change', (event) => layoutChangedCallback5(event.matches));
     viewportBreakpointQuery6.addEventListener('change', (event) => layoutChangedCallback6(event.matches));
 
-    const bodySpan = $('body span')[0];
-    const bodySpanA = $('body span a')[0]
+    const bodySpan = $('body span').first();
+    const bodySpanA = $('body span a').first();
 
     const callbackDuplicates = () => {
-        $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 16 / 9);
-        bodySpan.style.setProperty("left", "2vw");
-        bodySpan.style.setProperty("top", "1.5%");
-        bodySpanA.style.setProperty("font-size", "var(--sl-font-size-medium)");
-        $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
-        $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+        $('.slCarouselCustomModification').css("--aspect-ratio", 16 / 9);
+        bodySpan.css("left", "2vw");
+        bodySpan.css("top", "1.5%");
+        bodySpanA.css("font-size", "var(--sl-font-size-medium)");
+        bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
+        $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
     }
 
     const layoutChangedCallback1 = (matches) => {
         if (matches) {
-            $(':root')[0].style.setProperty('--numberOfColumns', 6);
+            $(':root').css('--numberOfColumns', 6);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         }
     }
 
     const layoutChangedCallback2 = (matches) => {
         if (matches) {
-            $(':root')[0].style.setProperty('--numberOfColumns', 5);
+            $(':root').css('--numberOfColumns', 5);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback1(viewportBreakpointQuery1.matches);
     }
 
     const layoutChangedCallback3 = (matches) => {
         if (matches) {
-            $(':root')[0].style.setProperty('--numberOfColumns', 4);
+            $(':root').css('--numberOfColumns', 4);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback2(viewportBreakpointQuery2.matches);
     }
 
     const layoutChangedCallback4 = (matches) => {
         if (matches) {
-            $(':root')[0].style.setProperty('--numberOfColumns', 3);
-            $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 4 / 3);
-            bodySpan.style.setProperty("left", "2vw");
-            bodySpan.style.setProperty("top", "2.5%");
-            bodySpanA.style.setProperty("font-size", "var(--sl-font-size-small)");
-            $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
-            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+            $(':root').css('--numberOfColumns', 3);
+            $('.slCarouselCustomModification').css("--aspect-ratio", 4 / 3);
+            bodySpan.css("left", "2vw");
+            bodySpan.css("top", "2.5%");
+            bodySpanA.css("font-size", "var(--sl-font-size-small)");
+            bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
+            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback3(viewportBreakpointQuery3.matches);
     }
 
     const layoutChangedCallback5 = (matches) => {
         if (matches) {
-            $(':root')[0].style.setProperty('--numberOfColumns', 2);
-            $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 0.75);
-            bodySpan.style.setProperty("top", "1.5%");
-            bodySpan.style.setProperty("left", "30%");
-            bodySpanA.style.setProperty("font-size", "var(--sl-font-size-2x-small)");
-            $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
-            $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-flex");
+            $(':root').css('--numberOfColumns', 2);
+            $('.slCarouselCustomModification').css("--aspect-ratio", 0.75);
+            bodySpan.css("top", "1.5%");
+            bodySpan.css("left", "30%");
+            bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");
+            bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
+            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback4(viewportBreakpointQuery4.matches);
     }
 
     const layoutChangedCallback6 = (matches) => {
         if (matches) {
-           $(':root')[0].style.setProperty('--numberOfColumns', 1);
-           $('.sl-carousel-custom-modification')[0].style.setProperty("--aspect-ratio", 0.75);
-           bodySpan.style.setProperty("top", "1.5%");
-           bodySpan.style.setProperty("left", "23%");
-           bodySpanA.style.setProperty("font-size", "var(--sl-font-size-2x-small)");
-           $(bodySpanA).html($(bodySpanA).html().replace("&nbsp;","<br>"));
-           $("#developer-create-form div:nth-child(1)")[0].style.setProperty("display", "inline-block");
+           $(':root').css('--numberOfColumns', 1);
+           $('.slCarouselCustomModification').css("--aspect-ratio", 0.75);
+           bodySpan.css("top", "1.5%");
+           bodySpan.css("left", "23%");
+           bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");
+           bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
+           $("#developer-create-form div:nth-child(1)").css("display", "inline-block");
         } else layoutChangedCallback5(viewportBreakpointQuery5.matches);
     }
 
