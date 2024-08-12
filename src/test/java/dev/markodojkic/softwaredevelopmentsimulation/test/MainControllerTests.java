@@ -4,6 +4,7 @@ import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import dev.markodojkic.softwaredevelopmentsimulation.web.MainController;
 import mockit.Mock;
 import mockit.MockUp;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
+
 @WebMvcTest(MainController.class)
 class MainControllerTests {
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeAll
+    public static void preSetup(){
+        setupDataProvider(true);
+    }
 
     @BeforeEach
     void setup() {

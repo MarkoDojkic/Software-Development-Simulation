@@ -6,6 +6,7 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import dev.markodojkic.softwaredevelopmentsimulation.web.DevelopersPageController;
 import mockit.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,9 +24,13 @@ class DevelopersPageControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeAll
+    public static void preSetup(){
+        setupDataProvider(true);
+    }
+
     @BeforeEach
     public void setup() {
-        DataProvider.setupDataProvider(true);
         new MockUp<DataProvider>() {
             @Mock
             public List<List<Developer>> getCurrentDevelopmentTeamsSetup() {

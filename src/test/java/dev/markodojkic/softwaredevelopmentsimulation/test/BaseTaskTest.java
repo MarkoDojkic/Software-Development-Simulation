@@ -4,15 +4,22 @@ import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class BaseTaskTest {
+    @BeforeAll
+    public static void preSetup(){
+        setupDataProvider(true);
+    }
+
     @Test
     void when_noArgsConstructorIsCalled_correctValuesAreSetAsDefault() {
         BaseTask task = new BaseTask();

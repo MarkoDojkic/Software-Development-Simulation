@@ -60,6 +60,7 @@ class SoftwareDevelopmentSimulationAppTest {
 
 	private static Server mqttServer;
 
+
 	@BeforeAll
 	public static void preSetup() throws Exception {
 		Properties properties = new Properties();
@@ -74,6 +75,7 @@ class SoftwareDevelopmentSimulationAppTest {
 		MemoryConfig memoryConfig = new MemoryConfig(properties);
 		mqttServer = new Server();
 		mqttServer.startServer(memoryConfig); //In memory MQTT server
+		setupDataProvider(true);
 	}
 
 	@AfterAll
