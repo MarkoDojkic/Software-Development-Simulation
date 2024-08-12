@@ -20,7 +20,7 @@
 
             <sl-tab-panel name="tabDevelopersView">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
-                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" class="slCarouselCustomModification" pagination>
+                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" style="height: max(335px, calc(100vh - 100px))" pagination>
                     <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
                         <sl-card th:each="developer, developerIterator : ${developmentTeam}" th:style="|height:100%; --border-color: ${!developer.isFemale ? 'skyblue' : 'hotpink'};|">
                             <strong th:text="|ID: ${developer.id}|"></strong><br /><br />

@@ -1,44 +1,45 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="em">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns="http://www.w3.org/1999/html" lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
         <title>Software development simulator - Home page</title>
-        <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
-        <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
+        <link href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css" media="(prefers-color-scheme:light)" rel="stylesheet"/>
+        <link href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" media="(prefers-color-scheme:dark)" onload="document.documentElement.classList.add('sl-theme-dark');" rel="stylesheet"/>
         <link rel="stylesheet" th:href="@{/css/index.css}"/>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
-        <script type="module" th:src="@{/js/index.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js" type="module"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+        <script th:src="@{/js/index.js}" type="module"></script>
     </head>
     <body>
         <header style="display: flex; align-items: center; justify-content: center;">
             <span><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
             <sl-divider style="--spacing: var(--sl-spacing-large);" vertical></sl-divider>
             <sl-button-group label="Alignment">
-                <sl-button variant="primary" href="/developers" outline>Developers</sl-button>
-                <sl-button id="jiraActivityStreamSlButton" variant="neutral" outline>Open Jira activity stream</sl-button>
+                <sl-button href="/developers" outline variant="primary">Developers</sl-button>
+                <sl-button id="jiraActivityStreamSlButton" outline variant="neutral">Open Jira activity stream</sl-button>
             </sl-button-group>
             <sl-divider vertical></sl-divider>
             <sl-button-group style="margin-top: 4px;">
-                <sl-button id="manageCustomEpicsSlButton" size="small" outline pill>Manage epics</sl-button>
-                <sl-button id="manageCustomUserStoriesSlButton" size="small" outline pill>Manage user stories</sl-button>
-                <sl-button id="manageCustomTechnicalTasksSlButton" size="small" outline pill>Manage technical tasks</sl-button>
-                <sl-button id="loadFromSavedSessionFileSlButton" variant="warning" size="small" outline pill disabled>Load from file</sl-button>
-                <sl-button id="predefinedSlButton" variant="primary" size="small" outline pill disabled>Start application flow (predefined)</sl-button>
+                <sl-button id="manageCustomEpicsSlButton" outline pill size="small">Manage epics</sl-button>
+                <sl-button id="manageCustomUserStoriesSlButton" outline pill size="small">Manage user stories</sl-button>
+                <sl-button id="manageCustomTechnicalTasksSlButton" outline pill size="small">Manage technical tasks</sl-button>
+                <sl-button id="saveToSessionFileSlButton" outline pill size="small" variant="success"><sl-icon name="file-earmark-arrow-down"></sl-icon> Save</sl-button>
+                <sl-button id="loadFromSavedSessionFileSlButton" outline pill size="small" variant="warning"><sl-icon name="file-earmark-arrow-up"></sl-icon> Load</sl-button>
+                <sl-button disabled id="simulatePredefinedSlButton" outline pill size="small" variant="primary"><sl-icon name="play-btn"></sl-icon> Simulate (predefined data)</sl-button>
             </sl-button-group>
         </header>
         <div style="display: flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium); align-items: center; justify-content: center;">
             <form id="generateRandomDataFlowForm">
                 <div style="display: ruby-text">
-                    <sl-input class="labelOnLeftModification" label="Generate random epics count" id="minimalEpicsCount" type="number" size="medium" help-text="Minimal value must be gr" inputmode="number" required no-spin-buttons pill>
+                    <sl-input class="labelOnLeftModification" help-text="Minimal value must be gr" id="minimalEpicsCount" inputmode="number" label="Generate random epics count" no-spin-buttons pill required size="medium" type="number">
                         <sl-icon name="x" slot="prefix"></sl-icon>
                     </sl-input>
-                    <sl-input class="labelOnLeftModification" label="—" id="maximalEpicsCount" type="number" size="medium" help-text="eater than 0 and less than maximal" inputmode="number" required no-spin-buttons pill>
+                    <sl-input class="labelOnLeftModification" help-text="eater than 0 and less than maximal" id="maximalEpicsCount" inputmode="number" label="—" no-spin-buttons pill required size="medium" type="number">
                         <sl-icon name="x" slot="prefix"></sl-icon>
                     </sl-input>
                     <sl-divider vertical></sl-divider>
-                    <sl-button id="randomizedSlButton" variant="success" outline type="button" pill>Start application flow (randomized)</sl-button>
+                    <sl-button id="simulateRandomizedSlButton" outline pill type="button" variant="primary"><sl-icon name="play-btn"></sl-icon> Simulate (randomized data)</sl-button>
                 </div>
             </form>
             <sl-divider vertical></sl-divider>
@@ -51,7 +52,7 @@
                 <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
                 <span th:text="|Place of birth: ${technicalManager.placeOfBirth}|"></span>
                 <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
-                <sl-rating id="sl-rating-developer" th:value="${ ((technicalManager.experienceCoefficient * technicalManager.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }" max="12" readonly></sl-rating>
+                <sl-rating id="sl-rating-developer" max="12" readonly th:value="${ ((technicalManager.experienceCoefficient * technicalManager.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1 }"></sl-rating>
             </div>
         </div>
         <sl-divider></sl-divider>
@@ -68,40 +69,42 @@
 
     <sl-dialog id="customEpics" label="Manage epics for predefined application flow" style="--width: 96vw">
         <sl-tab-group placement="start">
-            <sl-tab slot="nav" panel="customEpicsViewTab">View</sl-tab>
-            <sl-tab slot="nav" panel="customEpicsAddTab">Add</sl-tab>
-            <sl-tab slot="nav" panel="customEpicsEditTab" disabled>Edit</sl-tab>
+            <sl-tab panel="customEpicsViewTab" slot="nav">View</sl-tab>
+            <sl-tab panel="customEpicsAddTab" slot="nav">Add</sl-tab>
+            <sl-tab disabled panel="customEpicsEditTab" slot="nav">Edit</sl-tab>
 
-            <sl-tab-panel style="text-align: -webkit-center;" name="customEpicsViewTab"></sl-tab-panel>
+            <sl-tab-panel name="customEpicsViewTab">
+                <p>There aren't any epics created in this session</p>
+            </sl-tab-panel>
             <sl-tab-panel name="customEpicsAddTab">
-                <form id="customEpicsCreateForm" style="text-align: -webkit-center;" action="#" method="post">
+                <form action="#" id="customEpicsCreateForm" method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex;">
-                        <sl-input style="max-width: 15%" name="epicId" placeholder="ID" type="text" size="medium" help-text=" " maxlength="16" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" required pill></sl-input>
+                        <sl-input help-text=" " maxlength="16" name="epicId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="ID" required size="medium" style="max-width: 15%" type="text"></sl-input>
                         <sl-divider vertical></sl-divider>
-                        <sl-input style="min-width: 40%" type="text" name="epicName" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" required pill></sl-input>
+                        <sl-input maxlength="64" name="epicName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="Name" required size="medium" style="min-width: 40%" type="text"></sl-input>
                         <sl-divider vertical></sl-divider>
-                        <sl-select style="min-width: 25%;" pill placeholder="Select priority (ex. Trivial)" placement="bottom" name="epicPriority" required>
-                            <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
+                        <sl-select name="epicPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;">
+                            <sl-option th:class="|ansi_fg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:value="${priority}"></sl-option>
                         </sl-select>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="labelOnLeftModification" label="Development team" help-text="<size> (<average_developer_rating (max 12)>)" pill placement="bottom" name="selectedEpicDevelopmentTeam" required>
-                            <sl-option th:each="developmentTeamSummary, developerTeamIterator : ${developmentTeamsSummary}" th:value="${developerTeamIterator.index}" th:text="|#${developerTeamIterator.index}: ${developmentTeamSummary}"></sl-option>
+                        <sl-select class="labelOnLeftModification" help-text="<size> (<average_developer_rating (max 12)>)" label="Development team" name="selectedEpicDevelopmentTeam" pill placement="bottom" required>
+                            <sl-option th:each="developmentTeamSummary, developerTeamIterator : ${developmentTeamsSummary}" th:text="|#${developerTeamIterator.index}: ${developmentTeamSummary}" th:value="${developerTeamIterator.index}"></sl-option>
                         </sl-select>
-                        <sl-select class="labelOnLeftModification" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Reporter" name="epicReporter" required disabled></sl-select>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="epicReporter" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="labelOnLeftModification" help-text="<name> (<developer_rating (max 12)>)" pill placement="bottom" label="Assignee" name="epicAssignee" required disabled></sl-select>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="epicAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " type="time" label="Creation time" name="epicCreatedAt" required></sl-input>
+                        <sl-input help-text=" " label="Creation time" name="epicCreatedAt" required type="time"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
-                    <sl-textarea name="epicDescription" help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
+                    <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="epicDescription" required rows="5"></sl-textarea>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
-                        <sl-button variant="success" outline type="submit">Add epic task</sl-button>
+                        <sl-button outline type="submit" variant="success">Create epic</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                        <sl-button outline type="reset" variant="neutral">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
@@ -111,113 +114,101 @@
 
     <sl-dialog id="customUserStories" label="Manage user stories for predefined application flow" style="--width: 96vw">
         <sl-tab-group placement="start">
-            <sl-tab slot="nav" panel="tab-userStories-view">View</sl-tab>
-            <sl-tab slot="nav" panel="tab-userStories-add">Add</sl-tab>
-            <sl-tab slot="nav" panel="tab-userStories-edit" disabled>Edit</sl-tab>
+            <sl-tab panel="customUserStoriesViewTab" slot="nav">View</sl-tab>
+            <sl-tab panel="customUserStoriesAddTab" slot="nav">Add</sl-tab>
+            <sl-tab disabled panel="customUserStoriesEditTab" slot="nav">Edit</sl-tab>
 
-            <sl-tab-panel name="tab-userStories-view">
+            <sl-tab-panel name="customUserStoriesViewTab">
                 <p>There aren't any user stories created in this session</p>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-userStories-add">
-                <form id="userStories-create-form" style="text-align: -webkit-center;">
+            <sl-tab-panel name="customUserStoriesAddTab">
+                <form action="#" id="customUserStoriesCreateForm" method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex;">
-                        <sl-select pill placeholder="Select epic id" placement="bottom" name="technicalTaskUserStory" required>
-                            <!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
-                            <sl-option>US-LIST</sl-option>
-                        </sl-select>
-                        <sl-input style="max-width: 15%" id="technicalTaskId" placeholder="ID" type="text" size="medium" help-text=" " maxlength="16" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                        <sl-select class="labelOnLeftModification" help-text="Select epic to add user story to" label="Epic" name="selectedEpic" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input style="min-width: 40%" type="text" name="technicalTaskName" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                        <sl-input help-text=" " maxlength="16" name="userStoryId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="ID" required size="medium" style="max-width: 15%" type="text"></sl-input>
                         <sl-divider vertical></sl-divider>
-                        <sl-select style="min-width: 25%;" pill placeholder="Select priority (ex. Trivial)" placement="bottom" name="technicalTaskPriority" required>
-                            <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
+                        <sl-input maxlength="64" name="userStoryName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="Name" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                        <sl-divider vertical></sl-divider>
+                        <sl-select name="userStoryPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;">
+                            <sl-option th:class="|ansi_fg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:value="${priority}"></sl-option>
                         </sl-select>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="labelOnLeftModification" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
-                            <sl-option text="SELECTED BY UserStory ASSIGNEE" value="predefined"></sl-option>
-                        </sl-select>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="userStoryReporter" pill placement="bottom" required></sl-select> <!-- Defaults to selected epic assignee -->
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="labelOnLeftModification" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
-                            <!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
-                            <sl-option>DEV-TEAM-LIST-OF-REPORTER</sl-option>
-                        </sl-select>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="userStoryAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input class="labelOnLeftModification" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
+                        <sl-input help-text=" " label="Creation time" name="userStoryCreatedAt" required type="time"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
-                    <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
+                    <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="userStoryDescription" required rows="5"></sl-textarea>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
-                        <sl-button variant="success" outline type="submit">Create technical task</sl-button>
+                        <sl-button outline type="submit" variant="success">Create user story</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                        <sl-button outline type="reset" variant="neutral">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-userStories-edit"></sl-tab-panel>
+            <sl-tab-panel name="customUserStoriesEditTab"></sl-tab-panel>
         </sl-tab-group>
     </sl-dialog>
 
     <sl-dialog id="customTechnicalTasks" label="Manage technical tasks for predefined application flow" style="--width: 96vw">
         <sl-tab-group placement="start">
-            <sl-tab slot="nav" panel="tab-technicalTasks-view">View</sl-tab>
-            <sl-tab slot="nav" panel="tab-technicalTasks-add">Add</sl-tab>
-            <sl-tab slot="nav" panel="tab-technicalTasks-edit" disabled>Edit</sl-tab>
+            <sl-tab panel="customTechnicalTasksViewTab" slot="nav">View</sl-tab>
+            <sl-tab panel="customTechnicalTasksAddTab" slot="nav">Add</sl-tab>
+            <sl-tab disabled panel="customTechnicalTasksEditTab" slot="nav">Edit</sl-tab>
 
-            <sl-tab-panel name="tab-technicalTasks-view">
+            <sl-tab-panel name="customTechnicalTasksViewTab">
                 <p>There aren't any technical tasks created in this session</p>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-technicalTasks-add">
-                <form id="technicalTasks-create-form" style="text-align: -webkit-center;">
+            <sl-tab-panel name="customTechnicalTasksAddTab">
+                <form action="#" id="technicalTasksCreateForm" method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex;">
-                        <sl-select pill placeholder="Select user story id" placement="bottom" name="technicalTaskUserStory" required>
-                            <!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
-                            <sl-option>US-LIST</sl-option>
-                        </sl-select>
-                        <sl-input style="max-width: 15%" id="technicalTaskId" placeholder="ID" type="text" size="medium" help-text=" " maxlength="16" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                        <sl-select class="labelOnLeftModification" help-text="Select user story to add technical task to" label="User story" name="selectedUserStory" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input style="min-width: 40%" type="text" name="technicalTaskName" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
+                        <sl-input help-text=" " maxlength="16" name="technicalTaskId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="ID" required size="medium" style="max-width: 15%" type="text"></sl-input>
                         <sl-divider vertical></sl-divider>
-                        <sl-select style="min-width: 25%;" pill placeholder="Select priority (ex. Trivial)" placement="bottom" name="technicalTaskPriority" required>
-                            <sl-option th:each="priority, priorityIterator : ${priorities}" th:value="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:class="|ansi_fg_${priority.getAnsiColorCode()}m|"></sl-option>
+                        <sl-input maxlength="64" name="technicalTaskName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\-0-9\s]+$" pill placeholder="Name" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                        <sl-divider vertical></sl-divider>
+                        <sl-select name="technicalTaskPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;">
+                            <sl-option th:class="|ansi_fg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:value="${priority}"></sl-option>
                         </sl-select>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex;">
-                        <sl-select class="labelOnLeftModification" help-text=" " pill placement="bottom" label="Reporter" name="technicalTaskReporter" required readonly>
-                            <sl-option text="SELECTED BY UserStory ASSIGNEE" value="predefined"></sl-option>
-                        </sl-select>
+                        <sl-input name="epicIndex" style="display: none"></sl-input>
+                        <sl-input name="userStoryIndex" style="display: none"></sl-input>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="technicalTaskReporter" pill placement="bottom" required></sl-select> <!-- Defaults to selected user story assignee -->
                         <sl-divider vertical></sl-divider>
-                        <sl-select class="labelOnLeftModification" help-text=" " pill placeholder="Select technical task assignee" placement="bottom" label="Assignee" name="technicalTaskAssignee" required>
-<!--                            <sl-option th:each="developerType, developerTypeIterator : ${developerTypes}" th:value="${developerType}" th:text="|${developerType.displayName} (Seniority coefficient:${developerType.seniorityCoefficient}) |"></sl-option>-->
-                            <sl-option>DEV-TEAM-LIST-OF-REPORTER</sl-option>
-                        </sl-select>
+                        <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="technicalTaskAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input class="labelOnLeftModification" help-text=" " type="time" label="Creation time" id="technicalTaskCreatedOn" name="technicalTaskCreatedOn" required></sl-input>
+                        <sl-input help-text=" " label="Creation time" name="technicalTaskCreatedAt" required type="time"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
-                    <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" rows="5" required></sl-textarea>
+                    <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="technicalTaskDescription" required rows="5"></sl-textarea>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
-                        <sl-button variant="success" outline type="submit">Create technical task</sl-button>
+                        <sl-button outline type="submit" variant="success">Create technical task</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset">Clear form</sl-button>
+                        <sl-button outline type="reset" variant="neutral">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
-            <sl-tab-panel name="tab-technicalTasks-edit"></sl-tab-panel>
+            <sl-tab-panel name="customTechnicalTasksEditTab"></sl-tab-panel>
         </sl-tab-group>
     </sl-dialog>
 
     <div id="developmentTeamsListOfDevelopers" style="display: none">
-        <div th:id="${developmentTeamIterator.index}" th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}">
-            <sl-option th:each="developer, developerIterator : ${developmentTeam}" th:value="${developerIterator.index}" th:text="|${developer.displayName} (${#numbers.formatDecimal((((developer.experienceCoefficient * developer.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1), 1, 'DEFAULT', 2, 'DEFAULT')})|"></sl-option>
+        <div th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" th:id="${developmentTeamIterator.index}">
+            <sl-option th:each="developer, developerIterator : ${developmentTeam}" th:text="|${developer.displayName} (${#numbers.formatDecimal((((developer.experienceCoefficient * developer.developerType.seniorityCoefficient - 1) / (73.5 - 1)) * (12 - 1) + 1), 1, 'DEFAULT', 2, 'DEFAULT')})|" th:value="${developerIterator.index}"></sl-option>
         </div>
     </div>
 
     <div id="priorityBadges" style="display: none">
-        <sl-badge th:each="priority, priorityIterator : ${priorities}" th:id="${priority}" th:class="|ansi_bg_${priority.getAnsiColorCode()}m|" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" variant=""></sl-badge>
+        <sl-badge th:class="|ansi_bg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:id="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" variant=""></sl-badge>
     </div>
 </html>

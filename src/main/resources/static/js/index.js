@@ -1,7 +1,7 @@
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/components/alert/alert.js';
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/components/popup/popup.js';
 import {ansi2html_string} from './ansi2html.js';
-
+//TODO: Fix issue with carousel that button (i.e. carousel item is below scroll container when scrolled and thus not interactable)
 $(window).on("load", async () => {
     const websocketBroker = location.hostname;
     const websocketPort = 15675;
@@ -74,14 +74,13 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#generateRandomDataFlowForm #randomizedSlButton").on("click", async () => {
+    $("#generateRandomDataFlowForm #simulatePredefinedSlButton").on("click", async () => {
         if (minimalEpicsCount.attr("data-valid") !== undefined && maximalEpicsCount.attr("data-valid") !== undefined)
             $.ajax({
                 type: "OPTIONS",
                 url: "/api/applicationFlowRandomized?".concat("min=".concat(minimalEpicsCount.val()).concat("&max=").concat(maximalEpicsCount.val())),
-                success: () => {
-                    $("#generateRandomDataFlowForm").trigger('reset');
-                }
+                success: () => $("#generateRandomDataFlowForm").trigger('reset'),
+
             });
         else
             notify("Cannot start application flow - Data is invalid", "error", "exclamation-octagon");
@@ -129,14 +128,32 @@ $(window).on("load", async () => {
         epicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
     });
 
+    const userStoryReporter = $("sl-select[name='userStoryReporter']");
+    const userStoryAssignee = $("sl-select[name='userStoryAssignee']");
+
+    $("sl-select[name='selectedEpic']").on("sl-change", (event) => {
+        userStoryReporter.prop("disabled", false);
+        userStoryAssignee.prop("disabled", false);
+        userStoryReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+        userStoryAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+    });
+
+    const technicalTaskReporter = $("sl-select[name='technicalTaskReporter']");
+    const technicalTaskAssignee = $("sl-select[name='technicalTaskAssignee']");
+
+    $("sl-select[name='selectedUserStory']").on("sl-change", (event) => {
+        technicalTaskReporter.prop("disabled", false);
+        technicalTaskAssignee.prop("disabled", false);
+        technicalTaskReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+        technicalTaskAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+    });
+
     $("#customEpicsCreateForm").on("submit", event => {
         event.preventDefault();
 
-        // Create a plain object to hold the form data
-        const form = event.target;
+        const form = $(event.target);
         const formData = {"userStories": []};
 
-        // Collect data from Shoelace elements manually
         form.find('sl-input, sl-select, sl-textarea').each(function () {
             formData[this.name] = this.value;
         });
@@ -155,13 +172,126 @@ $(window).on("load", async () => {
     });
 
     updateCustomEpicsList();
-    
+
     $(".removeCustomEpicSlButton").each((index, button) => $(button).on("click", async () => {
-        const current = JSON.parse(sessionStorage.getItem("customData"));
-        current.splice(index, 1);
-        sessionStorage.setItem("customData", JSON.stringify(current));
-        $("sl-tab-panel[name='customEpicsViewTab']").children().eq(index).remove();
+        let customData = JSON.parse(sessionStorage.getItem("customData"));
+        customData.splice(index, 1);
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
     }));
+
+    $("#customUserStoriesCreateForm").on("submit", event => {
+        event.preventDefault();
+
+        const form = $(event.target);
+        const formData = {"technicalTasks": []};
+
+        form.find('sl-input, sl-select, sl-textarea').each(function () {
+            formData[this.name] = this.value;
+        });
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        console.log(formData);
+        const selectedEpic = formData.selectedEpic;
+        delete formData.selectedEpic;
+        formData.selectedEpicIndex = selectedEpic.split("$")[0];
+        formData.selectedEpicDevelopmentTeam = selectedEpic.split("$")[1];
+        const epic = customData[formData.selectedEpicIndex];
+        epic.userStories.push(formData)
+        customData[formData.selectedEpicIndex] = epic;
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        notify("New user story added to epic: " + epic.epicName);
+
+        form.trigger('reset');
+
+        updateCustomEpicsList();
+    });
+
+    $(".removeCustomUserStorySlButton").each((index, button) => $(button).on("click", async () => {
+        let customData = JSON.parse(sessionStorage.getItem("customData"));
+        console.log($(button));
+
+        //TODO: Finish removal of US function
+        /*const currentEpic = current[this.epicIndex];
+        currentEpic.splice(index, 1);
+        current[this.epicIndex] = currentEpic;
+        sessionStorage.setItem("customData", JSON.stringify(current));
+
+        updateCustomEpicsList();*/
+    }));
+
+    $("#technicalTasksCreateForm").on("submit", event => {
+        event.preventDefault();
+
+        const form = $(event.target);
+        const formData = {};
+
+        form.find('sl-input, sl-select, sl-textarea').each(function () {
+            formData[this.name] = this.value;
+        });
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        const selectedUserStory = formData.selectedUserStory;
+        delete formData.selectedUserStory;
+        formData.selectedEpicIndex = selectedUserStory.split("$")[0].split(">")[0];
+        formData.selectedUserStoryIndex = selectedUserStory.split("$")[0].split(">")[1];
+        formData.selectedEpicDevelopmentTeam = selectedUserStory.split("$")[1];
+        const epic = customData[formData.selectedEpicIndex];
+        const userStory = epic.userStories[formData.selectedUserStoryIndex];
+        userStory.technicalTasks.push(formData);
+        epic.userStories[formData.selectedUserStoryIndex] = userStory;
+        customData[formData.selectedEpicIndex] = epic;
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        notify("New technical task added to user story: " + userStory.userStoryName);
+
+        form.trigger('reset');
+
+        updateCustomEpicsList();
+    });
+
+    $(".removeCustomTechnicalTaskSlButton").each((index, button) => $(button).on("click", async () => {
+        //TODO: Finish removal of TT function
+        /*const userStoriesViewTab = $("sl-tab-panel[name='customUserStoriesViewTab']");
+        const current = JSON.parse(sessionStorage.getItem("customData"));
+        const currentEpic = current[this.epicIndex];
+        currentEpic.splice(index, 1);
+        current[this.epicIndex] = currentEpic;
+        sessionStorage.setItem("customData", JSON.stringify(current));
+        userStoriesViewTab.children().eq(index).remove();
+        if(index === 0) userStoriesViewTab.append(`<p>There aren't any user stories created in this session</p>`);*/
+    }));
+
+    $("#saveToSessionFileSlButton").on("click", () => {
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        if (customData.length == 0) notify("You haven`t added any epic, user story nor technical task. No data provided for saving!")
+        else {
+            $.ajax({
+                type: "POST",
+                url: "/api/saveSessionData",
+                contentType: 'application/json',
+                data: JSON.stringify(customData),
+                success: response => {
+                    notify(response);
+                }
+            });
+        }
+    });
+
+    $("#loadFromSavedSessionFileSlButton").on("click", () => {
+        //TODO: Finish load from file function
+        /*$.ajax({
+            type: "GET",
+            url: "/api/loadSessionData?fileSuffix=...",
+            success: response => {
+                sessionStorage.setItem("customData", response);
+            }
+        });*/
+    });
 });
 
 function notify(message, variant = 'primary', icon = 'info-circle', duration = 1500) {
@@ -257,49 +387,183 @@ function updateCustomEpicsList() {
     const customData = JSON.parse(sessionStorage.getItem('customData'));
     const epicsViewTab = $("sl-tab-panel[name='customEpicsViewTab']");
 
-    if(customData.length === 0){
-        epicsViewTab.append(`<p>There aren't any epics created in this session</p>`);
-        return;
-    }
+    let technicalTaskList = [];
 
-    epicsViewTab.empty();
+    if (customData.length === 0) epicsViewTab.html(`<p>There aren't any epics created in this session</p>`);
+    else {
+        epicsViewTab.empty();
 
-    customData.forEach((value, key) => {
-        epicsViewTab.append(`<sl-card id="${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1)">
-            <strong>ID: ${value.epicId}</strong>
-            <sl-divider style="--spacing: 2px" vertical></sl-divider>
-            <span>Name: <i>${value.epicName}</i></span>
-            <sl-divider style="--spacing: 2px" vertical></sl-divider>
-            <span>Count of user stories: ${value.userStories.length}</span>
-            <sl-divider></sl-divider>
-            <span>(Priority: ${$("#priorityBadges #" + value.epicPriority).html()})</span>
-            <sl-divider style="--spacing: 2px" vertical></sl-divider>
-            <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.epicCreatedAt}</span>
-            <sl-divider></sl-divider>
-            <sl-badge variant="danger">
-                Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter+"]").html()}
-            </sl-badge>
-            <sl-badge variant="warning">
-                Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee+"]").html()}
-            </sl-badge>
-            <sl-divider style="--spacing: 2px" vertical></sl-divider>
-            <sl-divider></sl-divider>
-            <sl-details summary="Description">
-              ${value.epicDescription}
-            </sl-details>
-            <div slot="footer">
-                <sl-button class="edit-customEpic-button" variant="warning" outline>Edit</sl-button>
+        const epicSlSelect = $("sl-select[name='selectedEpic']");
+        $("sl-tab-panel[name='customEpicsViewTab'] #epicsWrapper").css("display", "grid", "grid-template-columns", "repeat(var(--numberOfColumns), 1fr)", "height", "100%", "row-gap", "1%", "column-gap", "1%");
+
+        let isUserStoriesEmpty = true;
+        let isTechnicalTasksEmpty = true;
+
+        customData.forEach((value, key) => {
+            epicsViewTab.append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;">
+                <strong>ID: ${value.epicId}</strong>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                <sl-button class="removeCustomEpicSlButton" variant="danger" value="${key}" outline>Remove</sl-button>
-            </div>
-        </sl-card>`);
+                <span>Name: <i>${value.epicName}</i></span>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Count of user stories: ${value.userStories.length}</span>
+                <sl-divider></sl-divider>
+                <span>Priority: ${$("#priorityBadges #" + value.epicPriority).html()}</span>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.epicCreatedAt}</span>
+                <sl-divider></sl-divider>
+                <sl-badge variant="danger">
+                    Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
+                </sl-badge>
+                <sl-badge variant="warning">
+                    Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee + "]").html()}
+                </sl-badge>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-divider></sl-divider>
+                <sl-details summary="Description">
+                  ${value.epicDescription}
+                </sl-details>
+                <div slot="footer">
+                    <sl-button class="editCustomEpicSlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                    <sl-button class="removeCustomEpicSlButton" variant="danger" value="${key}" outline>Remove</sl-button>
+                </div>
+            </sl-card>`);
+
+            const newEpicOption = document.createElement('sl-option');
+            newEpicOption.value = key + "$" + value.selectedEpicDevelopmentTeam;
+            epicSlSelect.append(newEpicOption);
+
+            value.userStories.forEach(userStory => {
+                if(isUserStoriesEmpty){
+                    $("sl-tab-panel[name='customUserStoriesViewTab']").html(`<sl-carousel pagination></sl-carousel>`);
+
+                    const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
+                    userStoriesCarousel.css("--aspect-ratio", "0");
+
+                    setTimeout(() => $("#scroll-container", userStoriesCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
+
+                    $(userStoriesCarousel).on('sl-slide-change', event => {
+                        $($("#customUserStories")[0].shadowRoot).find("#title slot").html($($("#customUserStories")[0].shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing Epic: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
+                    });
+
+                    isUserStoriesEmpty = false;
+                }
+
+                userStory.technicalTasks.forEach(technicalTask => {
+                    if(isTechnicalTasksEmpty){
+                        $("sl-tab-panel[name='customTechnicalTasksViewTab']").html(`<sl-carousel pagination></sl-carousel>`);
+
+                        const technicalTasksCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
+                        technicalTasksCarousel.css("--aspect-ratio", "0");
+
+                        setTimeout(() => $("#scroll-container", technicalTasksCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
+
+                        $(technicalTasksCarousel).on('sl-slide-change', event => {
+                            $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html($($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing User story: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
+                        });
+
+                        isTechnicalTasksEmpty = false;
+                    }
+
+                    technicalTaskList.push(technicalTask);
+                });
+
+                if(technicalTaskList.length > 0) {
+                    updateCustomTechnicalTasksList(day, month, year, userStory.userStoryId, technicalTaskList);
+                    technicalTaskList = [];
+                }
+            });
+
+            updateCustomUserStoriesList(day, month, year, value.epicId, value.userStories);
+        });
+
+        if(isUserStoriesEmpty) $("sl-tab-panel[name='customUserStoriesViewTab']").html(`<p>There aren't any user stories created in this session</p>`);
+        if(isTechnicalTasksEmpty) $("sl-tab-panel[name='customTechnicalTasksViewTab']").html(`<p>There aren't any technical tasks created in this session</p>`);
+    }
+}
+
+function updateCustomUserStoriesList(day, month, year, relatedEpicId, userStories) {
+    const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
+
+    userStoriesCarousel.append(`<sl-carousel-item id="userStoriesOf${relatedEpicId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
+
+    const userStorySlSelect = $("sl-select[name='selectedUserStory']");
+
+    userStorySlSelect.empty();
+
+    userStories.forEach((value, key) => {
+        $("#userStoriesOf" + relatedEpicId).append(`
+            <sl-card id="${key}" style="height:100%; --border-color: rgb(130, 244, 131, 1)">
+                <strong>ID: ${value.userStoryId}</strong>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Name: <i>${value.userStoryName}</i></span>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Count of technical tasks: ${value.technicalTasks.length}</span>
+                <sl-divider></sl-divider>
+                <span>Priority: ${$("#priorityBadges #" + value.userStoryPriority).html()}</span>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.userStoryCreatedAt}</span>
+                <sl-divider></sl-divider>
+                <sl-badge variant="danger">
+                    Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.userStoryReporter + "]").html()}
+                </sl-badge>
+                <sl-badge variant="warning">
+                    Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.userStoryAssignee + "]").html()}
+                </sl-badge>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-divider></sl-divider>
+                <sl-details summary="Description">
+                  ${value.userStoryDescription}
+                </sl-details>
+                <div slot="footer">
+                    <sl-button class="editCustomUserStorySlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                    <sl-button class="removeCustomUserStorySlButton" variant="danger" value="${key}" outline>Remove</sl-button>
+                </div>
+            </sl-card>
+        `);
+
+        const newUserStoryOption = document.createElement('sl-option');
+        newUserStoryOption.value = value.selectedEpicIndex + ">" + key + "$" + value.selectedEpicDevelopmentTeam;
+        userStorySlSelect.append(newUserStoryOption);
     });
 }
 
-function updateCustomUserStoriesList(userStories){
-    //TODO: Finish function implementation
-}
+function updateCustomTechnicalTasksList(day, month, year, relatedUserStoryId, technicalTasks) {
+    const technicalTaskCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
 
-function updateCustomTechnicalTasksList(technicalTasks){
-    //TODO: Finish function implementation
+    technicalTaskCarousel.append(`<sl-carousel-item id="technicalTaskOf${relatedUserStoryId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
+
+    setTimeout(() => $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html("Manage technical tasks for predefined application flow (Currently viewing User story: '" + relatedUserStoryId + "')"), 500);
+
+    technicalTasks.forEach((value, key) => {
+        $("#technicalTaskOf" + relatedUserStoryId).append(`
+            <sl-card id="${key}" style="height:100%; --border-color: rgb(124, 124, 124, 1)">
+                <strong>ID: ${value.technicalTaskId}</strong>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Name: <i>${value.technicalTaskName}</i></span>
+                <sl-divider></sl-divider>
+                <span>Priority: ${$("#priorityBadges #" + value.technicalTaskPriority).html()}</span>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.technicalTaskCreatedAt}</span>
+                <sl-divider></sl-divider>
+                <sl-badge variant="danger">
+                    Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.technicalTaskReporter + "]").html()}
+                </sl-badge>
+                <sl-badge variant="warning">
+                    Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.technicalTaskAssignee + "]").html()}
+                </sl-badge>
+                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <sl-divider></sl-divider>
+                <sl-details summary="Description">
+                  ${value.technicalTaskDescription}
+                </sl-details>
+                <div slot="footer">
+                    <sl-button class="editCustomTechnicalTaskSlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                    <sl-button class="removeCustomTechnicalTaskSlButton" variant="danger" value="${key}" outline>Remove</sl-button>
+                </div>
+            </sl-card>
+        `);
+    });
 }

@@ -62,7 +62,7 @@ class MainControllerTests {
                         .param("filename", "nonExistentTestFile")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.content().string("Error reading file: File not found"));
+                .andExpect(MockMvcResultMatchers.content().string("Error occurred while trying to read file: File not found"));
     }
 
     @Test

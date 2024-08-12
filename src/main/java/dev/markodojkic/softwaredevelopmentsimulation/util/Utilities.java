@@ -42,6 +42,9 @@ public class Utilities {
 
 	@Getter
 	@Setter
+	private static Path currentApplicationDataPath = Path.of("/");
+	@Getter
+	@Setter
 	private static Path currentApplicationLogsPath = Path.of("/");
 	@Getter
 	@Setter
@@ -51,10 +54,13 @@ public class Utilities {
 
 	static {
 		ZonedDateTime now = ZonedDateTime.now();
-		Utilities.setCurrentApplicationLogsPath(Paths.get(System.getProperty("user.home"),
+		Path base = Paths.get(System.getProperty("user.home"),
 				System.getProperty("app.groupId", "dev.markodojkic"),
-				System.getProperty("app.artifactId", "softwaredevelopmentsimulation"),
-				System.getProperty("app.version", "0.0.0-TESTING"),
+				System.getProperty("app.artifactId", "software_development_simulation"),
+				System.getProperty("app.version", "0.0.0-TESTING"));
+
+		Utilities.setCurrentApplicationDataPath(base);
+		Utilities.setCurrentApplicationLogsPath(Paths.get(String.valueOf(base),
 				"logs",
 				now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
 				now.format(DateTimeFormatter.ofPattern("HH.mm.ss"))));
@@ -93,7 +99,7 @@ public class Utilities {
 
 		iGateways.sendToInfo("""
 				All epics are created. Total developerTeams available: {0}
-				Let's now simulate development cycle for all {1} epics!"""
+				Let`s now simulate development cycle for all {1} epics!"""
 				.replace("{0}", Integer.toString(totalDevelopmentTeamsPresent))
 				.replace("{1}", Integer.toString(totalEpicsCount)));
 

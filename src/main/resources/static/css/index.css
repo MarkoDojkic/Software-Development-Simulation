@@ -1,4 +1,5 @@
 :root {
+    --numberOfColumns: 3 !important;
     --sl-input-required-content: " " !important;
     --sl-input-required-content-offset: 0 !important;
 }
@@ -266,4 +267,8 @@ span + sl-icon[name='gender-male'], span + sl-icon[name='gender-female'] {
     position: relative;
     top: 4px;
     right: 1.4px;
+}
+
+sl-tab-panel[name='customEpicsViewTab'], sl-carousel, .tab-group__body {
+    height: calc(100vh - 145px);
 }

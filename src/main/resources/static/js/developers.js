@@ -106,7 +106,6 @@ function setupResize() {
     const bodySpanA = $('body span a').first();
 
     const callbackDuplicates = () => {
-        $('.slCarouselCustomModification').css("--aspect-ratio", 16 / 9);
         bodySpan.css("left", "2vw");
         bodySpan.css("top", "1.5%");
         bodySpanA.css("font-size", "var(--sl-font-size-medium)");
@@ -141,7 +140,6 @@ function setupResize() {
     const layoutChangedCallback4 = (matches) => {
         if (matches) {
             $(':root').css('--numberOfColumns', 3);
-            $('.slCarouselCustomModification').css("--aspect-ratio", 4 / 3);
             bodySpan.css("left", "2vw");
             bodySpan.css("top", "2.5%");
             bodySpanA.css("font-size", "var(--sl-font-size-small)");
@@ -153,7 +151,6 @@ function setupResize() {
     const layoutChangedCallback5 = (matches) => {
         if (matches) {
             $(':root').css('--numberOfColumns', 2);
-            $('.slCarouselCustomModification').css("--aspect-ratio", 0.75);
             bodySpan.css("top", "1.5%");
             bodySpan.css("left", "30%");
             bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");
@@ -165,7 +162,6 @@ function setupResize() {
     const layoutChangedCallback6 = (matches) => {
         if (matches) {
            $(':root').css('--numberOfColumns', 1);
-           $('.slCarouselCustomModification').css("--aspect-ratio", 0.75);
            bodySpan.css("top", "1.5%");
            bodySpan.css("left", "23%");
            bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");

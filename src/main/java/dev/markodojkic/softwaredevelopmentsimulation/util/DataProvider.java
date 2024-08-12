@@ -52,6 +52,10 @@ public class DataProvider {
 		setTechnicalManager(new Developer("Marko Dojkić", isTest ? generateRandomYugoslavianUMCN(false, true) : "???????71?000", DeveloperType.TECHNICAL_MANAGER, false, 5));
 	}
 
+	public static void replaceDevelopmentTeamsSetup(List<List<Developer>> newDevelopmentTeamsSetup){
+		currentDevelopmentTeamsSetup = newDevelopmentTeamsSetup;
+	}
+
 	public static void updateDevelopmentTeamsSetup(DevelopmentTeamCreationParameters parameters){
 		if(!parameters.isRetainOld()) currentDevelopmentTeamsSetup = Collections.emptyList();
 		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> {

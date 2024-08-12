@@ -1,12 +1,6 @@
 :root {
-    --numberOfColumns: -1;
-    --aspect-ratio: -1;
     --sl-input-required-content: " " !important;
     --sl-input-required-content-offset: 0 !important;
-}
-
-.slCarouselCustomModification {
-    height: max(335px, calc(100vh - 100px));
 }
 
 .card-overview {
