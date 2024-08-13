@@ -112,19 +112,23 @@ class BaseTaskTest {
         Developer reporter = mock(Developer.class);
         ZonedDateTime createdOn = ZonedDateTime.now();
 
-        BaseTask task = new BaseTask("1", "Task Name", "Task Description", priority, assignee, reporter, createdOn);
+        BaseTask task = new BaseTask("1", "Task Name", "Task Description", priority, null, null, createdOn);
 
         String expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
+                ", assignee='UNASSIGNED', reporter='UNASSIGNED', createdOn=" + createdOn + '}';
+
+        assertEquals(expectedToString, task.toString());
+
+        task.setAssignee(assignee);
+        task.setReporter(reporter);
+
+        expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
                 ", assignee='" + assignee.getDisplayName() + "', reporter='" + reporter.getDisplayName() +
                 "', createdOn=" + createdOn + '}';
 
         assertEquals(expectedToString, task.toString());
 
-        task.setAssignee(null);
         task.setReporter(null);
-
-        expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
-                ", assignee='UNASSIGNED', reporter='UNASSIGNED', createdOn=" + createdOn + '}';
 
         assertEquals(expectedToString, task.toString());
     }

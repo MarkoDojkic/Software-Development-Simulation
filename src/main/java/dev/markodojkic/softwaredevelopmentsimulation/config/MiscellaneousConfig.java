@@ -1,6 +1,11 @@
 package dev.markodojkic.softwaredevelopmentsimulation.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.util.EpicNotDoneException;
+import dev.markodojkic.softwaredevelopmentsimulation.util.PredefinedTasksDeserializer;
+import dev.markodojkic.softwaredevelopmentsimulation.util.PredefinedTasksSerializer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.UserStoryNotDoneException;
 import org.aopalliance.aop.Advice;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -90,5 +95,18 @@ public class MiscellaneousConfig {
 		mqttPahoMessageHandler.setDefaultQos(2);
 		mqttPahoMessageHandler.setConverter(new DefaultPahoMessageConverter());
 		return mqttPahoMessageHandler;
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		SimpleModule module = new SimpleModule();
+
+		//Add mappings for predefined tasks
+		module.addSerializer(Epic.class, new PredefinedTasksSerializer());
+		module.addDeserializer(Epic.class, new PredefinedTasksDeserializer());
+
+		objectMapper.registerModule(module);
+		return objectMapper;
 	}
 }

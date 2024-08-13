@@ -79,6 +79,13 @@ public class ProjectManagerImpl {
 		Utilities.getIGateways().sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
 
 		new Thread(() -> inProgressEpic.send(epicMessage)).start();
+
+		if(Utilities.getTotalEpicsCount() != -1) {
+			Utilities.addEpicForSaving(epic);
+			Utilities.setTotalEpicsCount(Utilities.getTotalEpicsCount() - 1);
+			if(Utilities.getTotalEpicsCount() == 0) Utilities.saveEpics();
+		}
+
 		return epic.getUserStories();
 	}
 

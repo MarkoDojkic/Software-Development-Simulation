@@ -1,6 +1,7 @@
 package dev.markodojkic.softwaredevelopmentsimulation.util;
 
 import com.diogonunes.jcolor.Attribute;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
@@ -14,6 +15,8 @@ import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import org.apache.logging.log4j.util.Strings;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -34,23 +37,30 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 public class Utilities {
 	private static final Logger logger = Logger.getLogger(Utilities.class.getName());
 	public static final String STRING_FORMAT = "%s-%s";
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
 	public static final String ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER = "assignedDevelopmentTeamPositionNumber";
 	public static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	public static final Lorem LOREM = LoremIpsum.getInstance();
 	public static final AtomicInteger IN_PROGRESS_EPICS_COUNT = new AtomicInteger(0);
+	public static final String PREDEFINED_DATA = "predefinedData";
 
 	@Getter
-	@Setter
-	private static Path currentApplicationDataPath = Path.of("/");
+	private static final Path currentApplicationDataPath;
 	@Getter
-	@Setter
-	private static Path currentApplicationLogsPath = Path.of("/");
+	private static final Path currentApplicationLogsPath;
 	@Getter
 	@Setter
 	private static IGateways iGateways;
 	@Getter
 	private static int totalDevelopmentTeamsPresent;
+	@Getter
+	@Setter
+	private static int totalEpicsCount;
+	@Getter
+	private static final List<Epic> epicsForSaving = new ArrayList<>();
+	@Getter
+	@Setter
+	private static ObjectMapper objectMapper;
 
 	static {
 		ZonedDateTime now = ZonedDateTime.now();
@@ -59,17 +69,33 @@ public class Utilities {
 				System.getProperty("app.artifactId", "software_development_simulation"),
 				System.getProperty("app.version", "0.0.0-TESTING"));
 
-		Utilities.setCurrentApplicationDataPath(base);
-		Utilities.setCurrentApplicationLogsPath(Paths.get(String.valueOf(base),
+		currentApplicationDataPath = base;
+		currentApplicationLogsPath = Paths.get(String.valueOf(base),
 				"logs",
 				now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-				now.format(DateTimeFormatter.ofPattern("HH.mm.ss"))));
+				now.format(DateTimeFormatter.ofPattern("HH.mm.ss")));
+	}
+	
+    public void loadPredefinedTasks(List<Epic> predefinedEpics){
+		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
+		predefinedEpics.forEach(epic -> jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
+            epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get())));
+
+		iGateways.sendToInfo("""
+				All epics are created. Total developerTeams available: {0}
+				Let`s now simulate development cycle for all {1} epics!"""
+				.replace("{0}", Integer.toString(totalDevelopmentTeamsPresent))
+				.replace("{1}", Integer.toString(predefinedEpics.size())));
+
+		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
+
+		predefinedEpics.forEach(epic -> iGateways.generateEpic(epic));
 	}
 
-	public static void generateRandomTasks(int epicCountDownLimit, int epicCountUpperLimit){
+	public static void generateRandomEpics(boolean save, int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		int totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
+		totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
 		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
 
@@ -92,7 +118,7 @@ public class Utilities {
 					SECURE_RANDOM.nextInt(epic.getPriority().getUrgency() + 1, epic.getPriority().getUrgency() + 3)));
 			epicList.add(epic);
 			//1 -BOLD, 21 - RESET BOLD / ADDS UNDERLINE, 24 - RESET UNDERLINE, 3 - ITALIC, 23 - RESET ITALIC
-				jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
+			jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get()));
 			logger.log(Level.INFO, () -> colorize(String.format("+ Generated EPIC #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(90)));
 		}
@@ -104,6 +130,8 @@ public class Utilities {
 				.replace("{1}", Integer.toString(totalEpicsCount)));
 
 		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
+
+		totalEpicsCount = save ? totalEpicsCount : -1;
 
 		epicList.forEach(epic -> iGateways.generateEpic(epic));
 	}
@@ -155,5 +183,26 @@ public class Utilities {
 		}
 
 		return technicalTaskList;
+	}
+
+	public static void addEpicForSaving(Epic epic) {
+		epicsForSaving.add(epic);
+	}
+
+	public static void saveEpics(){
+		try {
+			setTotalEpicsCount(0);
+			String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
+			Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
+
+			if (!Files.exists(parentDirectory)) Files.createDirectories(parentDirectory);
+
+			Files.createDirectories(parentDirectory.resolve(folderName));
+
+			Files.writeString(parentDirectory.resolve(folderName.concat("/sessionData.json")), objectMapper.writeValueAsString(epicsForSaving));
+			Files.writeString(parentDirectory.resolve(folderName.concat("/developersData.json")), objectMapper.writeValueAsString(DataProvider.getCurrentDevelopmentTeamsSetup()));
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 	}
 }

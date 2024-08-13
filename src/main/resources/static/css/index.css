@@ -226,7 +226,7 @@ sl-select.labelOnLeftModification::part(form-control-input) {
 #manageCustomTechnicalTasksSlButton::part(base) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(124, 124, 124, 1);
-    color: rgba(124, 124, 124, 1);
+    color: white;
 }
 
 #manageCustomTechnicalTasksSlButton:hover:not([disabled])::part(base) {

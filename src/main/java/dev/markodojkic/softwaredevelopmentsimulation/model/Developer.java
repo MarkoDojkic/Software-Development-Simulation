@@ -1,11 +1,13 @@
 package dev.markodojkic.softwaredevelopmentsimulation.model;
 
 import ch.qos.logback.core.util.StringUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.generateRandomYugoslavianUMCN;
@@ -14,8 +16,7 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.ge
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = "isFemale")
-@EqualsAndHashCode
+@ToString(exclude = {"isFemale", "displayName"})
 public class Developer implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -949472808846392995L;
@@ -28,6 +29,8 @@ public class Developer implements Serializable {
 	private DeveloperType developerType = DeveloperType.INTERN_DEVELOPER;
 	private long experienceCoefficient;
 	private boolean isFemale;
+	@JsonIgnore
+	private String displayName;
 
 	public Developer(String id, String name, String surname, String yugoslavianUMCN, String placeOfBirth, DeveloperType developerType, long experienceCoefficient, boolean isFemale) {
 		this.name = name;
@@ -46,5 +49,17 @@ public class Developer implements Serializable {
 
 	public String getDisplayName() {
 		return name.concat(" ").concat(surname);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		else if (!(o instanceof Developer developer)) return false;
+        else return Objects.equals(getId(), developer.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId());
 	}
 }

@@ -1,10 +1,17 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
+import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,11 +19,18 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomTasks;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomEpics;
 
 @Controller
 public class DevelopersPageController {
 	private static final String REDIRECT_DEVELOPERS = "redirect:/developers";
+
+	private final ObjectMapper objectMapper;
+
+	@Autowired
+	public DevelopersPageController(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
 
 	@PutMapping(value = "/api/recreateDevelopmentTeams")
 	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
@@ -69,13 +83,24 @@ public class DevelopersPageController {
 	@DeleteMapping(value = "/api/removeDeveloper")
 	public ModelAndView removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
-		return null;
+		return null; //Solves issue: Error resolving template [api/removeDeveloper]
 	}
 
-	@RequestMapping(value = "/api/applicationFlowRandomized", method = RequestMethod.OPTIONS)
-	public ModelAndView applicationFlowRandomized(@RequestParam("min") int min, @RequestParam("max") int max){
-		generateRandomTasks(min,max);
-		return null;
+	@PostMapping(value = "/api/applicationFlowPredefined")
+	public ResponseEntity<String> applicationFlowPredefined(@RequestBody String predefinedData){
+        try {
+            Utilities.loadPredefinedTasks(objectMapper.readValue(predefinedData, new TypeReference<>() {
+            }));
+			return ResponseEntity.ok("Successfully started application flow with predefined data");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while trying start application flow with predefined data: " + e.getMessage());
+        }
+    }
+
+	@PostMapping(value = "/api/applicationFlowRandomized")
+	public void applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
+		generateRandomEpics(save, min, max);
 	}
 
 	private String getBackgroundColor(String text) {

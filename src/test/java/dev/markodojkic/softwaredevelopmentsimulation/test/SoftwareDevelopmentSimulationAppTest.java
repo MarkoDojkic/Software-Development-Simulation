@@ -131,7 +131,7 @@ class SoftwareDevelopmentSimulationAppTest {
 	}
 
 	@Test
-	void when_generateRandomTasks_epicsAreCorrectlyCreated() {
+	void when_generateRandomEpics_epicsAreCorrectlyCreated() {
 		assertNotNull(epicMessageInput);
 
 		CountDownLatch interceptorLatch = new CountDownLatch(4);
@@ -150,7 +150,7 @@ class SoftwareDevelopmentSimulationAppTest {
 			}
 		});
 
-		Utilities.generateRandomTasks(epicCountDownLimit, epicCountUpperLimit);
+		Utilities.generateRandomEpics(false, epicCountDownLimit, epicCountUpperLimit);
 
 		try {
 			assertTrue(interceptorLatch.await(10, TimeUnit.MILLISECONDS));

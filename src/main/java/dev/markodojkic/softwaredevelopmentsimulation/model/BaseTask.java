@@ -38,4 +38,12 @@ public class BaseTask implements Serializable {
 				"', createdOn=" + createdOn +
 				'}';
 	}
+
+	public void setAssignee(Developer assignee) {
+		this.assignee = this.assignee == null ? assignee : this.assignee;
+	}
+
+	public void setReporter(Developer reporter) {
+		this.reporter = this.reporter == null ? reporter : this.reporter;
+	}
 }

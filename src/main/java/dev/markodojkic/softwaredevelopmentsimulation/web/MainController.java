@@ -1,9 +1,11 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +15,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Stream;
+
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.PREDEFINED_DATA;
 
 @RestController
 public class MainController {
+    private final ObjectMapper objectMapper;
 
-    public static final String PREDEFINED_DATA = "predefinedData";
+    @Autowired
+    public MainController(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @GetMapping(value = "")
     public ModelAndView index() {
@@ -34,7 +44,7 @@ public class MainController {
     }
 
     @GetMapping(value = "/api/logs")
-    public ResponseEntity<String> showFileContents(@RequestParam("filename") String filename) {
+    public ResponseEntity<String> showLogFileContents(@RequestParam("filename") String filename) {
         try {
             return ResponseEntity.ok(Files.readString(Paths.get(Utilities.getCurrentApplicationLogsPath().resolve(filename.concat(".log")).toUri())));
         } catch (IOException e) {
@@ -43,22 +53,25 @@ public class MainController {
         }
     }
 
-    @GetMapping(value = "/api/predefinedDataPath")
-    public ResponseEntity<String> getPredefinedDataPath() {
-        try {
-            return ResponseEntity.ok(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA)));
+    @GetMapping(value = "/api/getPredefinedDataFoldersList")
+    public ResponseEntity<Object> getPredefinedDataFoldersList() {
+        try (Stream<Path> paths = Files.list(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA))) {
+            List<String> folders = paths
+                    .filter(Files::isDirectory)
+                    .map(Path::getFileName)
+                    .map(Path::toString).toList();
+
+            return ResponseEntity.ok(folders);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while trying to get predefined data path: " + e.getMessage());
+                    .body("Error occurred while trying to get predefined data path folders list: " + e.getMessage());
         }
     }
 
     @PostMapping(value = "/api/saveSessionData")
     public ResponseEntity<String> saveCurrentPredefinedData(@RequestBody String sessionDataJSON){
         try {
-            String folderName = UUID.randomUUID().toString();
-            ObjectMapper objectMapper = new ObjectMapper();
-
+            String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
             Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
 
             if(!Files.exists(parentDirectory)) Files.createDirectories(parentDirectory);
@@ -71,21 +84,20 @@ public class MainController {
             return ResponseEntity.ok("Data successfully saved to folder '".concat(folderName).concat("'"));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while trying to create file: " + e.getMessage());
+                    .body("Error occurred while trying to save session data into file: " + e.getMessage());
         }
     }
 
     @GetMapping(value = "/api/loadSessionData")
     public ResponseEntity<String> loadCurrentPredefinedData(@RequestParam("folder") String folder) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            DataProvider.replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)));
+            DataProvider.replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), new TypeReference<>() {
+            }));
 
             return ResponseEntity.ok(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/sessionData.json"))));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while trying to load predefined data from path: " + e.getMessage());
+                    .body("Error occurred while trying to load predefined data: " + e.getMessage());
         }
     }
 }

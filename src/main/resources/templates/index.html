@@ -26,7 +26,7 @@
                 <sl-button id="manageCustomTechnicalTasksSlButton" outline pill size="small">Manage technical tasks</sl-button>
                 <sl-button id="saveToSessionFileSlButton" outline pill size="small" variant="success"><sl-icon name="file-earmark-arrow-down"></sl-icon> Save</sl-button>
                 <sl-button id="loadFromSavedSessionFileSlButton" outline pill size="small" variant="warning"><sl-icon name="file-earmark-arrow-up"></sl-icon> Load</sl-button>
-                <sl-button disabled id="simulatePredefinedSlButton" outline pill size="small" variant="primary"><sl-icon name="play-btn"></sl-icon> Simulate (predefined data)</sl-button>
+                <sl-button id="simulatePredefinedSlButton" outline pill size="small" variant="primary"><sl-icon name="play-btn"></sl-icon> Simulate (predefined data)</sl-button>
             </sl-button-group>
         </header>
         <div style="display: flex; text-align: -webkit-center; margin-top: var(--sl-spacing-medium); align-items: center; justify-content: center;">
@@ -38,7 +38,8 @@
                     <sl-input class="labelOnLeftModification" help-text="eater than 0 and less than maximal" id="maximalEpicsCount" inputmode="number" label="—" no-spin-buttons pill required size="medium" type="number">
                         <sl-icon name="x" slot="prefix"></sl-icon>
                     </sl-input>
-                    <sl-divider vertical></sl-divider>
+                    <sl-checkbox id="saveRandomizedDataToFile">Save to file</sl-checkbox>
+                    <sl-divider style="--spacing: var(--sl-spacing-x-small);" vertical></sl-divider>
                     <sl-button id="simulateRandomizedSlButton" outline pill type="button" variant="primary"><sl-icon name="play-btn"></sl-icon> Simulate (randomized data)</sl-button>
                 </div>
             </form>
@@ -46,7 +47,7 @@
             <div style="border: 2px solid rebeccapurple; padding: 1.25rem;">
                 <strong th:text="|ID: ${technicalManager.id}|"></strong>
                 <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
-                <span th:text="|${technicalManager.getDisplayName()} (UMCN: ${technicalManager.yugoslavianUMCN}) |"></span>&nbsp;
+                <span id="technicalManagerNameField" th:text="|${technicalManager.getDisplayName()} (UMCN: ${technicalManager.yugoslavianUMCN}) |"></span>&nbsp;
                 <sl-icon th:name="${!technicalManager.isFemale ? 'gender-male' : 'gender-female'}"></sl-icon>&nbsp;
                 <sl-badge style="background-color: rebeccapurple;" th:text="${technicalManager.developerType.displayName}"></sl-badge>
                 <sl-divider style="--spacing: 1rem; border-top: none;"></sl-divider>
@@ -96,7 +97,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="epicAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Creation time" name="epicCreatedAt" required type="time"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="epicCreatedOn" required type="datetime-local"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="epicDescription" required rows="5"></sl-textarea>
@@ -140,7 +141,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="userStoryAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Creation time" name="userStoryCreatedAt" required type="time"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="userStoryCreatedOn" required type="datetime-local"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="userStoryDescription" required rows="5"></sl-textarea>
@@ -186,7 +187,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="technicalTaskAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Creation time" name="technicalTaskCreatedAt" required type="time"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="technicalTaskCreatedOn" required type="datetime-local"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="technicalTaskDescription" required rows="5"></sl-textarea>
@@ -200,6 +201,10 @@
             </sl-tab-panel>
             <sl-tab-panel name="customTechnicalTasksEditTab"></sl-tab-panel>
         </sl-tab-group>
+    </sl-dialog>
+
+    <sl-dialog id="predefinedDataSelection" label="Predefined data selection popup" style="--width: 96vw">
+        <div style="background-color: rgb(30 31 34); display: ruby-text; font-size: calc(1vw/1.36); overflow-x: clip"></div>
     </sl-dialog>
 
     <div id="developmentTeamsListOfDevelopers" style="display: none">

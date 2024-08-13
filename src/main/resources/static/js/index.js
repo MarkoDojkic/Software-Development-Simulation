@@ -1,7 +1,7 @@
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/components/alert/alert.js';
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/components/popup/popup.js';
 import {ansi2html_string} from './ansi2html.js';
-//TODO: Fix issue with carousel that button (i.e. carousel item is below scroll container when scrolled and thus not interactable)
+
 $(window).on("load", async () => {
     const websocketBroker = location.hostname;
     const websocketPort = 15675;
@@ -9,7 +9,7 @@ $(window).on("load", async () => {
     const client = new Paho.MQTT.Client(websocketBroker, websocketPort, "/ws", "fe-client_".concat(generateUUID()));
 
     client.onConnectionLost = responseObject => {
-        notify("MQTT connection lost (" + websocketBroker + ":" + websocketPort + ")<br />" + responseObject.errorMessage, "warning", "exclamation-triangle");
+        notifyWarning("MQTT connection lost (" + websocketBroker + ":" + websocketPort + ")<br />" + responseObject.errorMessage);
     };
 
     client.onMessageArrived = message => appendDataToMQTTTopicDivs(message.destinationName, message.payloadString);
@@ -19,12 +19,12 @@ $(window).on("load", async () => {
         cleanSession: false,
         mqttVersion: 4, // Identification for version 3.1.1
         onSuccess: function () {
-            notify("MQTT connected successfully to " + websocketBroker + ":" + websocketPort, "success", "check2-circle");
+            notifySuccess("MQTT connected successfully to " + websocketBroker + ":" + websocketPort);
             client.subscribe("information-printout-topic", {qos: 2});
             client.subscribe("java-activity-stream-printout-topic", {qos: 2});
             client.subscribe("error-printout-topic", {qos: 2});
 
-            notify(`MQTT subscribed to:
+            notifyInfo(`MQTT subscribed to:
                 <ul>
                     <li>infoOutput</li>
                     <li>jiraActivityStreamOutput</li>
@@ -33,7 +33,7 @@ $(window).on("load", async () => {
             `);
         },
         onFailure: function (message) {
-            notify("MQQT connection failure (" + websocketBroker + ":" + websocketPort + ")<br />" + message.errorMessage, "error", "exclamation-octagon");
+            notifyError("MQQT connection failure (" + websocketBroker + ":" + websocketPort + ")<br />" + message.errorMessage);
         }
     };
 
@@ -74,16 +74,31 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#generateRandomDataFlowForm #simulatePredefinedSlButton").on("click", async () => {
-        if (minimalEpicsCount.attr("data-valid") !== undefined && maximalEpicsCount.attr("data-valid") !== undefined)
-            $.ajax({
-                type: "OPTIONS",
-                url: "/api/applicationFlowRandomized?".concat("min=".concat(minimalEpicsCount.val()).concat("&max=").concat(maximalEpicsCount.val())),
-                success: () => $("#generateRandomDataFlowForm").trigger('reset'),
+    $("#simulatePredefinedSlButton").on("click", async () => {
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
 
+        if (customData.length > 0)
+            $.ajax({
+                type: "POST",
+                url: "/api/applicationFlowPredefined",
+                contentType: 'application/json',
+                data: JSON.stringify(customData),
+                success: response => notifySuccess(response),
+                error: response => notifyError(response.responseText)
             });
         else
-            notify("Cannot start application flow - Data is invalid", "error", "exclamation-octagon");
+            notifyError("Cannot start application flow - There aren`t any predefined data");
+    });
+
+    $("#generateRandomDataFlowForm #simulateRandomizedSlButton").on("click", async () => {
+        if (minimalEpicsCount.attr("data-valid") !== undefined && maximalEpicsCount.attr("data-valid") !== undefined)
+            $.ajax({
+                type: "POST",
+                url: "/api/applicationFlowRandomized?".concat("save=".concat($("#saveRandomizedDataToFile")[0].checked.toString().concat("&min=".concat(minimalEpicsCount.val().concat("&max=".concat(maximalEpicsCount.val())))))),
+                success: () => $("#generateRandomDataFlowForm").trigger('reset'),
+            });
+        else
+            notifyError("Cannot start application flow - Data is invalid");
     });
 
     $.ajax({
@@ -160,11 +175,13 @@ $(window).on("load", async () => {
 
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
 
+        formData.epicCreatedOn = formatDateTime(formData.epicCreatedOn);
+
         customData.push(formData)
 
         sessionStorage.setItem("customData", JSON.stringify(customData));
 
-        notify("New epic added. Total epics present: " + customData.length);
+        notifySuccess("New epic added. Total epics present: " + customData.length);
 
         form.trigger('reset');
 
@@ -173,13 +190,13 @@ $(window).on("load", async () => {
 
     updateCustomEpicsList();
 
-    $(".removeCustomEpicSlButton").each((index, button) => $(button).on("click", async () => {
-        let customData = JSON.parse(sessionStorage.getItem("customData"));
-        customData.splice(index, 1);
+    $(document).on("click", ".removeCustomEpicSlButton", async (event) => { //Needed for dynamically created elements
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        customData.splice(event.target.value, 1);
         sessionStorage.setItem("customData", JSON.stringify(customData));
 
         updateCustomEpicsList();
-    }));
+    });
 
     $("#customUserStoriesCreateForm").on("submit", event => {
         event.preventDefault();
@@ -191,6 +208,7 @@ $(window).on("load", async () => {
             formData[this.name] = this.value;
         });
 
+        formData.userStoryCreatedOn = formatDateTime(formData.userStoryCreatedOn);
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
         console.log(formData);
         const selectedEpic = formData.selectedEpic;
@@ -202,25 +220,25 @@ $(window).on("load", async () => {
         customData[formData.selectedEpicIndex] = epic;
         sessionStorage.setItem("customData", JSON.stringify(customData));
 
-        notify("New user story added to epic: " + epic.epicName);
+        notifySuccess("New user story added to epic: " + epic.epicName);
 
         form.trigger('reset');
 
         updateCustomEpicsList();
     });
 
-    $(".removeCustomUserStorySlButton").each((index, button) => $(button).on("click", async () => {
+    $(document).on("click", ".removeCustomUserStorySlButton", async (event) => {
         let customData = JSON.parse(sessionStorage.getItem("customData"));
-        console.log($(button));
 
-        //TODO: Finish removal of US function
-        /*const currentEpic = current[this.epicIndex];
-        currentEpic.splice(index, 1);
-        current[this.epicIndex] = currentEpic;
-        sessionStorage.setItem("customData", JSON.stringify(current));
+        let buttonValues = event.target.value.split("$");
 
-        updateCustomEpicsList();*/
-    }));
+        let currentEpic = customData[buttonValues[0]];
+        currentEpic.userStories.splice(buttonValues[1], 1);
+        customData[buttonValues[0]] = currentEpic;
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
+    });
 
     $("#technicalTasksCreateForm").on("submit", event => {
         event.preventDefault();
@@ -233,7 +251,7 @@ $(window).on("load", async () => {
         });
 
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-
+        formData.technicalTaskCreatedOn = formatDateTime(formData.technicalTaskCreatedOn);
         const selectedUserStory = formData.selectedUserStory;
         delete formData.selectedUserStory;
         formData.selectedEpicIndex = selectedUserStory.split("$")[0].split(">")[0];
@@ -246,55 +264,123 @@ $(window).on("load", async () => {
         customData[formData.selectedEpicIndex] = epic;
         sessionStorage.setItem("customData", JSON.stringify(customData));
 
-        notify("New technical task added to user story: " + userStory.userStoryName);
+        notifySuccess("New technical task added to user story: " + userStory.userStoryName);
 
         form.trigger('reset');
 
         updateCustomEpicsList();
     });
 
-    $(".removeCustomTechnicalTaskSlButton").each((index, button) => $(button).on("click", async () => {
-        //TODO: Finish removal of TT function
-        /*const userStoriesViewTab = $("sl-tab-panel[name='customUserStoriesViewTab']");
-        const current = JSON.parse(sessionStorage.getItem("customData"));
-        const currentEpic = current[this.epicIndex];
-        currentEpic.splice(index, 1);
-        current[this.epicIndex] = currentEpic;
-        sessionStorage.setItem("customData", JSON.stringify(current));
-        userStoriesViewTab.children().eq(index).remove();
-        if(index === 0) userStoriesViewTab.append(`<p>There aren't any user stories created in this session</p>`);*/
-    }));
+    $(document).on("click", ".removeCustomTechnicalTaskSlButton", async (event) => {
+        let customData = JSON.parse(sessionStorage.getItem("customData"));
+
+        const buttonValues = event.target.value.split("$");
+
+
+        let currentEpic = customData[buttonValues[0]];
+        let currentUserStory = currentEpic.userStories[buttonValues[1]];
+        console.log(currentUserStory.technicalTasks);
+        currentUserStory.technicalTasks.splice(buttonValues[2], 1);
+        currentEpic.userStories[buttonValues[1]] = currentUserStory;
+        customData[buttonValues[0]] = currentEpic;
+        console.log(customData);
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
+    });
 
     $("#saveToSessionFileSlButton").on("click", () => {
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
 
-        if (customData.length == 0) notify("You haven`t added any epic, user story nor technical task. No data provided for saving!")
+        if (customData.length === 0) notifyWarning("You haven`t added any epic, user story nor technical task. No data provided for saving!")
         else {
+            customData.forEach(epic => epic.userStories.forEach(userStory => {
+                delete userStory.selectedEpicIndex;
+                userStory.technicalTasks.forEach(technicalTask => {
+                    delete technicalTask.selectedEpicIndex;
+                    delete technicalTask.selectedUserStoryIndex;
+                });
+            }));
+
             $.ajax({
                 type: "POST",
                 url: "/api/saveSessionData",
                 contentType: 'application/json',
                 data: JSON.stringify(customData),
                 success: response => {
-                    notify(response);
+                    notifySuccess(response);
                 }
             });
         }
     });
 
-    $("#loadFromSavedSessionFileSlButton").on("click", () => {
-        //TODO: Finish load from file function
-        /*$.ajax({
+    $("#loadFromSavedSessionFileSlButton").on("click", async () => {
+        $.ajax({
             type: "GET",
-            url: "/api/loadSessionData?fileSuffix=...",
+            url: "/api/getPredefinedDataFoldersList",
+            success: response => {
+                let slRadioOptions= "";
+                let counter = 1;
+                response.forEach(folderName => {
+                    slRadioOptions += `<sl-radio name="predefinedDataSelection" value="${folderName}">${counter++}. ${folderName}</sl-radio>`;
+                });
+
+                $("#predefinedDataSelection > div").html(`
+                        <form id="predefinedDataSelectionForm" method="POST" style="text-align: -webkit-center;">
+                            <sl-radio-group label="Select predefined data folder" name="predefinedDataSelection">
+                              ${slRadioOptions}
+                            </sl-radio-group>
+                            <sl-divider></sl-divider>
+                            <div style="display: inline-flex">
+                                <sl-button id="getPredefinedDataFoldersListConfirmSlButton" outline type="submit" variant="success">Confirm selection</sl-button>
+                                <sl-divider vertical></sl-divider>
+                                <sl-button outline type="reset" variant="neutral" onclick="$('#predefinedDataSelection')[0].hide()">Clear form</sl-button>
+                            </div>
+                        </form>
+                    `);
+
+                $('#predefinedDataSelection')[0].show();
+            }
+        });
+    });
+
+    $(document).on("submit", "#predefinedDataSelectionForm", async (event) => {
+        event.preventDefault();
+
+        $.ajax({
+            type: "GET",
+                url: "/api/loadSessionData?folder=".concat($("sl-radio-group[name='predefinedDataSelection']")[0].value),
             success: response => {
                 sessionStorage.setItem("customData", response);
+                updateCustomEpicsList();
+                $('#predefinedDataSelection')[0].hide();
+                notifySuccess("Loaded predefined session data and respective developers team setup");
+            },
+            error: response => {
+                $('#predefinedDataSelection')[0].hide();
+                notifyError(response.responseText);
             }
-        });*/
+        });
     });
-});
+})
 
-function notify(message, variant = 'primary', icon = 'info-circle', duration = 1500) {
+function notifyInfo(message){
+    notify(message, 'primary', 'info-circle',  1000);
+}
+
+function notifySuccess(message){
+    notify(message, 'success', 'check2-circle',  1100);
+}
+
+function notifyWarning(message){
+    notify(message, "warning", "exclamation-triangle",  1300);
+}
+
+function notifyError(message){
+    notify(message, 'error', 'exclamation-octagon',  1500);
+}
+
+function notify(message, variant = 'primary', icon = 'info-circle', duration = 1000) {
     alert = Object.assign(document.createElement('sl-alert'), {
         variant,
         closable: false,
@@ -378,29 +464,29 @@ function sanitizeErrorData(data) {
 }
 
 function updateCustomEpicsList() {
-    const currentDate = new Date();
-
-    const year = currentDate.getFullYear(); // Full year (YYYY)
-    const month = currentDate.getMonth() + 1; // Month (0-11, so we add 1 for 1-12)
-    const day = currentDate.getDate(); // Day of the month (1-31)
-
-    const customData = JSON.parse(sessionStorage.getItem('customData'));
+    const customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
     const epicsViewTab = $("sl-tab-panel[name='customEpicsViewTab']");
 
+    let isUserStoriesEmpty = true;
+    let isTechnicalTasksEmpty = true;
     let technicalTaskList = [];
 
-    if (customData.length === 0) epicsViewTab.html(`<p>There aren't any epics created in this session</p>`);
+    if (customData == null || customData.length === 0) epicsViewTab.html(`<p>There aren't any epics created in this session</p>`);
     else {
-        epicsViewTab.empty();
+        epicsViewTab.html(`<div id="epicsWrapper"></div>`);
 
         const epicSlSelect = $("sl-select[name='selectedEpic']");
-        $("sl-tab-panel[name='customEpicsViewTab'] #epicsWrapper").css("display", "grid", "grid-template-columns", "repeat(var(--numberOfColumns), 1fr)", "height", "100%", "row-gap", "1%", "column-gap", "1%");
-
-        let isUserStoriesEmpty = true;
-        let isTechnicalTasksEmpty = true;
+        epicSlSelect.empty();
+        $("sl-tab-panel[name='customEpicsViewTab'] #epicsWrapper").css({
+            "display": "grid",
+            "grid-template-columns": "repeat(var(--numberOfColumns), 1fr)",
+            "height": "100%",
+            "row-gap": "1%",
+            "column-gap": "1%"
+        });
 
         customData.forEach((value, key) => {
-            epicsViewTab.append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;">
+            $("#epicsWrapper").append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;">
                 <strong>ID: ${value.epicId}</strong>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
                 <span>Name: <i>${value.epicName}</i></span>
@@ -409,10 +495,10 @@ function updateCustomEpicsList() {
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.epicPriority).html()}</span>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.epicCreatedAt}</span>
+                <span>Created on: ${value.epicCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
-                    Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
+                    Reporter: ${value.epicReporter === -1 ? $("#technicalManagerNameField").html().split(" (UMCN")[0] : $("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
                 </sl-badge>
                 <sl-badge variant="warning">
                     Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee + "]").html()}
@@ -429,9 +515,7 @@ function updateCustomEpicsList() {
                 </div>
             </sl-card>`);
 
-            const newEpicOption = document.createElement('sl-option');
-            newEpicOption.value = key + "$" + value.selectedEpicDevelopmentTeam;
-            epicSlSelect.append(newEpicOption);
+            epicSlSelect.append(`<sl-option value="${key + "$" + value.selectedEpicDevelopmentTeam}">${value.epicName}</sl-option>`);
 
             value.userStories.forEach(userStory => {
                 if(isUserStoriesEmpty){
@@ -469,20 +553,20 @@ function updateCustomEpicsList() {
                 });
 
                 if(technicalTaskList.length > 0) {
-                    updateCustomTechnicalTasksList(day, month, year, userStory.userStoryId, technicalTaskList);
+                    updateCustomTechnicalTasksList(userStory.userStoryId, technicalTaskList);
                     technicalTaskList = [];
                 }
             });
 
-            updateCustomUserStoriesList(day, month, year, value.epicId, value.userStories);
+            updateCustomUserStoriesList(value.epicId, value.userStories);
         });
-
-        if(isUserStoriesEmpty) $("sl-tab-panel[name='customUserStoriesViewTab']").html(`<p>There aren't any user stories created in this session</p>`);
-        if(isTechnicalTasksEmpty) $("sl-tab-panel[name='customTechnicalTasksViewTab']").html(`<p>There aren't any technical tasks created in this session</p>`);
     }
+
+    if(isUserStoriesEmpty) $("sl-tab-panel[name='customUserStoriesViewTab']").html(`<p>There aren't any user stories created in this session</p>`);
+    if(isTechnicalTasksEmpty) $("sl-tab-panel[name='customTechnicalTasksViewTab']").html(`<p>There aren't any technical tasks created in this session</p>`);
 }
 
-function updateCustomUserStoriesList(day, month, year, relatedEpicId, userStories) {
+function updateCustomUserStoriesList(relatedEpicId, userStories) {
     const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
 
     userStoriesCarousel.append(`<sl-carousel-item id="userStoriesOf${relatedEpicId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
@@ -502,7 +586,7 @@ function updateCustomUserStoriesList(day, month, year, relatedEpicId, userStorie
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.userStoryPriority).html()}</span>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.userStoryCreatedAt}</span>
+                <span>Created on: ${value.userStoryCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
                     Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.userStoryReporter + "]").html()}
@@ -518,18 +602,16 @@ function updateCustomUserStoriesList(day, month, year, relatedEpicId, userStorie
                 <div slot="footer">
                     <sl-button class="editCustomUserStorySlButton" variant="warning" outline>Edit</sl-button>
                     <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                    <sl-button class="removeCustomUserStorySlButton" variant="danger" value="${key}" outline>Remove</sl-button>
+                    <sl-button class="removeCustomUserStorySlButton" variant="danger" value="${value.selectedEpicIndex}\$${key}" outline>Remove</sl-button>
                 </div>
             </sl-card>
         `);
 
-        const newUserStoryOption = document.createElement('sl-option');
-        newUserStoryOption.value = value.selectedEpicIndex + ">" + key + "$" + value.selectedEpicDevelopmentTeam;
-        userStorySlSelect.append(newUserStoryOption);
+        userStorySlSelect.append(`<sl-option value="${value.selectedEpicIndex + ">" + key + "$" + value.selectedEpicDevelopmentTeam}">${value.userStoryName}</sl-option>`);
     });
 }
 
-function updateCustomTechnicalTasksList(day, month, year, relatedUserStoryId, technicalTasks) {
+function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
     const technicalTaskCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
 
     technicalTaskCarousel.append(`<sl-carousel-item id="technicalTaskOf${relatedUserStoryId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
@@ -545,7 +627,7 @@ function updateCustomTechnicalTasksList(day, month, year, relatedUserStoryId, te
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.technicalTaskPriority).html()}</span>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                <span>Creation time: ${day.toString().padStart(2, '0') + "." + month.toString().padStart(2, '0') + "." + year + ". " + value.technicalTaskCreatedAt}</span>
+                <span>Created on: ${value.technicalTaskCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
                     Reporter: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.technicalTaskReporter + "]").html()}
@@ -561,9 +643,28 @@ function updateCustomTechnicalTasksList(day, month, year, relatedUserStoryId, te
                 <div slot="footer">
                     <sl-button class="editCustomTechnicalTaskSlButton" variant="warning" outline>Edit</sl-button>
                     <sl-divider style="--spacing: 2px" vertical></sl-divider>
-                    <sl-button class="removeCustomTechnicalTaskSlButton" variant="danger" value="${key}" outline>Remove</sl-button>
+                    <sl-button class="removeCustomTechnicalTaskSlButton" variant="danger" value="${value.selectedEpicIndex}\$${value.selectedUserStoryIndex}\$${key}" outline>Remove</sl-button>
                 </div>
             </sl-card>
         `);
     });
+}
+
+function formatDateTime(datetimeLocalValue) {
+    const date = new Date(datetimeLocalValue);
+
+    if (isNaN(date.getTime())) { // Check for invalid date
+        return 'Invalid Date';
+    }
+
+    const pad = (num) => num.toString().padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear();
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${day}.${month}.${year}. ${hours}:${minutes}:${seconds}`;
 }
