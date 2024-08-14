@@ -3,6 +3,33 @@ import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/compone
 import {ansi2html_string} from './ansi2html.js';
 
 $(window).on("load", async () => {
+    flatpickr("sl-input[name='epicCreatedOn']", {
+        enableTime: true,
+        enableSeconds: true,
+        minuteIncrement: 1,
+        dateFormat: "d.m.Y. H:i:S",
+        time_24hr: true,
+            allowInput:true
+    });
+
+    flatpickr("sl-input[name='userStoryCreatedOn']", {
+        enableTime: true,
+        enableSeconds: true,
+        minuteIncrement: 1,
+        dateFormat: "d.m.Y. H:i:S",
+        time_24hr: true,
+            allowInput:true
+    });
+
+    flatpickr("sl-input[name='technicalTaskCreatedOn']", {
+        enableTime: true,
+        enableSeconds: true,
+        minuteIncrement: 1,
+        dateFormat: "d.m.Y. H:i:S",
+        time_24hr: true,
+            allowInput:true
+    });
+
     const websocketBroker = location.hostname;
     const websocketPort = 15675;
 
@@ -143,6 +170,16 @@ $(window).on("load", async () => {
         epicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
     });
 
+    $(document).on("sl-change", "#editSelectedEpicDevelopmentTeam", (event) => {
+        const editEpicReporter = $("#editEpicReporter");
+        const editEpicAssignee = $("#editEpicAssignee");
+
+        editEpicReporter.prop("disabled", false);
+        editEpicAssignee.prop("disabled", false);
+        editEpicReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+        editEpicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+    });
+
     const userStoryReporter = $("sl-select[name='userStoryReporter']");
     const userStoryAssignee = $("sl-select[name='userStoryAssignee']");
 
@@ -175,8 +212,6 @@ $(window).on("load", async () => {
 
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
 
-        formData.epicCreatedOn = formatDateTime(formData.epicCreatedOn);
-
         customData.push(formData)
 
         sessionStorage.setItem("customData", JSON.stringify(customData));
@@ -190,7 +225,110 @@ $(window).on("load", async () => {
 
     updateCustomEpicsList();
 
-    $(document).on("click", ".removeCustomEpicSlButton", async (event) => { //Needed for dynamically created elements
+    $(document).on("click", ".editCustomEpicSlButton", async (event) => { //Needed for dynamically created elements
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        const editingEpic = customData[event.target.value];
+
+        $("sl-tab-panel[name='customEpicsEditTab']").html(`<form action="#" id="customEpicsEditForm" method="POST" style="text-align: -webkit-center;">
+                <div style="display: inline-flex;">
+                    <sl-input id="editEpicId" help-text=" " maxlength="16" name="epicId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                    <sl-divider vertical></sl-divider>
+                    <sl-input id="editEpicName" maxlength="64" name="epicName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                    <sl-divider vertical></sl-divider>
+                    <sl-select id="editEpicPriority" name="epicPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingEpic.epicPriority}">
+                        ${$("#priorityOptions").html()}
+                    </sl-select>
+                </div>
+                <sl-divider class="horizontalDivider"></sl-divider>
+                <div style="display: inline-flex;">
+                    <sl-select id="editSelectedEpicDevelopmentTeam" class="labelOnLeftModification" help-text="<size> (<average_developer_rating (max 12)>)" label="Development team" name="selectedEpicDevelopmentTeam" pill placement="bottom" required value="${editingEpic.selectedEpicDevelopmentTeam}">
+                        ${$("#developmentTeamOptions").html()}
+                    </sl-select>
+                    <sl-select id="editEpicReporter" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="epicReporter" pill placement="bottom" value="${editingEpic.epicReporter}" required></sl-select>
+                    <sl-divider vertical></sl-divider>
+                    <sl-select id="editEpicAssignee" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="epicAssignee" pill placement="bottom" value="${editingEpic.epicAssignee}" required></sl-select>
+                    <sl-divider vertical></sl-divider>
+                    <sl-input id="editEpicCreatedOn" help-text=" " label="Created on" name="epicCreatedOn" required type="text"></sl-input>
+                </div>
+                <sl-divider class="horizontalDivider"></sl-divider>
+                <sl-textarea id="editEpicDescription" help-text="Description: Max length is 128 characters" maxlength="128" name="epicDescription" value="${editingEpic.epicDescription}" required rows="5"></sl-textarea>
+                <sl-divider class="horizontalDivider"></sl-divider>
+                <div style="display: inline-flex">
+                    <sl-button id="editCustomEpicSubmitSlButton" value="${event.target.value}" outline type="submit" variant="success">Confirm</sl-button>
+                    <sl-divider vertical></sl-divider>
+                    <sl-button id="editCustomEpicResetSlButton" outline type="reset" variant="neutral">Cancel</sl-button>
+                </div>
+                <sl-textarea name="userStories" style="display: none"></sl-textarea>
+            </form>`);
+
+        $("#customEpicsEditForm sl-textarea[name='userStories']").val(JSON.stringify(editingEpic.userStories));
+
+        $("#editSelectedEpicDevelopmentTeam").trigger("sl-change"); //To update reporter and assignee sl-select list
+
+        const editEpicCreatedOnFP = flatpickr("#editEpicCreatedOn", {
+            enableTime: true,
+            enableSeconds: true,
+            minuteIncrement: 1,
+            dateFormat: "d.m.Y. H:i:S",
+            time_24hr: true,
+            allowInput:true
+        });
+
+        editEpicCreatedOnFP.setDate(editingEpic.epicCreatedOn, true)
+
+        const editTab = $("sl-tab[panel='customEpicsEditTab']");
+        window.history.replaceState(null, null, `/editEpic?epicId=${editingEpic.epicId}`);
+
+        $("sl-tab[panel='customEpicsViewTab']").prop("disabled", true);
+        $("sl-tab[panel='customEpicsAddTab']").prop("disabled", true);
+        editTab.prop("disabled", false);
+
+        await Promise.all([!editTab.prop("disabled")]).then(() => $("#customEpics sl-tab-group")[0].show("customEpicsEditTab"));
+    });
+
+    $(document).on("submit", "#customEpicsEditForm", async (event) => {
+        event.preventDefault();
+
+        const form = $(event.target);
+        const formData = {};
+
+        form.find('sl-input, sl-select, sl-textarea').each(function () {
+            formData[this.name] = this.value;
+        });
+
+        formData["userStories"] = JSON.parse(formData["userStories"]);
+
+        formData.userStories.forEach(userStory => {
+            userStory.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam;
+            userStory.technicalTasks.forEach(technicalTask => technicalTask.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam);
+        });
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        customData[$(event.target).find(':submit').val()] = formData;
+
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
+
+        const viewTab = $("sl-tab[panel='customEpicsViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customEpics sl-tab-group")[0].show("customEpicsViewTab"));
+    });
+
+    $(document).on("click", "#editCustomEpicResetSlButton", async () => {
+        const viewTab = $("sl-tab[panel='customEpicsViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customEpics sl-tab-group")[0].show("customEpicsViewTab"));
+    });
+
+    $(document).on("click", ".removeCustomEpicSlButton", async (event) => {
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
         customData.splice(event.target.value, 1);
         sessionStorage.setItem("customData", JSON.stringify(customData));
@@ -208,9 +346,7 @@ $(window).on("load", async () => {
             formData[this.name] = this.value;
         });
 
-        formData.userStoryCreatedOn = formatDateTime(formData.userStoryCreatedOn);
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        console.log(formData);
         const selectedEpic = formData.selectedEpic;
         delete formData.selectedEpic;
         formData.selectedEpicIndex = selectedEpic.split("$")[0];
@@ -225,6 +361,117 @@ $(window).on("load", async () => {
         form.trigger('reset');
 
         updateCustomEpicsList();
+    });
+
+    $(document).on("click", ".editCustomUserStorySlButton", async (event) => {
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        let buttonValues = event.target.value.split("$");
+
+        const editingUserStory = customData[buttonValues[0]].userStories[buttonValues[1]];
+
+        $("sl-tab-panel[name='customUserStoriesEditTab']").html(`<form action="#" id="customUserStoriesEditForm" method="POST" style="text-align: -webkit-center;">
+            <div style="display: inline-flex;">
+                <sl-input id="editUserStoryId" help-text=" " maxlength="16" name="userStoryId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-input id="editUserStoryName" maxlength="64" name="userStoryName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-select id="editUserStoryPriority" name="userStoryPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingUserStory.userStoryPriority}">
+                    ${$("#priorityOptions").html()}
+                </sl-select>
+            </div>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <div style="display: inline-flex;">
+                <sl-select id="editUserStoryReporter" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="userStoryReporter" pill placement="bottom" value="${editingUserStory.userStoryReporter}" required></sl-select>
+                <sl-divider vertical></sl-divider>
+                <sl-select id="editUserStoryAssignee" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="userStoryAssignee" pill placement="bottom" value="${editingUserStory.userStoryAssignee}" required></sl-select>
+                <sl-divider vertical></sl-divider>
+                <sl-input id="editUserStoryCreatedOn" help-text=" " label="Created on" name="userStoryCreatedOn" required type="text"></sl-input>
+            </div>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <sl-textarea id="editUserStoryDescription" help-text="Description: Max length is 128 characters" maxlength="128" name="userStoryDescription" value="${editingUserStory.userStoryDescription}" required rows="5"></sl-textarea>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <div style="display: inline-flex">
+                <sl-button id="editCustomUserStorySubmitSlButton" value="${event.target.value}" outline type="submit" variant="success">Confirm</sl-button>
+                <sl-divider vertical></sl-divider>
+                <sl-button id="editCustomUserStoryResetSlButton" outline type="reset" variant="neutral">Cancel</sl-button>
+            </div>
+            <sl-input type="text" name="selectedEpicDevelopmentTeam" value="${editingUserStory.selectedEpicDevelopmentTeam}" style="display: none"></sl-input>
+            <sl-textarea name="technicalTasks" style="display: none"></sl-textarea>
+        </form>`);
+
+        $("#customUserStoriesEditForm sl-textarea[name='technicalTasks']").val(JSON.stringify(editingUserStory.technicalTasks));
+
+        const editUserStoryReporter = $("#editUserStoryReporter");
+        const editUserStoryAssignee = $("#editUserStoryAssignee");
+
+        editUserStoryReporter.prop("disabled", false);
+        editUserStoryAssignee.prop("disabled", false);
+        editUserStoryReporter.html($("#developmentTeamsListOfDevelopers #".concat(editingUserStory.selectedEpicDevelopmentTeam)).html());
+        editUserStoryAssignee.html($("#developmentTeamsListOfDevelopers #".concat(editingUserStory.selectedEpicDevelopmentTeam)).html());
+
+        $("#editSelectedUserStoryDevelopmentTeam").trigger("sl-change"); //To update reporter and assignee sl-select list
+
+        const editUserStoryCreatedOnFP = flatpickr("#editUserStoryCreatedOn", {
+            enableTime: true,
+            enableSeconds: true,
+            minuteIncrement: 1,
+            dateFormat: "d.m.Y. H:i:S",
+            time_24hr: true,
+            allowInput:true
+        });
+
+        editUserStoryCreatedOnFP.setDate(editingUserStory.userStoryCreatedOn, true)
+
+        const editTab = $("sl-tab[panel='customUserStoriesEditTab']");
+        window.history.replaceState(null, null, `/editUserStory?userStoryId=${editingUserStory.userStoryId}`);
+
+        $("sl-tab[panel='customUserStoriesViewTab']").prop("disabled", true);
+        $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", true);
+        editTab.prop("disabled", false);
+
+        await Promise.all([!editTab.prop("disabled")]).then(() => $("#customUserStories sl-tab-group")[0].show("customUserStoriesEditTab"));
+    });
+
+    $(document).on("submit", "#customUserStoriesEditForm", async (event) => {
+        event.preventDefault();
+        let buttonValues = $(event.target).find(':submit').val().split("$");
+
+        const form = $(event.target);
+        const formData = {};
+
+        form.find('sl-input, sl-select, sl-textarea').each(function () {
+            formData[this.name] = this.value;
+        });
+
+        formData["selectedEpicIndex"] = buttonValues[0];
+        formData["technicalTasks"] = JSON.parse(formData["technicalTasks"]);
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        const epic = customData[buttonValues[0]];
+        epic.userStories[buttonValues[1]] = formData;
+
+        customData[buttonValues[0]] = epic;
+
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
+
+        const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab"));
+    });
+
+    $(document).on("click", "#editCustomUserStoryResetSlButton", async () => {
+        const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab"));
     });
 
     $(document).on("click", ".removeCustomUserStorySlButton", async (event) => {
@@ -251,7 +498,6 @@ $(window).on("load", async () => {
         });
 
         let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        formData.technicalTaskCreatedOn = formatDateTime(formData.technicalTaskCreatedOn);
         const selectedUserStory = formData.selectedUserStory;
         delete formData.selectedUserStory;
         formData.selectedEpicIndex = selectedUserStory.split("$")[0].split(">")[0];
@@ -271,19 +517,129 @@ $(window).on("load", async () => {
         updateCustomEpicsList();
     });
 
+    $(document).on("click", ".editCustomTechnicalTaskSlButton", async (event) => {
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        let buttonValues = event.target.value.split("$");
+
+        const editingTechnicalTask = customData[buttonValues[0]].userStories[buttonValues[1]].technicalTasks[buttonValues[2]];
+
+        $("sl-tab-panel[name='customTechnicalTasksEditTab']").html(`<form action="#" id="customTechnicalTasksEditForm" method="POST" style="text-align: -webkit-center;">
+            <div style="display: inline-flex;">
+                <sl-input id="editTechnicalTaskId" help-text=" " maxlength="16" name="technicalTaskId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-input id="editTechnicalTaskName" maxlength="64" name="technicalTaskName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                <sl-divider vertical></sl-divider>
+                <sl-select id="editTechnicalTaskPriority" name="technicalTaskPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingTechnicalTask.technicalTaskPriority}">
+                    ${$("#priorityOptions").html()}
+                </sl-select>
+            </div>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <div style="display: inline-flex;">
+                <sl-select id="editTechnicalTaskReporter" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Reporter" name="technicalTaskReporter" pill placement="bottom" value="${editingTechnicalTask.technicalTaskReporter}" required></sl-select>
+                <sl-divider vertical></sl-divider>
+                <sl-select id="editTechnicalTaskAssignee" class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="technicalTaskAssignee" pill placement="bottom" value="${editingTechnicalTask.technicalTaskAssignee}" required></sl-select>
+                <sl-divider vertical></sl-divider>
+                <sl-input id="editTechnicalTaskCreatedOn" help-text=" " label="Created on" name="technicalTaskCreatedOn" required type="text"></sl-input>
+            </div>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <sl-textarea id="editTechnicalTaskDescription" help-text="Description: Max length is 128 characters" maxlength="128" name="technicalTaskDescription" value="${editingTechnicalTask.technicalTaskDescription}" required rows="5"></sl-textarea>
+            <sl-divider class="horizontalDivider"></sl-divider>
+            <div style="display: inline-flex">
+                <sl-button id="editCustomTechnicalTaskSubmitSlButton" value="${event.target.value}" outline type="submit" variant="success">Confirm</sl-button>
+                <sl-divider vertical></sl-divider>
+                <sl-button id="editCustomTechnicalTaskResetSlButton" outline type="reset" variant="neutral">Cancel</sl-button>
+            </div>
+            <sl-input type="text" name="selectedEpicDevelopmentTeam" value="${editingTechnicalTask.selectedEpicDevelopmentTeam}" style="display: none"></sl-input>
+        </form>`);
+
+        $("#customTechnicalTasksEditForm sl-textarea[name='technicalTasks']").val(JSON.stringify(editingTechnicalTask.technicalTasks));
+
+        const editTechnicalTaskReporter = $("#editTechnicalTaskReporter");
+        const editTechnicalTaskAssignee = $("#editTechnicalTaskAssignee");
+
+        editTechnicalTaskReporter.prop("disabled", false);
+        editTechnicalTaskAssignee.prop("disabled", false);
+        editTechnicalTaskReporter.html($("#developmentTeamsListOfDevelopers #".concat(editingTechnicalTask.selectedEpicDevelopmentTeam)).html());
+        editTechnicalTaskAssignee.html($("#developmentTeamsListOfDevelopers #".concat(editingTechnicalTask.selectedEpicDevelopmentTeam)).html());
+
+        $("#editSelectedTechnicalTaskDevelopmentTeam").trigger("sl-change"); //To update reporter and assignee sl-select list
+
+        const editTechnicalTaskCreatedOnFP = flatpickr("#editTechnicalTaskCreatedOn", {
+            enableTime: true,
+            enableSeconds: true,
+            minuteIncrement: 1,
+            dateFormat: "d.m.Y. H:i:S",
+            time_24hr: true,
+            allowInput:true
+        });
+
+        editTechnicalTaskCreatedOnFP.setDate(editingTechnicalTask.technicalTaskCreatedOn, true)
+
+        const editTab = $("sl-tab[panel='customTechnicalTasksEditTab']");
+        window.history.replaceState(null, null, `/editTechnicalTask?technicalTaskId=${editingTechnicalTask.technicalTaskId}`);
+
+        $("sl-tab[panel='customTechnicalTasksViewTab']").prop("disabled", true);
+        $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", true);
+        editTab.prop("disabled", false);
+
+        await Promise.all([!editTab.prop("disabled")]).then(() => $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksEditTab"));
+    });
+
+    $(document).on("submit", "#customTechnicalTasksEditForm", async (event) => {
+        event.preventDefault();
+
+        let buttonValues = $(event.target).find(':submit').val().split("$");
+
+        const form = $(event.target);
+        const formData = {};
+
+        form.find('sl-input, sl-select, sl-textarea').each(function () {
+            formData[this.name] = this.value;
+        });
+
+        formData["selectedEpicIndex"] = buttonValues[0];
+        formData["selectedUserStoryIndex"] = buttonValues[1];
+
+        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+
+        const epic = customData[buttonValues[0]];
+        const userStory = epic.userStories[buttonValues[1]];
+        userStory.technicalTasks[buttonValues[2]] = formData;
+
+        epic.userStories[buttonValues[1]] = userStory;
+        customData[buttonValues[0]] = epic;
+
+        sessionStorage.setItem("customData", JSON.stringify(customData));
+
+        updateCustomEpicsList();
+
+        const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab"));
+    });
+
+    $(document).on("click", "#editCustomTechnicalTaskResetSlButton", async () => {
+        const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
+        window.history.replaceState(null, null, "/");
+        viewTab.prop("disabled", false);
+        $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
+        $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
+        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab"));
+    });
+
     $(document).on("click", ".removeCustomTechnicalTaskSlButton", async (event) => {
         let customData = JSON.parse(sessionStorage.getItem("customData"));
 
         const buttonValues = event.target.value.split("$");
-
-
+        
         let currentEpic = customData[buttonValues[0]];
         let currentUserStory = currentEpic.userStories[buttonValues[1]];
-        console.log(currentUserStory.technicalTasks);
         currentUserStory.technicalTasks.splice(buttonValues[2], 1);
         currentEpic.userStories[buttonValues[1]] = currentUserStory;
         customData[buttonValues[0]] = currentEpic;
-        console.log(customData);
         sessionStorage.setItem("customData", JSON.stringify(customData));
 
         updateCustomEpicsList();
@@ -294,14 +650,6 @@ $(window).on("load", async () => {
 
         if (customData.length === 0) notifyWarning("You haven`t added any epic, user story nor technical task. No data provided for saving!")
         else {
-            customData.forEach(epic => epic.userStories.forEach(userStory => {
-                delete userStory.selectedEpicIndex;
-                userStory.technicalTasks.forEach(technicalTask => {
-                    delete technicalTask.selectedEpicIndex;
-                    delete technicalTask.selectedUserStoryIndex;
-                });
-            }));
-
             $.ajax({
                 type: "POST",
                 url: "/api/saveSessionData",
@@ -512,7 +860,7 @@ function updateCustomEpicsList() {
                   ${value.epicDescription}
                 </sl-details>
                 <div slot="footer">
-                    <sl-button class="editCustomEpicSlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-button class="editCustomEpicSlButton" variant="warning" value="${key}" outline>Edit</sl-button>
                     <sl-divider style="--spacing: 2px" vertical></sl-divider>
                     <sl-button class="removeCustomEpicSlButton" variant="danger" value="${key}" outline>Remove</sl-button>
                 </div>
@@ -578,6 +926,8 @@ function updateCustomUserStoriesList(relatedEpicId, userStories) {
 
     userStorySlSelect.empty();
 
+    console.log(userStories);
+
     userStories.forEach((value, key) => {
         $("#userStoriesOf" + relatedEpicId).append(`
             <sl-card id="${key}" style="height:100%; --border-color: rgb(130, 244, 131, 1)">
@@ -603,7 +953,7 @@ function updateCustomUserStoriesList(relatedEpicId, userStories) {
                   ${value.userStoryDescription}
                 </sl-details>
                 <div slot="footer">
-                    <sl-button class="editCustomUserStorySlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-button class="editCustomUserStorySlButton" variant="warning" value="${value.selectedEpicIndex}\$${key}" outline>Edit</sl-button>
                     <sl-divider style="--spacing: 2px" vertical></sl-divider>
                     <sl-button class="removeCustomUserStorySlButton" variant="danger" value="${value.selectedEpicIndex}\$${key}" outline>Remove</sl-button>
                 </div>
@@ -644,30 +994,11 @@ function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
                   ${value.technicalTaskDescription}
                 </sl-details>
                 <div slot="footer">
-                    <sl-button class="editCustomTechnicalTaskSlButton" variant="warning" outline>Edit</sl-button>
+                    <sl-button class="editCustomTechnicalTaskSlButton" variant="warning" value="${value.selectedEpicIndex}\$${value.selectedUserStoryIndex}\$${key}" outline>Edit</sl-button>
                     <sl-divider style="--spacing: 2px" vertical></sl-divider>
                     <sl-button class="removeCustomTechnicalTaskSlButton" variant="danger" value="${value.selectedEpicIndex}\$${value.selectedUserStoryIndex}\$${key}" outline>Remove</sl-button>
                 </div>
             </sl-card>
         `);
     });
-}
-
-function formatDateTime(datetimeLocalValue) {
-    const date = new Date(datetimeLocalValue);
-
-    if (isNaN(date.getTime())) { // Check for invalid date
-        return 'Invalid Date';
-    }
-
-    const pad = (num) => num.toString().padStart(2, '0');
-
-    const day = pad(date.getDate());
-    const month = pad(date.getMonth() + 1);
-    const year = date.getFullYear();
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    const seconds = pad(date.getSeconds());
-
-    return `${day}.${month}.${year}. ${hours}:${minutes}:${seconds}`;
 }

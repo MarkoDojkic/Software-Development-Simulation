@@ -63,17 +63,10 @@ public class Utilities {
 	private static ObjectMapper objectMapper;
 
 	static {
-		ZonedDateTime now = ZonedDateTime.now();
-		Path base = Paths.get(System.getProperty("user.home"),
-				System.getProperty("app.groupId", "dev.markodojkic"),
-				System.getProperty("app.artifactId", "software_development_simulation"),
-				System.getProperty("app.version", "0.0.0-TESTING"));
+		Path base = Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.3.0");
 
 		currentApplicationDataPath = base;
-		currentApplicationLogsPath = Paths.get(String.valueOf(base),
-				"logs",
-				now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-				now.format(DateTimeFormatter.ofPattern("HH.mm.ss")));
+		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
 	}
 	
     public static void loadPredefinedTasks(List<Epic> predefinedEpics){

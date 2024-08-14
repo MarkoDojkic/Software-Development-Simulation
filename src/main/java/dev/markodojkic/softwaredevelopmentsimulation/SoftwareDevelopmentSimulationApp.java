@@ -29,7 +29,6 @@ public class SoftwareDevelopmentSimulationApp
 
         //TODO: Correct JIRA activity stream timings
         //TODO: Fix issue with carousel that button (i.e. carousel item is below scroll container when scrolled and thus not interactable)
-        //TODO: Add Edit logic for predefined epics, user stories and technical tasks (moving user stories and technical task is possibility)
         //TODO: Write tests for complete application flow, predefined and randomized data flow saving and loading
     }
 }

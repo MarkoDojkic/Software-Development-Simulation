@@ -5,7 +5,9 @@
         <title>Software development simulator - Home page</title>
         <link href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css" media="(prefers-color-scheme:light)" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" media="(prefers-color-scheme:dark)" onload="document.documentElement.classList.add('sl-theme-dark');" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <link rel="stylesheet" th:href="@{/css/index.css}"/>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr" integrity="sha512-K/oyQtMXpxI4+K0W7H25UopjM8pzq0yrVdFdG21Fh5dBe91I40pDd9A4lzNlHPHBIP2cwZuoxaUSX0GJSObvGA==" crossorigin="anonymous"></script>
         <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js" integrity="sha512-iTpkJ1vB9YD5jFwrppJ+0A6NIa8faZcY+iQTmkg4bkOfEw2R1OlLZnxsC43GzqHX92i87xCLULbYnFpBZFbAxA==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" integrity="sha512-nlrGqnXyDyswl/oRH13cQUfr7ZsQs0XxVAZP0Ygs1hzJcq0PiBgTzqnI3YSEFosXOPznrul6lDYcwVvc7gX0UA==" crossorigin="anonymous"></script>
@@ -97,7 +99,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="epicAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Created on" name="epicCreatedOn" required type="datetime-local"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="epicCreatedOn" required type="text"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="epicDescription" required rows="5"></sl-textarea>
@@ -141,7 +143,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="userStoryAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Created on" name="userStoryCreatedOn" required type="datetime-local"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="userStoryCreatedOn" required type="text"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="userStoryDescription" required rows="5"></sl-textarea>
@@ -187,7 +189,7 @@
                         <sl-divider vertical></sl-divider>
                         <sl-select class="labelOnLeftModification" disabled help-text="<name> (<developer_rating (max 12)>)" label="Assignee" name="technicalTaskAssignee" pill placement="bottom" required></sl-select>
                         <sl-divider vertical></sl-divider>
-                        <sl-input help-text=" " label="Created on" name="technicalTaskCreatedOn" required type="datetime-local"></sl-input>
+                        <sl-input help-text=" " label="Created on" name="technicalTaskCreatedOn" required type="text"></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <sl-textarea help-text="Description: Max length is 128 characters" maxlength="128" name="technicalTaskDescription" required rows="5"></sl-textarea>
@@ -213,7 +215,15 @@
         </div>
     </div>
 
+    <div id="developmentTeamOptions" style="display: none">
+        <sl-option th:each="developmentTeamSummary, developerTeamIterator : ${developmentTeamsSummary}" th:text="|#${developerTeamIterator.index}: ${developmentTeamSummary}" th:value="${developerTeamIterator.index}"></sl-option>
+    </div>
+
     <div id="priorityBadges" style="display: none">
         <sl-badge th:class="|ansi_bg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:id="${priority}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" variant=""></sl-badge>
+    </div>
+
+    <div id="priorityOptions" style="display: none">
+        <sl-option th:class="|ansi_fg_${priority.getAnsiColorCode()}m|" th:each="priority, priorityIterator : ${priorities}" th:text="|${priority.name()} (Urgency: ${priority.getUrgency()})|" th:value="${priority}"></sl-option>
     </div>
 </html>

@@ -35,7 +35,7 @@ $(window).on("load", async () => {
                 success: response => {
                     $("#sl-tab-panel-3").html(response);
                     $("#sl-tab-panel-3 .developerExperienceSlRange")[0].tooltipFormatter = value => `Developer experience - ${value}/10`; //*Here needs to be reinitialize since new sl-range is created
-                    $(document).on("click", ".editDeveloperResetSlButt", async () => {
+                    $(document).on("click", ".editDeveloperResetSlButton", async () => {
                         window.history.replaceState(null, null, "/developers");
                         viewTab.prop("disabled", false);
                         createTab.prop("disabled", false)
