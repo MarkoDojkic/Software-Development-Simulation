@@ -7,7 +7,6 @@ import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomEpics;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.loadPredefinedTasks;
 
 @Controller
 public class DevelopersPageController {
@@ -30,12 +30,6 @@ public class DevelopersPageController {
 	@Autowired
 	public DevelopersPageController(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-	}
-
-	@PutMapping(value = "/api/recreateDevelopmentTeams")
-	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
-		DataProvider.updateDevelopmentTeamsSetup(parameters);
-		return REDIRECT_DEVELOPERS;
 	}
 
 	@GetMapping("/developers")
@@ -55,12 +49,6 @@ public class DevelopersPageController {
 		return developersPage;
 	}
 
-	@PostMapping(value = "/api/addDeveloper")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
-		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
-		return REDIRECT_DEVELOPERS;
-	}
-
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
@@ -73,6 +61,21 @@ public class DevelopersPageController {
 
 		return editingDeveloperForm;
 	}
+
+	@PutMapping(value = "/api/recreateDevelopmentTeams")
+	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
+		DataProvider.updateDevelopmentTeamsSetup(parameters);
+		return REDIRECT_DEVELOPERS;
+	}
+
+
+	@PostMapping(value = "/api/addDeveloper")
+	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
+		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
+		return REDIRECT_DEVELOPERS;
+	}
+
+
 
 	@PatchMapping(value = "/api/editDeveloper")
 	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
@@ -89,7 +92,7 @@ public class DevelopersPageController {
 	@PostMapping(value = "/api/applicationFlowPredefined")
 	public ResponseEntity<String> applicationFlowPredefined(@RequestBody String predefinedData){
         try {
-            Utilities.loadPredefinedTasks(objectMapper.readValue(predefinedData, new TypeReference<>() {
+            loadPredefinedTasks(objectMapper.readValue(predefinedData, new TypeReference<>() {
             }));
 			return ResponseEntity.ok("Successfully started application flow with predefined data");
         } catch (JsonProcessingException e) {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.PREDEFINED_DATA;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @RestController
 public class MainController {
@@ -31,7 +30,7 @@ public class MainController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping(value = "")
+    @GetMapping(value = "/")
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("/index");
         modelAndView.addObject("technicalManager", DataProvider.getTechnicalManager());
@@ -46,7 +45,7 @@ public class MainController {
     @GetMapping(value = "/api/logs")
     public ResponseEntity<String> showLogFileContents(@RequestParam("filename") String filename) {
         try {
-            return ResponseEntity.ok(Files.readString(Paths.get(Utilities.getCurrentApplicationLogsPath().resolve(filename.concat(".log")).toUri())));
+            return ResponseEntity.ok(Files.readString(Paths.get(getCurrentApplicationLogsPath().resolve(filename.concat(".log")).toUri())));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while trying to read file: " + e.getMessage());
@@ -55,7 +54,7 @@ public class MainController {
 
     @GetMapping(value = "/api/getPredefinedDataFoldersList")
     public ResponseEntity<Object> getPredefinedDataFoldersList() {
-        try (Stream<Path> paths = Files.list(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA))) {
+        try (Stream<Path> paths = Files.list(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA))) {
             List<String> folders = paths
                     .filter(Files::isDirectory)
                     .map(Path::getFileName)
@@ -72,7 +71,7 @@ public class MainController {
     public ResponseEntity<String> saveCurrentPredefinedData(@RequestBody String sessionDataJSON){
         try {
             String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
-            Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
+            Path parentDirectory = getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
 
             if(!Files.exists(parentDirectory)) Files.createDirectories(parentDirectory);
 
@@ -91,10 +90,10 @@ public class MainController {
     @GetMapping(value = "/api/loadSessionData")
     public ResponseEntity<String> loadCurrentPredefinedData(@RequestParam("folder") String folder) {
         try {
-            DataProvider.replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), new TypeReference<>() {
+            DataProvider.replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), new TypeReference<>() {
             }));
 
-            return ResponseEntity.ok(Files.readString(Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/sessionData.json"))));
+            return ResponseEntity.ok(Files.readString(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/sessionData.json"))));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while trying to load predefined data: " + e.getMessage());

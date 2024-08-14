@@ -3,7 +3,6 @@ package dev.markodojkic.softwaredevelopmentsimulation;
 import com.diogonunes.jcolor.Attribute;
 import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import jakarta.annotation.PostConstruct;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -16,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.DATE_TIME_FORMATTER;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @MessageEndpoint
 public class DeveloperImpl {
@@ -49,7 +48,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "trivialTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask trivialTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 2), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 2), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on trivial technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -62,7 +61,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "normalTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask normalTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 4), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 4), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on normal technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -75,7 +74,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "minorTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask minorTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 6), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 6), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on minor technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -88,7 +87,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "majorTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask majorTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 8), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 8), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on major technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -101,7 +100,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "criticalTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask criticalTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 10), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 10), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on critical technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -114,7 +113,7 @@ public class DeveloperImpl {
 	@ServiceActivator(inputChannel = "blockerTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask blockerTaskHandler(TechnicalTask technicalTask) {
 		sendToJiraCreatedTaskInfo(technicalTask);
-		Uninterruptibles.sleepUninterruptibly(Utilities.SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 12), TimeUnit.MILLISECONDS);
+		Uninterruptibles.sleepUninterruptibly(SECURE_RANDOM.nextLong(technicalTask.getAssignee().getExperienceCoefficient(), technicalTask.getAssignee().getExperienceCoefficient() * 12), TimeUnit.MILLISECONDS);
 		sendToJiraSetStatusToInProgressInfo(technicalTask);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s started working on blocker technical task %s",
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
@@ -125,13 +124,13 @@ public class DeveloperImpl {
 	}
 
 	private void sendToJiraCreatedTaskInfo(TechnicalTask technicalTask) {
-		Utilities.getIGateways().sendToJiraActivityStream(String.format(CHANGED_THE_ASSIGNEE_TO_FORMAT,
+		getIGateways().sendToJiraActivityStream(String.format(CHANGED_THE_ASSIGNEE_TO_FORMAT,
 				technicalTask.getReporter().getDisplayName(), technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(getArtificialOffsetInSeconds(technicalTask.getCreatedOn()) + 10).format(DATE_TIME_FORMATTER)).concat(String.format(CREATED_TASK_FORMAT,
 				technicalTask.getReporter().getDisplayName(), technicalTask.getId(), technicalTask.getName(), technicalTask.getCreatedOn().plusSeconds(getArtificialOffsetInSeconds(technicalTask.getCreatedOn())).format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
 	}
 
 	private void sendToJiraSetStatusToInProgressInfo(TechnicalTask technicalTask) {
-		Utilities.getIGateways().sendToJiraActivityStream(String.format(CHANGED_STATUS_TO_IN_PROGRESS_FORMAT,
+		getIGateways().sendToJiraActivityStream(String.format(CHANGED_STATUS_TO_IN_PROGRESS_FORMAT,
 				technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", ""));
 	}
 }

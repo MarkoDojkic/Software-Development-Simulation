@@ -76,7 +76,7 @@ public class Utilities {
 				now.format(DateTimeFormatter.ofPattern("HH.mm.ss")));
 	}
 	
-    public void loadPredefinedTasks(List<Epic> predefinedEpics){
+    public static void loadPredefinedTasks(List<Epic> predefinedEpics){
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
 		predefinedEpics.forEach(epic -> jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
             epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get())));
@@ -200,7 +200,7 @@ public class Utilities {
 			Files.createDirectories(parentDirectory.resolve(folderName));
 
 			Files.writeString(parentDirectory.resolve(folderName.concat("/sessionData.json")), objectMapper.writeValueAsString(epicsForSaving));
-			Files.writeString(parentDirectory.resolve(folderName.concat("/developersData.json")), objectMapper.writeValueAsString(DataProvider.getCurrentDevelopmentTeamsSetup()));
+			Files.writeString(parentDirectory.resolve(folderName.concat("/developersData.json")), objectMapper.writeValueAsString(getCurrentDevelopmentTeamsSetup()));
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}

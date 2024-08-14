@@ -13,7 +13,6 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.*;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import dev.markodojkic.softwaredevelopmentsimulation.util.EpicNotDoneException;
 import dev.markodojkic.softwaredevelopmentsimulation.util.UserStoryNotDoneException;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -76,14 +75,14 @@ public class ProjectManagerImpl {
 			return userStory;
 		}).toList());
 
-		Utilities.getIGateways().sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
+		getIGateways().sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
 
 		new Thread(() -> inProgressEpic.send(epicMessage)).start();
 
-		if(Utilities.getTotalEpicsCount() != -1) {
-			Utilities.addEpicForSaving(epic);
-			Utilities.setTotalEpicsCount(Utilities.getTotalEpicsCount() - 1);
-			if(Utilities.getTotalEpicsCount() == 0) Utilities.saveEpics();
+		if(getTotalEpicsCount() != -1) {
+			addEpicForSaving(epic);
+			setTotalEpicsCount(getTotalEpicsCount() - 1);
+			if(getTotalEpicsCount() == 0) saveEpics();
 		}
 
 		return epic.getUserStories();
@@ -118,18 +117,18 @@ public class ProjectManagerImpl {
 	@ServiceActivator(inputChannel = "doneEpics.output")
 	public void printDoneEpic(Message<Epic> epicMessage) {
 		if(epicMessage != null) {
-			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on EPIC: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDone\033[21m\033[24m ◴ %s$",
+			getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on EPIC: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDone\033[21m\033[24m ◴ %s$",
 					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).replaceFirst(".$", "")); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
 			logger.log(Level.INFO, "{0} finished - Current count: {1}", new String[]{epicMessage.getPayload().getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.decrementAndGet())});
 			DataProvider.getAvailableDevelopmentTeamIds().push(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
-			if(IN_PROGRESS_EPICS_COUNT.get() < Utilities.getTotalDevelopmentTeamsPresent()) controlBusInput.send(MessageBuilder.withPayload("@assignEpicFlow.start()").build());
+			if(IN_PROGRESS_EPICS_COUNT.get() < getTotalDevelopmentTeamsPresent()) controlBusInput.send(MessageBuilder.withPayload("@assignEpicFlow.start()").build());
 		}
 	}
 
 	@ServiceActivator(inputChannel = "doneSprintUserStories.output")
 	public void updateUserStoryStatus(UserStory userStory){
 		if(userStory != null) {
-			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
+			getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on US: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
 					userStory.getAssignee().getDisplayName(), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).concat(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on US: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					userStory.getAssignee().getDisplayName(), Math.abs(Math.ceil((double) (UUID.nameUUIDFromBytes(userStory.getId().getBytes(StandardCharsets.UTF_8)).hashCode() % 1000) / userStory.getAssignee().getExperienceCoefficient())), userStory.getId(), userStory.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", ""));
 
@@ -140,7 +139,7 @@ public class ProjectManagerImpl {
 	@ServiceActivator(inputChannel = "doneTechnicalTasks.output")
 	public void updateTechnicalTaskStatus(TechnicalTask technicalTask){
 		if(technicalTask != null) {
-			Utilities.getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on TASK: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
+			getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on TASK: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDONE\033[21m\033[24m ◴ %s$",
 					technicalTask.getAssignee().getDisplayName(), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER)).concat(String.format("\033[1m%s\033[21m\033[24m logged '%.0fh' on TASK: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					technicalTask.getAssignee().getDisplayName(), Math.ceil((double) Math.abs(ChronoUnit.SECONDS.between(ZonedDateTime.now(), technicalTask.getCreatedOn())) / technicalTask.getAssignee().getExperienceCoefficient()), technicalTask.getId(), technicalTask.getName(), ZonedDateTime.now().format(DATE_TIME_FORMATTER))).replaceFirst(".$", Strings.EMPTY));
 

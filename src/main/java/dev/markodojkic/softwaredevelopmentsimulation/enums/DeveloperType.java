@@ -2,7 +2,7 @@ package dev.markodojkic.softwaredevelopmentsimulation.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.thymeleaf.util.StringUtils;
+import org.springframework.util.StringUtils;
 
 @AllArgsConstructor
 @Getter

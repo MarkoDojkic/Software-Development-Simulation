@@ -485,6 +485,9 @@ function updateCustomEpicsList() {
             "column-gap": "1%"
         });
 
+        const customUserStories = $("#customUserStories")[0];
+        const customTechnicalTasks = $("#customTechnicalTasks")[0];
+
         customData.forEach((value, key) => {
             $("#epicsWrapper").append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;">
                 <strong>ID: ${value.epicId}</strong>
@@ -527,7 +530,7 @@ function updateCustomEpicsList() {
                     setTimeout(() => $("#scroll-container", userStoriesCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
 
                     $(userStoriesCarousel).on('sl-slide-change', event => {
-                        $($("#customUserStories")[0].shadowRoot).find("#title slot").html($($("#customUserStories")[0].shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing Epic: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
+                        $(customUserStories.shadowRoot).find("#title slot").html($(customUserStories.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing Epic: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
                     });
 
                     isUserStoriesEmpty = false;
@@ -543,7 +546,7 @@ function updateCustomEpicsList() {
                         setTimeout(() => $("#scroll-container", technicalTasksCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
 
                         $(technicalTasksCarousel).on('sl-slide-change', event => {
-                            $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html($($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing User story: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
+                            $(customTechnicalTasks.shadowRoot).find("#title slot").html($(customTechnicalTasks.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing User story: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
                         });
 
                         isTechnicalTasksEmpty = false;

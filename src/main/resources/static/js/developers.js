@@ -58,7 +58,7 @@ $(window).on("load", async () => {
 
         $(document).on('click', '.removeDeveloperSlButton', function() {
             const currentRemoveSlButton = $(this);
-            const otherDevelopersFooterSlButtons = currentRemoveSlButton.parent().parent().nextAll('sl-card').find("developerExperienceSlRange slSlButt");
+            const otherDevelopersFooterSlButtons = currentRemoveSlButton.parent().parent().nextAll('sl-card').find(".developerExperienceSlRange slSlButt");
             const developmentTeamIndex = currentRemoveSlButton.data("development-team-index");
             const developerIndex = currentRemoveSlButton.data("developer-index");
 

@@ -6,8 +6,8 @@
         <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
         <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
         <link rel="stylesheet" th:href="@{/css/developers.css}"/>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js" integrity="sha512-iTpkJ1vB9YD5jFwrppJ+0A6NIa8faZcY+iQTmkg4bkOfEw2R1OlLZnxsC43GzqHX92i87xCLULbYnFpBZFbAxA==" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="module" th:src="@{/js/developers.js}"></script>
     </head>
     <body>
@@ -47,7 +47,7 @@
                     </sl-carousel-item>
                 </sl-carousel>
             </sl-tab-panel>
-            <sl-tab-panel name="tabDevelopersCreate"> <!-- NOTE: Using thymeleaf th:field="*{field}" is not compatible with shoelace library-->
+            <sl-tab-panel name="tabDevelopersCreate">
                 <form id="developer-create-form" th:action="@{/api/addDeveloper}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex">
                         <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
@@ -88,7 +88,7 @@
                                 </sl-tree-item>
                             </sl-tree-item>
                         </sl-tree>
-                        <input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" required/>
+                        <sl-input type="number" id="selectedDevelopmentTeamIndex" name="selectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" required></sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
@@ -100,7 +100,7 @@
             </sl-tab-panel>
             <sl-tab-panel name="tabDevelopersEdit"></sl-tab-panel>
             <sl-tab-panel name="tabDevelopersRecreate">
-                <form id="developersRecreateForm" th:action="@{/api/recreateDevelopmentTeams}" th:method="PUT" modelAttribute="parameters" style="text-align: -webkit-center;">
+                <form id="developersRecreateForm" th:action="@{/api/recreateDevelopmentTeams}" th:method="PUT" style="text-align: -webkit-center;">
                     <sl-input class="labelOnLeftModification" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" value="45" size="medium" help-text="Default value is 45%" min="0" max="100" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="percent" slot="suffix"></sl-icon>
                     </sl-input>
@@ -177,12 +177,13 @@
                         </sl-tree-item>
                     </sl-tree-item>
                 </sl-tree>
-                <input type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" th:value="${developmentTeamIndex}" required/>
-                <input type="text" th:field="*{id}" style="opacity: 0;" readonly/>
-                <input type="text" th:field="*{placeOfBirth}" style="opacity: 0;" readonly/>
-                <input type="text" th:field="*{yugoslavianUMCN}" style="opacity: 0;" readonly/>
-                <input type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
-                <input type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
+                <!-- NOTE: Using thymeleaf field is not compatible with shoelace library -->
+                <input aria-label="" type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" th:value="${developmentTeamIndex}" required/>
+                <input aria-label="" type="text" th:field="*{id}" style="opacity: 0;" readonly/>
+                <input aria-label="" type="text" th:field="*{placeOfBirth}" style="opacity: 0;" readonly/>
+                <input aria-label="" type="text" th:field="*{yugoslavianUMCN}" style="opacity: 0;" readonly/>
+                <input aria-label="" type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
+                <input aria-label="" type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
             </div>
             <sl-divider class="horizontalDivider"></sl-divider>
             <div style="display: inline-flex">
