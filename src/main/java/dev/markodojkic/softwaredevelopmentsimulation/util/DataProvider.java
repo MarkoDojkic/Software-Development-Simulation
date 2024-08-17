@@ -27,7 +27,7 @@ public class DataProvider {
 	@Getter
 	static List<List<Developer>> currentDevelopmentTeamsSetup = Collections.emptyList();
 	@Getter
-	static Deque<Integer> availableDevelopmentTeamIds = new ArrayDeque<>();
+	static LinkedList<Integer> availableDevelopmentTeamIds = new LinkedList<>();
 
 	static final String PLACE_OF_BIRTH_MAPS_DEFAULT_VALUE = "Unknown";
 	static NavigableMap<Integer, String> countryMap;
@@ -59,11 +59,11 @@ public class DataProvider {
 	public static void updateDevelopmentTeamsSetup(DevelopmentTeamCreationParameters parameters){
 		if(!parameters.isRetainOld()) currentDevelopmentTeamsSetup = Collections.emptyList();
 		currentDevelopmentTeamsSetup = Stream.concat(currentDevelopmentTeamsSetup.stream(), Lists.partition(Stream.generate(() -> {
-			boolean isFemale = SECURE_RANDOM.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
-			return new Developer((isFemale ? LOREM.getNameFemale() : LOREM.getNameMale()), Strings.EMPTY, Arrays.stream(DeveloperType.values()).skip(SECURE_RANDOM.nextInt(1, DeveloperType.values().length)).findAny().orElse(DeveloperType.INTERN_DEVELOPER), isFemale, SECURE_RANDOM.nextLong(1, 10));
-	}).limit(SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
-		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
-	} //Generate between <min - default 30> and <max - default 100> developers ('Developer' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
+				boolean isFemale = SECURE_RANDOM.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
+				return new Developer((isFemale ? LOREM.getNameFemale() : LOREM.getNameMale()), Strings.EMPTY, Arrays.stream(DeveloperType.values()).skip(SECURE_RANDOM.nextInt(1, DeveloperType.values().length)).findAny().orElse(DeveloperType.INTERN_DEVELOPER), isFemale, SECURE_RANDOM.nextLong(10));
+		}).limit(SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
+			availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
+		} //Generate between <min - default 30> and <max - default 100> developers ('Developer' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
 
 	public static void addDeveloper(int developmentTeamIndex, Developer developer){
 		List<Developer> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
