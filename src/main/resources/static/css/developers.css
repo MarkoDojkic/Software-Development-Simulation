@@ -68,19 +68,19 @@ sl-tab-group::part(nav) {
 #maleGenderSlRadio::part(button button--checked) {
     background-color: rgba(135, 206, 235, 1);
     border-color: rgba(135, 206, 235, 1);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #maleGenderSlRadio::part(button):hover, #maleGenderSlRadio::part(button button--checked):hover {
     background-color: rgba(135, 206, 235, 0.3);
     border-color: rgba(135, 206, 235, 0.3);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #maleGenderSlRadio::part(button):active, #maleGenderSlRadio::part(button button--checked):active {
     background-color: rgba(135, 206, 235, 0.6);
     border-color: rgba(135, 206, 235, 0.6);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #femaleGenderSlRadio::part(button) {
@@ -92,19 +92,19 @@ sl-tab-group::part(nav) {
 #femaleGenderSlRadio::part(button button--checked) {
     background-color: rgba(255, 105, 180, 1);
     border-color: rgba(255, 105, 180, 1);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #femaleGenderSlRadio::part(button):hover, #femaleGenderSlRadio::part(button button--checked):hover {
     background-color: rgba(255, 105, 180, 0.6);
     border-color: rgba(255, 105, 180, 0.6);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #femaleGenderSlRadio::part(button):active, #femaleGenderSlRadio::part(button button--checked):active {
     background-color: rgba(255, 105, 180, 0.8);
     border-color: rgba(255, 105, 180, 0.8);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 span + sl-icon[name='gender-male'], span + sl-icon[name='gender-female'] {

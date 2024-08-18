@@ -3,6 +3,34 @@ import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/compone
 import {ansi2html_string} from './ansi2html.js';
 
 $(window).on("load", async () => {
+    //Theme switch
+
+    const themeLightLink = $('#theme-light');
+    const themeDarkLink = $('#theme-dark');
+    const flatpickrLight = $('#flatpickr-light');
+    const flatpickrDark = $('#flatpickr-dark');
+    const themeSwitch = $('#theme-switch');
+
+    themeSwitch.on('sl-change', (event) => {
+        if (event.target.checked) {
+            // Switch to dark theme
+            $('html').addClass('sl-theme-dark');
+            themeDarkLink.removeAttr('disabled');
+            themeLightLink.attr('disabled', 'disabled');
+            flatpickrDark.removeAttr('disabled');
+            flatpickrLight.attr('disabled', 'disabled');
+        } else {
+            // Switch to light theme
+            $('html').removeClass('sl-theme-dark');
+            themeDarkLink.attr('disabled', 'disabled');
+            themeLightLink.removeAttr('disabled');
+            flatpickrDark.attr('disabled', 'disabled');
+            flatpickrLight.removeAttr('disabled');
+        }
+    });
+
+    setTimeout(() => themeSwitch.click(), 1);
+
     flatpickr("sl-input[name='epicCreatedOn']", {
         enableTime: true,
         enableSeconds: true,
@@ -102,14 +130,14 @@ $(window).on("load", async () => {
     });
 
     $("#simulatePredefinedSlButton").on("click", async () => {
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        if (customData.length > 0)
+        if (currentPredefinedData.length > 0)
             $.ajax({
                 type: "POST",
                 url: "/api/applicationFlowPredefined",
                 contentType: 'application/json',
-                data: JSON.stringify(customData),
+                data: JSON.stringify(currentPredefinedData),
                 success: response => notifySuccess(response),
                 error: response => notifyError(response.responseText)
             });
@@ -167,7 +195,10 @@ $(window).on("load", async () => {
         epicReporter.prop("disabled", false);
         epicAssignee.prop("disabled", false);
         epicReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+        epicReporter.prepend(`<sl-option value="-1" selected="true">Марко Дојкић (8.43)</sl-option>`);
         epicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+        epicReporter.val(epicReporter.val() || '-1');
+        epicAssignee.val(epicAssignee.val() || '0');
     });
 
     $(document).on("sl-change", "#editSelectedEpicDevelopmentTeam", (event) => {
@@ -177,6 +208,7 @@ $(window).on("load", async () => {
         editEpicReporter.prop("disabled", false);
         editEpicAssignee.prop("disabled", false);
         editEpicReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
+        editEpicReporter.prepend(`<sl-option value="-1">Марко Дојкић (8.43)</sl-option>`);
         editEpicAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value)).html());
     });
 
@@ -184,58 +216,69 @@ $(window).on("load", async () => {
     const userStoryAssignee = $("sl-select[name='userStoryAssignee']");
 
     $("sl-select[name='selectedEpic']").on("sl-change", (event) => {
+        const eventValues = event.target.value.split("$");
+
         userStoryReporter.prop("disabled", false);
         userStoryAssignee.prop("disabled", false);
-        userStoryReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
-        userStoryAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+        userStoryReporter.html($("#developmentTeamsListOfDevelopers #".concat(eventValues[1])).html());
+        userStoryAssignee.html($("#developmentTeamsListOfDevelopers #".concat(eventValues[1])).html());
+        userStoryReporter.val(eventValues[2]); //Defaults to epic assignee
+        userStoryAssignee.val(userStoryAssignee.val() || '0');
     });
 
     const technicalTaskReporter = $("sl-select[name='technicalTaskReporter']");
     const technicalTaskAssignee = $("sl-select[name='technicalTaskAssignee']");
 
     $("sl-select[name='selectedUserStory']").on("sl-change", (event) => {
+        const eventValues = event.target.value.split("$");
+
         technicalTaskReporter.prop("disabled", false);
         technicalTaskAssignee.prop("disabled", false);
-        technicalTaskReporter.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
-        technicalTaskAssignee.html($("#developmentTeamsListOfDevelopers #".concat(event.target.value.split("$")[1])).html());
+        technicalTaskReporter.html($("#developmentTeamsListOfDevelopers #".concat(eventValues[2])).html());
+        technicalTaskAssignee.html($("#developmentTeamsListOfDevelopers #".concat(eventValues[2])).html());
+        technicalTaskReporter.val(eventValues[3]); //Defaults to user story assignee
+        technicalTaskAssignee.val(technicalTaskAssignee.val() || '0');
     });
 
     $("#customEpicsCreateForm").on("submit", event => {
         event.preventDefault();
 
         const form = $(event.target);
-        const formData = {"userStories": []};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+        if(form.checkValidity()){
+            const formData = {"userStories": []};
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        customData.push(formData)
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            currentPredefinedData.push(formData)
 
-        notifySuccess("New epic added. Total epics present: " + customData.length);
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        form.trigger('reset');
+            notifySuccess("New epic added. Total epics present: " + currentPredefinedData.length);
 
-        updateCustomEpicsList();
+            form.trigger('reset');
+
+            updateCustomEpicsList();
+        }
     });
 
     updateCustomEpicsList();
 
     $(document).on("click", ".editCustomEpicSlButton", async (event) => { //Needed for dynamically created elements
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        const editingEpic = customData[event.target.value];
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+        const editingEpic = currentPredefinedData[event.target.value];
 
         $("sl-tab-panel[name='customEpicsEditTab']").html(`<form action="#" id="customEpicsEditForm" method="POST" style="text-align: -webkit-center;">
                 <div style="display: inline-flex;">
-                    <sl-input id="editEpicId" help-text=" " maxlength="16" name="epicId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                    <sl-input id="editEpicId" help-text=" " maxlength="16" name="epicId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicId}" required size="medium" type="text"></sl-input>
                     <sl-divider vertical></sl-divider>
-                    <sl-input id="editEpicName" maxlength="64" name="epicName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                    <sl-input id="editEpicName" maxlength="64" name="epicName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingEpic.epicName}" required size="medium" type="text"></sl-input>
                     <sl-divider vertical></sl-divider>
-                    <sl-select id="editEpicPriority" name="epicPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingEpic.epicPriority}">
+                    <sl-select id="editEpicPriority" name="epicPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required value="${editingEpic.epicPriority}">
                         ${$("#priorityOptions").html()}
                     </sl-select>
                 </div>
@@ -290,33 +333,36 @@ $(window).on("load", async () => {
         event.preventDefault();
 
         const form = $(event.target);
-        const formData = {};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+        if(form.checkValidity()) {
+            const formData = {};
 
-        formData["userStories"] = JSON.parse(formData["userStories"]);
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        formData.userStories.forEach(userStory => {
-            userStory.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam;
-            userStory.technicalTasks.forEach(technicalTask => technicalTask.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam);
-        });
+            formData["userStories"] = JSON.parse(formData["userStories"]);
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+            formData.userStories.forEach(userStory => {
+                userStory.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam;
+                userStory.technicalTasks.forEach(technicalTask => technicalTask.selectedEpicDevelopmentTeam = formData.selectedEpicDevelopmentTeam);
+            });
 
-        customData[$(event.target).find(':submit').val()] = formData;
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            currentPredefinedData[$(event.target).find(':submit').val()] = formData;
 
-        updateCustomEpicsList();
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        const viewTab = $("sl-tab[panel='customEpicsViewTab']");
-        window.history.replaceState(null, null, "/");
-        viewTab.prop("disabled", false);
-        $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
-        $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customEpics sl-tab-group")[0].show("customEpicsViewTab"));
+            updateCustomEpicsList();
+
+            const viewTab = $("sl-tab[panel='customEpicsViewTab']");
+            window.history.replaceState(null, null, "/");
+            viewTab.prop("disabled", false);
+            $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
+            $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
+            await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customEpics sl-tab-group")[0].show("customEpicsViewTab"));
+        }
     });
 
     $(document).on("click", "#editCustomEpicResetSlButton", async () => {
@@ -329,9 +375,9 @@ $(window).on("load", async () => {
     });
 
     $(document).on("click", ".removeCustomEpicSlButton", async (event) => {
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        customData.splice(event.target.value, 1);
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+        currentPredefinedData.splice(event.target.value, 1);
+        sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
         updateCustomEpicsList();
     });
@@ -340,42 +386,45 @@ $(window).on("load", async () => {
         event.preventDefault();
 
         const form = $(event.target);
-        const formData = {"technicalTasks": []};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+        if(form.checkValidity()) {
+            const formData = {"technicalTasks": []};
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        const selectedEpic = formData.selectedEpic;
-        delete formData.selectedEpic;
-        formData.selectedEpicIndex = selectedEpic.split("$")[0];
-        formData.selectedEpicDevelopmentTeam = selectedEpic.split("$")[1];
-        const epic = customData[formData.selectedEpicIndex];
-        epic.userStories.push(formData)
-        customData[formData.selectedEpicIndex] = epic;
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        notifySuccess("New user story added to epic: " + epic.epicName);
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+            const selectedEpic = formData.selectedEpic;
+            delete formData.selectedEpic;
+            formData.selectedEpicIndex = selectedEpic.split("$")[0];
+            formData.selectedEpicDevelopmentTeam = selectedEpic.split("$")[1];
+            const epic = currentPredefinedData[formData.selectedEpicIndex];
+            epic.userStories.push(formData)
+            currentPredefinedData[formData.selectedEpicIndex] = epic;
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        form.trigger('reset');
+            notifySuccess("New user story added to epic: " + epic.epicName);
 
-        updateCustomEpicsList();
+            form.trigger('reset');
+
+            updateCustomEpicsList();
+        }
     });
 
     $(document).on("click", ".editCustomUserStorySlButton", async (event) => {
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        let buttonValues = event.target.value.split("$");
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+        let eventValues = event.target.value.split("$");
 
-        const editingUserStory = customData[buttonValues[0]].userStories[buttonValues[1]];
+        const editingUserStory = currentPredefinedData[eventValues[0]].userStories[eventValues[1]];
 
         $("sl-tab-panel[name='customUserStoriesEditTab']").html(`<form action="#" id="customUserStoriesEditForm" method="POST" style="text-align: -webkit-center;">
             <div style="display: inline-flex;">
-                <sl-input id="editUserStoryId" help-text=" " maxlength="16" name="userStoryId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                <sl-input id="editUserStoryId" help-text=" " maxlength="16" name="userStoryId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryId}" required size="medium" type="text"></sl-input>
                 <sl-divider vertical></sl-divider>
-                <sl-input id="editUserStoryName" maxlength="64" name="userStoryName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                <sl-input id="editUserStoryName" maxlength="64" name="userStoryName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingUserStory.userStoryName}" required size="medium" type="text"></sl-input>
                 <sl-divider vertical></sl-divider>
-                <sl-select id="editUserStoryPriority" name="userStoryPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingUserStory.userStoryPriority}">
+                <sl-select id="editUserStoryPriority" name="userStoryPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required value="${editingUserStory.userStoryPriority}">
                     ${$("#priorityOptions").html()}
                 </sl-select>
             </div>
@@ -434,35 +483,38 @@ $(window).on("load", async () => {
 
     $(document).on("submit", "#customUserStoriesEditForm", async (event) => {
         event.preventDefault();
-        let buttonValues = $(event.target).find(':submit').val().split("$");
+
+        let eventValues = $(event.target).find(':submit').val().split("$");
 
         const form = $(event.target);
-        const formData = {};
+        if(form.checkValidity()) {
+            const formData = {};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        formData["selectedEpicIndex"] = buttonValues[0];
-        formData["technicalTasks"] = JSON.parse(formData["technicalTasks"]);
+            formData["selectedEpicIndex"] = eventValues[0];
+            formData["technicalTasks"] = JSON.parse(formData["technicalTasks"]);
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        const epic = customData[buttonValues[0]];
-        epic.userStories[buttonValues[1]] = formData;
+            const epic = currentPredefinedData[eventValues[0]];
+            epic.userStories[eventValues[1]] = formData;
 
-        customData[buttonValues[0]] = epic;
+            currentPredefinedData[eventValues[0]] = epic;
 
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        updateCustomEpicsList();
+            updateCustomEpicsList();
 
-        const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
-        window.history.replaceState(null, null, "/");
-        viewTab.prop("disabled", false);
-        $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
-        $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab"));
+            const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
+            window.history.replaceState(null, null, "/");
+            viewTab.prop("disabled", false);
+            $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
+            $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
+            await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab"));
+        }
     });
 
     $(document).on("click", "#editCustomUserStoryResetSlButton", async () => {
@@ -475,14 +527,14 @@ $(window).on("load", async () => {
     });
 
     $(document).on("click", ".removeCustomUserStorySlButton", async (event) => {
-        let customData = JSON.parse(sessionStorage.getItem("customData"));
+        let currentPredefinedData = JSON.parse(sessionStorage.getItem("currentPredefinedData"));
 
-        let buttonValues = event.target.value.split("$");
+        let eventValues = event.target.value.split("$");
 
-        let currentEpic = customData[buttonValues[0]];
-        currentEpic.userStories.splice(buttonValues[1], 1);
-        customData[buttonValues[0]] = currentEpic;
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+        let currentEpic = currentPredefinedData[eventValues[0]];
+        currentEpic.userStories.splice(eventValues[1], 1);
+        currentPredefinedData[eventValues[0]] = currentEpic;
+        sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
         updateCustomEpicsList();
     });
@@ -491,45 +543,48 @@ $(window).on("load", async () => {
         event.preventDefault();
 
         const form = $(event.target);
-        const formData = {};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+        if(form.checkValidity()) {
+            const formData = {};
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        const selectedUserStory = formData.selectedUserStory;
-        delete formData.selectedUserStory;
-        formData.selectedEpicIndex = selectedUserStory.split("$")[0].split(">")[0];
-        formData.selectedUserStoryIndex = selectedUserStory.split("$")[0].split(">")[1];
-        formData.selectedEpicDevelopmentTeam = selectedUserStory.split("$")[1];
-        const epic = customData[formData.selectedEpicIndex];
-        const userStory = epic.userStories[formData.selectedUserStoryIndex];
-        userStory.technicalTasks.push(formData);
-        epic.userStories[formData.selectedUserStoryIndex] = userStory;
-        customData[formData.selectedEpicIndex] = epic;
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        notifySuccess("New technical task added to user story: " + userStory.userStoryName);
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+            const selectedUserStoryValues = formData.selectedUserStory.split("$");
+            delete formData.selectedUserStory;
+            formData.selectedEpicIndex = selectedUserStoryValues[0];
+            formData.selectedUserStoryIndex = selectedUserStoryValues[1];
+            formData.selectedEpicDevelopmentTeam = selectedUserStoryValues[2];
+            const epic = currentPredefinedData[formData.selectedEpicIndex];
+            const userStory = epic.userStories[formData.selectedUserStoryIndex];
+            userStory.technicalTasks.push(formData);
+            epic.userStories[formData.selectedUserStoryIndex] = userStory;
+            currentPredefinedData[formData.selectedEpicIndex] = epic;
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        form.trigger('reset');
+            notifySuccess("New technical task added to user story: " + userStory.userStoryName);
 
-        updateCustomEpicsList();
+            form.trigger('reset');
+
+            updateCustomEpicsList();
+        }
     });
 
     $(document).on("click", ".editCustomTechnicalTaskSlButton", async (event) => {
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
-        let buttonValues = event.target.value.split("$");
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
+        let eventValues = event.target.value.split("$");
 
-        const editingTechnicalTask = customData[buttonValues[0]].userStories[buttonValues[1]].technicalTasks[buttonValues[2]];
+        const editingTechnicalTask = currentPredefinedData[eventValues[0]].userStories[eventValues[1]].technicalTasks[eventValues[2]];
 
         $("sl-tab-panel[name='customTechnicalTasksEditTab']").html(`<form action="#" id="customTechnicalTasksEditForm" method="POST" style="text-align: -webkit-center;">
             <div style="display: inline-flex;">
-                <sl-input id="editTechnicalTaskId" help-text=" " maxlength="16" name="technicalTaskId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskId}" required size="medium" style="max-width: 15%" type="text"></sl-input>
+                <sl-input id="editTechnicalTaskId" help-text=" " maxlength="16" name="technicalTaskId" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskId}" required size="medium" type="text"></sl-input>
                 <sl-divider vertical></sl-divider>
-                <sl-input id="editTechnicalTaskName" maxlength="64" name="technicalTaskName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskName}" required size="medium" style="min-width: 40%" type="text"></sl-input>
+                <sl-input id="editTechnicalTaskName" maxlength="64" name="technicalTaskName" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161\\-0-9\\s]+$" pill value="${editingTechnicalTask.technicalTaskName}" required type="text"></sl-input>
                 <sl-divider vertical></sl-divider>
-                <sl-select id="editTechnicalTaskPriority" name="technicalTaskPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required style="min-width: 25%;" value="${editingTechnicalTask.technicalTaskPriority}">
+                <sl-select id="editTechnicalTaskPriority" name="technicalTaskPriority" pill placeholder="Select priority (ex. Trivial)" placement="bottom" required value="${editingTechnicalTask.technicalTaskPriority}">
                     ${$("#priorityOptions").html()}
                 </sl-select>
             </div>
@@ -588,37 +643,40 @@ $(window).on("load", async () => {
     $(document).on("submit", "#customTechnicalTasksEditForm", async (event) => {
         event.preventDefault();
 
-        let buttonValues = $(event.target).find(':submit').val().split("$");
+        let eventValues = $(event.target).find(':submit').val().split("$");
 
         const form = $(event.target);
-        const formData = {};
 
-        form.find('sl-input, sl-select, sl-textarea').each(function () {
-            formData[this.name] = this.value;
-        });
+        if(form.checkValidity()) {
+            const formData = {};
 
-        formData["selectedEpicIndex"] = buttonValues[0];
-        formData["selectedUserStoryIndex"] = buttonValues[1];
+            form.find('sl-input, sl-select, sl-textarea').each(function () {
+                formData[this.name] = this.value;
+            });
 
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+            formData["selectedEpicIndex"] = eventValues[0];
+            formData["selectedUserStoryIndex"] = eventValues[1];
 
-        const epic = customData[buttonValues[0]];
-        const userStory = epic.userStories[buttonValues[1]];
-        userStory.technicalTasks[buttonValues[2]] = formData;
+            let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        epic.userStories[buttonValues[1]] = userStory;
-        customData[buttonValues[0]] = epic;
+            const epic = currentPredefinedData[eventValues[0]];
+            const userStory = epic.userStories[eventValues[1]];
+            userStory.technicalTasks[eventValues[2]] = formData;
 
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+            epic.userStories[eventValues[1]] = userStory;
+            currentPredefinedData[eventValues[0]] = epic;
 
-        updateCustomEpicsList();
+            sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
-        const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
-        window.history.replaceState(null, null, "/");
-        viewTab.prop("disabled", false);
-        $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
-        $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab"));
+            updateCustomEpicsList();
+
+            const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
+            window.history.replaceState(null, null, "/");
+            viewTab.prop("disabled", false);
+            $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
+            $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
+            await Promise.all([!viewTab.prop("disabled")]).then(() => $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab"));
+        }
     });
 
     $(document).on("click", "#editCustomTechnicalTaskResetSlButton", async () => {
@@ -631,30 +689,30 @@ $(window).on("load", async () => {
     });
 
     $(document).on("click", ".removeCustomTechnicalTaskSlButton", async (event) => {
-        let customData = JSON.parse(sessionStorage.getItem("customData"));
+        let currentPredefinedData = JSON.parse(sessionStorage.getItem("currentPredefinedData"));
 
         const buttonValues = event.target.value.split("$");
         
-        let currentEpic = customData[buttonValues[0]];
+        let currentEpic = currentPredefinedData[buttonValues[0]];
         let currentUserStory = currentEpic.userStories[buttonValues[1]];
         currentUserStory.technicalTasks.splice(buttonValues[2], 1);
         currentEpic.userStories[buttonValues[1]] = currentUserStory;
-        customData[buttonValues[0]] = currentEpic;
-        sessionStorage.setItem("customData", JSON.stringify(customData));
+        currentPredefinedData[buttonValues[0]] = currentEpic;
+        sessionStorage.setItem("currentPredefinedData", JSON.stringify(currentPredefinedData));
 
         updateCustomEpicsList();
     });
 
     $("#saveToSessionFileSlButton").on("click", () => {
-        let customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+        let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
-        if (customData.length === 0) notifyWarning("You haven`t added any epic, user story nor technical task. No data provided for saving!")
+        if (currentPredefinedData.length === 0) notifyWarning("You haven`t added any epic, user story nor technical task. No data provided for saving!")
         else {
             $.ajax({
                 type: "POST",
                 url: "/api/saveSessionData",
                 contentType: 'application/json',
-                data: JSON.stringify(customData),
+                data: JSON.stringify(currentPredefinedData),
                 success: response => {
                     notifySuccess(response);
                 }
@@ -675,7 +733,7 @@ $(window).on("load", async () => {
 
                 $("#predefinedDataSelection > div").html(`
                         <form id="predefinedDataSelectionForm" method="POST" style="text-align: -webkit-center;">
-                            <sl-radio-group label="Select predefined data folder" name="predefinedDataSelection">
+                            <sl-radio-group name="predefinedDataSelection" required>
                               ${slRadioOptions}
                             </sl-radio-group>
                             <sl-divider></sl-divider>
@@ -699,7 +757,7 @@ $(window).on("load", async () => {
             type: "GET",
                 url: "/api/loadSessionData?folder=".concat($("sl-radio-group[name='predefinedDataSelection']")[0].value),
             success: response => {
-                sessionStorage.setItem("customData", response);
+                sessionStorage.setItem("currentPredefinedData", response);
                 updateCustomEpicsList();
                 $('#predefinedDataSelection')[0].hide();
                 notifySuccess("Loaded predefined session data and respective developers team setup");
@@ -812,14 +870,14 @@ function sanitizeErrorData(data) {
 }
 
 function updateCustomEpicsList() {
-    const customData = sessionStorage.getItem("customData") ? JSON.parse(sessionStorage.getItem("customData")) : [];
+    const currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
     const epicsViewTab = $("sl-tab-panel[name='customEpicsViewTab']");
 
     let isUserStoriesEmpty = true;
     let isTechnicalTasksEmpty = true;
     let technicalTaskList = [];
 
-    if (customData == null || customData.length === 0) epicsViewTab.html(`<p>There aren't any epics created in this session</p>`);
+    if (currentPredefinedData == null || currentPredefinedData.length === 0) epicsViewTab.html(`<p>There aren't any epics created in this session</p>`);
     else {
         epicsViewTab.html(`<div id="epicsWrapper"></div>`);
 
@@ -836,16 +894,16 @@ function updateCustomEpicsList() {
         const customUserStories = $("#customUserStories")[0];
         const customTechnicalTasks = $("#customTechnicalTasks")[0];
 
-        customData.forEach((value, key) => {
-            $("#epicsWrapper").append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;">
+        currentPredefinedData.forEach((value, key) => {
+            $("#epicsWrapper").append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;" xmlns="http://www.w3.org/1999/html">
                 <strong>ID: ${value.epicId}</strong>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
                 <span>Name: <i>${value.epicName}</i></span>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <br>
                 <span>Count of user stories: ${value.userStories.length}</span>
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.epicPriority).html()}</span>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <br>
                 <span>Created on: ${value.epicCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
@@ -866,7 +924,7 @@ function updateCustomEpicsList() {
                 </div>
             </sl-card>`);
 
-            epicSlSelect.append(`<sl-option value="${key + "$" + value.selectedEpicDevelopmentTeam}">${value.epicName}</sl-option>`);
+            epicSlSelect.append(`<sl-option value="${key + "$" + value.selectedEpicDevelopmentTeam + "$" + value.epicAssignee}">${value.epicName}</sl-option>`);
 
             value.userStories.forEach(userStory => {
                 if(isUserStoriesEmpty){
@@ -926,19 +984,17 @@ function updateCustomUserStoriesList(relatedEpicId, userStories) {
 
     userStorySlSelect.empty();
 
-    console.log(userStories);
-
     userStories.forEach((value, key) => {
         $("#userStoriesOf" + relatedEpicId).append(`
             <sl-card id="${key}" style="height:100%; --border-color: rgb(130, 244, 131, 1)">
                 <strong>ID: ${value.userStoryId}</strong>
                 <sl-divider style="--spacing: 2px" vertical></sl-divider>
                 <span>Name: <i>${value.userStoryName}</i></span>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <br>
                 <span>Count of technical tasks: ${value.technicalTasks.length}</span>
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.userStoryPriority).html()}</span>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <br>
                 <span>Created on: ${value.userStoryCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
@@ -960,7 +1016,7 @@ function updateCustomUserStoriesList(relatedEpicId, userStories) {
             </sl-card>
         `);
 
-        userStorySlSelect.append(`<sl-option value="${value.selectedEpicIndex + ">" + key + "$" + value.selectedEpicDevelopmentTeam}">${value.userStoryName}</sl-option>`);
+        userStorySlSelect.append(`<sl-option value="${value.selectedEpicIndex + "$" + key + "$" + value.selectedEpicDevelopmentTeam + "$" + value.userStoryAssignee}">${value.userStoryName}</sl-option>`);
     });
 }
 
@@ -979,7 +1035,7 @@ function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
                 <span>Name: <i>${value.technicalTaskName}</i></span>
                 <sl-divider></sl-divider>
                 <span>Priority: ${$("#priorityBadges #" + value.technicalTaskPriority).html()}</span>
-                <sl-divider style="--spacing: 2px" vertical></sl-divider>
+                <br>
                 <span>Created on: ${value.technicalTaskCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">

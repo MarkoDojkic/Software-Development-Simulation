@@ -30,7 +30,7 @@
 
 .ansi_console_snippet {
     background-color: black;
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 .ansi_fg_black {
@@ -62,7 +62,7 @@
 }
 
 .ansi_fg_white {
-    color: white
+    color: var(--sl-input-label-color)
 }
 
 .ansi_bg_black {
@@ -94,7 +94,7 @@
 }
 
 .ansi_bg_white {
-    background-color: white
+    background-color: var(--sl-input-label-color)
 }
 
 .ansi_fg_68m {
@@ -130,7 +130,7 @@
 }
 
 sl-select.labelOnLeftModification::part(form-control-input) {
-    width: 160px;
+    width: 210px;
     margin-left: 5px;
 }
 
@@ -196,13 +196,13 @@ sl-select.labelOnLeftModification::part(form-control-input) {
 #manageCustomEpicsSlButton:hover:not([disabled])::part(base) {
     background-color: rgba(150, 2, 253, 0.3);
     border-color: rgba(150, 2, 253, 0.3);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomEpicsSlButton:active:not([disabled])::part(base) {
     background-color: rgba(150, 2, 253, 0.6);
     border-color: rgb(150, 2, 253, 0.6);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomUserStoriesSlButton::part(base) {
@@ -214,35 +214,35 @@ sl-select.labelOnLeftModification::part(form-control-input) {
 #manageCustomUserStoriesSlButton:hover:not([disabled])::part(base) {
     background-color: rgba(130, 244, 131, 0.3);
     border-color: rgba(130, 244, 131, 0.3);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomUserStoriesSlButton:active:not([disabled])::part(base) {
     background-color: rgba(130, 244, 131, 0.6);
     border-color: rgba(130, 244, 131, 0.6);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomTechnicalTasksSlButton::part(base) {
     background: var(--sl-color-neutral-0);
     border-color: rgba(124, 124, 124, 1);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomTechnicalTasksSlButton:hover:not([disabled])::part(base) {
     background-color: rgba(124, 124, 124, 0.3);
     border-color: rgba(124, 124, 124, 0.3);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #manageCustomTechnicalTasksSlButton:active:not([disabled])::part(base) {
     background-color: rgba(124, 124, 124, 0.6);
     border-color: rgba(124, 124, 124, 0.6);
-    color: white;
+    color: var(--sl-input-label-color);
 }
 
 #informationLogs {
-    background-color: rgb(30 31 34);
+    background-color: var(--sl-color-neutral-0);
     width: 49vw;
     grid-auto-flow: row;
     grid-template-columns: 1fr 1fr;
@@ -253,7 +253,7 @@ sl-select.labelOnLeftModification::part(form-control-input) {
 }
 
 #errorLogs {
-    background-color: rgb(30 31 34);
+    background-color: var(--sl-color-neutral-0);
     width: 48vw;
     grid-auto-flow: row;
     grid-template-columns: 1fr 1fr;
@@ -271,4 +271,10 @@ span + sl-icon[name='gender-male'], span + sl-icon[name='gender-female'] {
 
 sl-tab-panel[name='customEpicsViewTab'], sl-carousel, .tab-group__body {
     height: calc(100vh - 145px);
+}
+
+sl-radio-group[name='predefinedDataSelection']::part(form-control-input) {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
 }

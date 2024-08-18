@@ -3,15 +3,23 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>Software development simulator - Developers page</title>
-        <link rel="stylesheet" media="(prefers-color-scheme:light)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
-        <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" onload="document.documentElement.classList.add('sl-theme-dark');"/>
+        <link id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css"/>
+        <link id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/dark.css"/>
         <link rel="stylesheet" th:href="@{/css/developers.css}"/>
         <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js" integrity="sha512-iTpkJ1vB9YD5jFwrppJ+0A6NIa8faZcY+iQTmkg4bkOfEw2R1OlLZnxsC43GzqHX92i87xCLULbYnFpBZFbAxA==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="module" th:src="@{/js/developers.js}"></script>
     </head>
     <body>
-        <span style="position: absolute;"><a href="/" style="text-decoration: none; color: white;"><strong>Software development simulator™</strong><br/><i>Developed by Ⓒ Marko Dojkić 2024</i></a></span>
+        <div id="titleContainer" style="position: absolute; text-align: center;">
+            <a href="/" style="text-decoration: none; color: var(--sl-input-label-color);">
+                <strong>Software development simulator™</strong>
+                <br/>
+                <i>Developed by Ⓒ Marko Dojkić 2024</i>
+            </a>
+            <sl-divider style="--spacing: 2px" vertical></sl-divider>
+            <sl-switch id="theme-switch" size="small">Light/Dark theme</sl-switch>
+        </div>
         <sl-tab-group>
             <sl-tab slot="nav" panel="tabDevelopersView">Developers - View</sl-tab>
             <sl-tab slot="nav" panel="tabDevelopersCreate">Developers - Create</sl-tab>
@@ -20,7 +28,7 @@
 
             <sl-tab-panel name="tabDevelopersView">
                 <p th:if="${ #lists.isEmpty(developmentTeams) }">No developers found</p>
-                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" style="height: max(335px, calc(100vh - 100px))" pagination>
+                <sl-carousel th:if="${ not#lists.isEmpty(developmentTeams) }" style="height: max(335px, calc(100vh - 100px))" pagination orientation="horizontal">
                     <sl-carousel-item th:each="developmentTeam, developmentTeamIterator : ${developmentTeams}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;">
                         <sl-card th:each="developer, developerIterator : ${developmentTeam}" th:style="|height:100%; --border-color: ${!developer.isFemale ? 'skyblue' : 'hotpink'};|">
                             <strong th:text="|ID: ${developer.id}|"></strong><br /><br />
@@ -48,7 +56,7 @@
                 </sl-carousel>
             </sl-tab-panel>
             <sl-tab-panel name="tabDevelopersCreate">
-                <form id="developer-create-form" th:action="@{/api/addDeveloper}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
+                <form id="developer-create-form" th:action="@{/api/insertDeveloper}" th:object="${formDeveloperPlaceholder}" th:method="POST" style="text-align: -webkit-center;">
                     <div style="display: inline-flex">
                         <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
                         <sl-divider vertical></sl-divider>

@@ -1,9 +1,31 @@
 $(window).on("load", async () => {
     await Promise.all([
         customElements.whenDefined("sl-tab-panel"),
-        customElements.whenDefined("sl-carousel"),
+        customElements.whenDefined("sl-carousel")
     ]).then(() => {
         setupResize();
+
+        //Theme switch
+
+        const themeDarkLink = $('#theme-dark');
+        const themeLightLink = $('#theme-light');
+        const themeSwitch = $('#theme-switch');
+
+        themeSwitch.on('sl-change', (event) => {
+            if (event.target.checked) {
+                // Switch to dark theme
+                $('html').addClass('sl-theme-dark');
+                themeDarkLink.removeAttr('disabled');
+                themeLightLink.attr('disabled', 'disabled');
+            } else {
+                // Switch to light theme
+                $('html').removeClass('sl-theme-dark');
+                themeDarkLink.attr('disabled', 'disabled');
+                themeLightLink.removeAttr('disabled');
+            }
+        });
+
+        setTimeout(() => themeSwitch.click(), 1);
 
         $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
 
@@ -65,10 +87,10 @@ $(window).on("load", async () => {
             $.ajax({
                 type: 'DELETE',
                 async: true,
-                url: `/api/removeDeveloper?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
+                url: `/api/deleteDeveloper?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
                 success: function() {
                     if (developerIndex === 0 && otherDevelopersFooterSlButtons.length === 0) { //If is only one remove sl-carousel-item of removed developer's team
-                        currentRemoveSlButton.parent().parent().parent().nextAll('sl-carousel-item').each(function(index, slCarouselItem) {
+                        currentRemoveSlButton.parent().parent().parent().nextAll('div').each(function(index, slCarouselItem) {
                             $(slCarouselItem).children('sl-card').find("div[slot='footer'] sl-button").each(function(index, slButton) {
                                 $(slButton).data("development-team-index", $(slButton).data("development-team-index") - 1);
                             });
@@ -91,9 +113,9 @@ function setupResize() {
     const viewportBreakpointQuery1 = window.matchMedia('(min-width: 2101px)');
     const viewportBreakpointQuery2 = window.matchMedia('(max-width: 2100px)');
     const viewportBreakpointQuery3 = window.matchMedia('(max-width: 1920px)');
-    const viewportBreakpointQuery4 = window.matchMedia('(max-width: 1500px)');
+    const viewportBreakpointQuery4 = window.matchMedia('(max-width: 1600px)');
     const viewportBreakpointQuery5 = window.matchMedia('(max-width: 1100px)');
-    const viewportBreakpointQuery6 = window.matchMedia('(max-width: 700px)');
+    const viewportBreakpointQuery6 = window.matchMedia('(max-width: 980px)');
 
     viewportBreakpointQuery1.addEventListener('change', (event) => layoutChangedCallback1(event.matches));
     viewportBreakpointQuery2.addEventListener('change', (event) => layoutChangedCallback2(event.matches));
@@ -102,22 +124,38 @@ function setupResize() {
     viewportBreakpointQuery5.addEventListener('change', (event) => layoutChangedCallback5(event.matches));
     viewportBreakpointQuery6.addEventListener('change', (event) => layoutChangedCallback6(event.matches));
 
-    const bodySpan = $('body span').first();
-    const bodySpanA = $('body span a').first();
+    const titleContainer = $('#titleContainer');
 
     const callbackDuplicates = () => {
-        bodySpan.css("left", "2vw");
-        bodySpan.css("top", "1.5%");
-        bodySpanA.css("font-size", "var(--sl-font-size-medium)");
-        bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
+        titleContainer.css({
+            "left": "2vw",
+            "top": "1.25%",
+            "font-size": "var(--sl-font-size-medium)"
+        });
+        titleContainer.html(titleContainer.html().replaceAll("&nbsp;","</br>"));
         $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
+        if (titleContainer.next('br').length === 1) {
+            titleContainer.next('br').remove();
+        }
+    }
+
+
+    const callbackDuplicatesSmall = () => {
+        titleContainer.css({
+            "top": "1.25%",
+            "left": "18%",
+        });
+        titleContainer.html(titleContainer.html().replaceAll("<br>","&nbsp;"));
+        $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
+        if (titleContainer.next('br').length === 0) {
+            titleContainer.after('<br/>');
+        }
     }
 
     const layoutChangedCallback1 = (matches) => {
         if (matches) {
             $(':root').css('--numberOfColumns', 6);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         }
     }
 
@@ -125,7 +163,6 @@ function setupResize() {
         if (matches) {
             $(':root').css('--numberOfColumns', 5);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback1(viewportBreakpointQuery1.matches);
     }
 
@@ -133,40 +170,28 @@ function setupResize() {
         if (matches) {
             $(':root').css('--numberOfColumns', 4);
             callbackDuplicates();
-            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
         } else layoutChangedCallback2(viewportBreakpointQuery2.matches);
     }
 
     const layoutChangedCallback4 = (matches) => {
         if (matches) {
             $(':root').css('--numberOfColumns', 3);
-            bodySpan.css("left", "2vw");
-            bodySpan.css("top", "2.5%");
-            bodySpanA.css("font-size", "var(--sl-font-size-small)");
-            bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
-            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
+            callbackDuplicatesSmall();
+            titleContainer.css("left", "27vw");
         } else layoutChangedCallback3(viewportBreakpointQuery3.matches);
     }
 
     const layoutChangedCallback5 = (matches) => {
         if (matches) {
             $(':root').css('--numberOfColumns', 2);
-            bodySpan.css("top", "1.5%");
-            bodySpan.css("left", "30%");
-            bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");
-            bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
-            $("#developer-create-form div:nth-child(1)").css("display", "inline-flex");
+            callbackDuplicatesSmall();
         } else layoutChangedCallback4(viewportBreakpointQuery4.matches);
     }
 
     const layoutChangedCallback6 = (matches) => {
         if (matches) {
-           $(':root').css('--numberOfColumns', 1);
-           bodySpan.css("top", "1.5%");
-           bodySpan.css("left", "23%");
-           bodySpanA.css("font-size", "var(--sl-font-size-2x-small)");
-           bodySpanA.html(bodySpanA.html().replaceAll("&nbsp;","<br>"));
-           $("#developer-create-form div:nth-child(1)").css("display", "inline-block");
+            $(':root').css('--numberOfColumns', "1");
+            callbackDuplicatesSmall();
         } else layoutChangedCallback5(viewportBreakpointQuery5.matches);
     }
 
