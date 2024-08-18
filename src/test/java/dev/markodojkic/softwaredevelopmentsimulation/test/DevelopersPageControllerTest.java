@@ -48,7 +48,7 @@ class DevelopersPageControllerTest {
     void when_addDeveloperMethodIsCalled_providedUserIsAddedToProvidedDevelopmentTeam() throws Exception {
         Developer newUser = new Developer("Test Developer 4", "", DeveloperType.MEDIOCRE_DEVELOPER, true, (long) 4.55);
 
-        mockMvc.perform(post("/api/addDeveloper")
+        mockMvc.perform(post("/api/insertDeveloper")
                         .flashAttr("formDeveloperPlaceholder", newUser)
                         .flashAttr("selectedDevelopmentTeamIndex", 0))
                 .andExpect(status().is3xxRedirection())
@@ -77,7 +77,7 @@ class DevelopersPageControllerTest {
         Developer existingUser = DataProvider.getCurrentDevelopmentTeamsSetup().getFirst().getFirst();
         existingUser.setExperienceCoefficient((long) 2.45);
 
-        mockMvc.perform(patch("/api/editDeveloper")
+        mockMvc.perform(patch("/api/modifyDeveloper")
                         .flashAttr("formEditDeveloperPlaceholder", existingUser)
                         .flashAttr("editDeveloperSelectedDevelopmentTeamIndex", 0)
                         .flashAttr("developerIndex", 0)
@@ -93,7 +93,7 @@ class DevelopersPageControllerTest {
 
     @Test
     void when_removeDeveloperMethodIsCalled_providedUserIsRemovedFromProvidedDevelopmentTeam() throws Exception {
-        mockMvc.perform(delete("/api/removeDeveloper")
+        mockMvc.perform(delete("/api/deleteDeveloper")
                         .param("developmentTeamIndex", "0")
                         .param("developerIndex", "0"))
                 .andExpect(status().isOk());

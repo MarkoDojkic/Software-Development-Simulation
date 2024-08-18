@@ -3,7 +3,6 @@ package dev.markodojkic.softwaredevelopmentsimulation.web;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
-import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @RestController
@@ -33,10 +33,10 @@ public class MainController {
     @GetMapping(value = "/")
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("/index");
-        modelAndView.addObject("technicalManager", DataProvider.getTechnicalManager());
+        modelAndView.addObject("technicalManager", getTechnicalManager());
         modelAndView.addObject("selectedEpicDevelopmentTeam", null);
-        modelAndView.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
-        modelAndView.addObject("developmentTeamsSummary", DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> String.format("%d (%.2f)", developmentTeam.size(), developmentTeam.stream().mapToDouble(developer -> (developer.getExperienceCoefficient() * developer.getDeveloperType().getSeniorityCoefficient() - 1) / (73.5 - 1) * (12 - 1) + 1).sum() / developmentTeam.size())).toList());
+        modelAndView.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
+        modelAndView.addObject("developmentTeamsSummary", getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> String.format("%d (%.2f)", developmentTeam.size(), developmentTeam.stream().mapToDouble(developer -> (developer.getExperienceCoefficient() * developer.getDeveloperType().getSeniorityCoefficient() - 1) / (73.5 - 1) * (12 - 1) + 1).sum() / developmentTeam.size())).toList());
         modelAndView.addObject("priorities", Priority.values());
 
         return modelAndView;
@@ -78,7 +78,7 @@ public class MainController {
             Files.createDirectories(parentDirectory.resolve(folderName));
 
             Files.writeString(parentDirectory.resolve(folderName.concat("/sessionData.json")), sessionDataJSON);
-            Files.writeString(parentDirectory.resolve(folderName.concat("/developersData.json")), objectMapper.writeValueAsString(DataProvider.getCurrentDevelopmentTeamsSetup()));
+            Files.writeString(parentDirectory.resolve(folderName.concat("/developersData.json")), objectMapper.writeValueAsString(getCurrentDevelopmentTeamsSetup()));
 
             return ResponseEntity.ok("Data successfully saved to folder '".concat(folderName).concat("'"));
         } catch (IOException e) {
@@ -90,7 +90,7 @@ public class MainController {
     @GetMapping(value = "/api/loadSessionData")
     public ResponseEntity<String> loadCurrentPredefinedData(@RequestParam("folder") String folder) {
         try {
-            DataProvider.replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), new TypeReference<>() {
+            replaceDevelopmentTeamsSetup(objectMapper.readValue(Files.readString(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/developersData.json"))), new TypeReference<>() {
             }));
 
             return ResponseEntity.ok(Files.readString(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA).resolve(folder.concat("/sessionData.json"))));

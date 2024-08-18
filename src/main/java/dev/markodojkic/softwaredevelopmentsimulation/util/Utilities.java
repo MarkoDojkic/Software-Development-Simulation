@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
@@ -71,8 +73,18 @@ public class Utilities {
 	
     public static void loadPredefinedTasks(List<Epic> predefinedEpics){
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		predefinedEpics.forEach(epic -> jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
-            epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get())));
+		availableDevelopmentTeamIds.clear();
+		predefinedEpics.forEach(epic -> {
+			int epicDevelopmentTeamId = IntStream.range(0, currentDevelopmentTeamsSetup.size())
+					.filter(i -> currentDevelopmentTeamsSetup.get(i).stream()
+							.anyMatch(d -> Objects.equals(d.getId(), epic.getReporter().getId())))
+					.findFirst().orElse(0);
+			if(!availableDevelopmentTeamIds.contains(epicDevelopmentTeamId)) availableDevelopmentTeamIds.push(epicDevelopmentTeamId);
+			jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
+					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get()));
+		});
+
+		totalDevelopmentTeamsPresent = availableDevelopmentTeamIds.size();
 
 		iGateways.sendToInfo("""
 				All epics are created. Total developerTeams available: {0}
@@ -90,6 +102,7 @@ public class Utilities {
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
 		totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
+		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
 
 		for (var i = 0; i < totalEpicsCount; i++) {
@@ -126,6 +139,7 @@ public class Utilities {
 
 		totalEpicsCount = save ? totalEpicsCount : -1;
 
+		Collections.shuffle(availableDevelopmentTeamIds);
 		epicList.forEach(epic -> iGateways.generateEpic(epic));
 	}
 

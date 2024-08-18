@@ -4,8 +4,6 @@ import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
-import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
-import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.BridgeFrom;
@@ -22,8 +20,8 @@ import org.springframework.messaging.MessageChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.IN_PROGRESS_EPICS_COUNT;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 
 @Configuration
 @SuppressWarnings("unchecked")
@@ -93,9 +91,9 @@ public class SpringIntegrationMessageChannelsConfig {
 		pollerMetadata.setMaxMessagesPerPoll(1);
 
 		return IntegrationFlow.from(epicInput()).handle(message -> {
+			if(IN_PROGRESS_EPICS_COUNT.get() == getTotalDevelopmentTeamsPresent()) controlBusInput().send(MessageBuilder.withPayload("@assignEpicFlow.stop()").build());
 			logger.log(Level.INFO, "{0} arrived - Current count: {1}", new String[]{((Epic) message.getPayload()).getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.incrementAndGet())});
-			if(IN_PROGRESS_EPICS_COUNT.get() == Utilities.getTotalDevelopmentTeamsPresent()) controlBusInput().send(MessageBuilder.withPayload("@assignEpicFlow.stop()").build());
-			new Thread(() -> currentSprintEpic().send(MessageBuilder.withPayload(message.getPayload()).setHeader(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, DataProvider.getAvailableDevelopmentTeamIds().pop()).build())).start();
+			new Thread(() -> currentSprintEpic().send(MessageBuilder.withPayload(message.getPayload()).setHeader(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, getAvailableDevelopmentTeamIds().pop()).build())).start();
 		}, sourcePoolingChannelAdapter -> sourcePoolingChannelAdapter.poller(pollerMetadata)).get();
 	}
 

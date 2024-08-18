@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
-import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomEpics;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.loadPredefinedTasks;
 
@@ -34,10 +34,10 @@ public class DevelopersPageController {
 
 	@GetMapping("/developers")
 	public ModelAndView getDevelopersPage(){
-		List<String> backgroundColors = DataProvider.getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.getFirst().getDisplayName())).toList();
+		List<String> backgroundColors = getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.getFirst().getDisplayName())).toList();
 		ModelAndView developersPage = new ModelAndView("/developers");
 
-		developersPage.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
+		developersPage.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		developersPage.addObject("developmentTeamBackgroundColors", backgroundColors);
 		developersPage.addObject("developmentTeamForegroundColors", backgroundColors.stream().map(this::getForegroundColor).toList());
 		developersPage.addObject("developerTypes", DeveloperType.values());
@@ -49,43 +49,48 @@ public class DevelopersPageController {
 		return developersPage;
 	}
 
+	@GetMapping("/test")
+	public ModelAndView gettest(){
+		return new ModelAndView("/test");
+	}
+
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
 
-		editingDeveloperForm.addObject("developmentTeams", DataProvider.getCurrentDevelopmentTeamsSetup());
+		editingDeveloperForm.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
 		editingDeveloperForm.addObject("developerIndex", developerIndex);
 		editingDeveloperForm.addObject("developerTypes", DeveloperType.values());
-		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", DataProvider.getCurrentDevelopmentTeamsSetup().get(developmentTeamIndex).get(developerIndex));
+		editingDeveloperForm.addObject("formEditDeveloperPlaceholder", getCurrentDevelopmentTeamsSetup().get(developmentTeamIndex).get(developerIndex));
 
 		return editingDeveloperForm;
 	}
 
 	@PutMapping(value = "/api/recreateDevelopmentTeams")
 	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
-		DataProvider.updateDevelopmentTeamsSetup(parameters);
+		updateDevelopmentTeamsSetup(parameters);
 		return REDIRECT_DEVELOPERS;
 	}
 
 
-	@PostMapping(value = "/api/addDeveloper")
-	public String addDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
-		DataProvider.addDeveloper(developmentTeamIndex, newDeveloper);
+	@PostMapping(value = "/api/insertDeveloper")
+	public String insertDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
+		addDeveloper(developmentTeamIndex, newDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
 
 
 
-	@PatchMapping(value = "/api/editDeveloper")
-	public String editDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
-		DataProvider.editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
+	@PatchMapping(value = "/api/modifyDeveloper")
+	public String modifyDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
+		editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
 
-	@DeleteMapping(value = "/api/removeDeveloper")
-	public ModelAndView removeDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		DataProvider.removeDeveloper(developmentTeamIndex, developerIndex);
+	@DeleteMapping(value = "/api/deleteDeveloper")
+	public ModelAndView deleteDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
+		removeDeveloper(developmentTeamIndex, developerIndex);
 		return null; //Solves issue: Error resolving template [api/removeDeveloper]
 	}
 

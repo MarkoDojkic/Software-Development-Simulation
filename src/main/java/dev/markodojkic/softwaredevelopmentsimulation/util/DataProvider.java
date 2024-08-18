@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
@@ -62,8 +61,7 @@ public class DataProvider {
 				boolean isFemale = SECURE_RANDOM.nextInt(100) % 100 < parameters.getFemaleDevelopersPercentage();
 				return new Developer((isFemale ? LOREM.getNameFemale() : LOREM.getNameMale()), Strings.EMPTY, Arrays.stream(DeveloperType.values()).skip(SECURE_RANDOM.nextInt(1, DeveloperType.values().length)).findAny().orElse(DeveloperType.INTERN_DEVELOPER), isFemale, SECURE_RANDOM.nextLong(10));
 		}).limit(SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersCount(), parameters.getMaximalDevelopersCount())).toList(), SECURE_RANDOM.nextInt(parameters.getMinimalDevelopersInTeamCount(), parameters.getMaximalDevelopersInTeamCount())).stream()).collect(Collectors.toCollection(ArrayList::new));
-			availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
-		} //Generate between <min - default 30> and <max - default 100> developers ('Developer' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
+	} //Generate between <min - default 30> and <max - default 100> developers ('Developer' class objects) and group them evenly in groups of anywhere between <min - default 5> and <max - default 15) and append that list to already existing list of developers (or use retainOld = false to override)
 
 	public static void addDeveloper(int developmentTeamIndex, Developer developer){
 		List<Developer> developmentTeam = new ArrayList<>(currentDevelopmentTeamsSetup.get(developmentTeamIndex));
