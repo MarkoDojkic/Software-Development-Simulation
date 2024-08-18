@@ -718,7 +718,6 @@ $(window).on("load", async () => {
             dateFormat: "d.m.Y. H:i:S",
             time_24hr: true,
             allowInput:true,
-            allowInvalidPreload: true,
             defaultDate: editingTechnicalTask.technicalTaskCreatedOn,
             minDate: new Date(flatpickr.parseDate(currentPredefinedData[eventValues[0]].userStories[eventValues[1]].userStoryCreatedOn, "d.m.Y. H:i:S").getTime() + 1000),
             onClose: function(selectedDates, dateStr, instance) {
