@@ -5,20 +5,16 @@ $(window).on("load", async () => {
     ]).then(() => {
         setupResize();
 
-        //Theme switch
-
         const themeDarkLink = $('#theme-dark');
         const themeLightLink = $('#theme-light');
         const themeSwitch = $('#theme-switch');
 
         themeSwitch.on('sl-change', (event) => {
             if (event.target.checked) {
-                // Switch to dark theme
                 $('html').addClass('sl-theme-dark');
                 themeDarkLink.removeAttr('disabled');
                 themeLightLink.attr('disabled', 'disabled');
             } else {
-                // Switch to light theme
                 $('html').removeClass('sl-theme-dark');
                 themeDarkLink.attr('disabled', 'disabled');
                 themeLightLink.removeAttr('disabled');
@@ -29,18 +25,18 @@ $(window).on("load", async () => {
 
         $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
 
-        $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); //Change icon for every sl-rating with class .rating-developers
-        $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); //Change tooltip message on each slRange instances*
+        $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); // Change icon for every sl-rating with class .rating-developers
+        $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); // Change tooltip message on each slRange instances
 
-        $("#developmentTeamsSelectionTree").on("sl-selection-change", event => { //Mimic select element on tree element
+        $("#developmentTeamsSelectionTree").on("sl-selection-change", event => { // Mimic select element on tree element
             $("#selectedDevelopmentTeamIndex").val(parseInt($(event.originalEvent.detail.selection[0]).attr("id")));
         });
 
-        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", event => { //Mimic select element on tree element
+        $("#sl-tab-panel-3").on("sl-selection-change", "#editDeveloperDevelopmentTeamsSelectionTree", event => { // Mimic select element on tree element
             $("#editDeveloperSelectedDevelopmentTeamIndex").val(parseInt($(event.originalEvent.detail.selection[0]).attr("id")));
         });
 
-        //Below is referenced via $(document) since they are dynamically created buttons
+        // Below is referenced via $(document) since they are dynamically created buttons
         $(document).on("click", ".editDeveloperSlButton", async function (){
             const developmentTeamIndex = $(this).data("development-team-index");
             const developerIndex = $(this).data("developer-index");
@@ -56,7 +52,7 @@ $(window).on("load", async () => {
                 url: `/developers/edit?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
                 success: response => {
                     $("#sl-tab-panel-3").html(response);
-                    $("#sl-tab-panel-3 .developerExperienceSlRange")[0].tooltipFormatter = value => `Developer experience - ${value}/10`; //*Here needs to be reinitialize since new sl-range is created
+                    $("#sl-tab-panel-3 .developerExperienceSlRange")[0].tooltipFormatter = value => `Developer experience - ${value}/10`; // Need to be reinitialized, since new sl-range is created
                     $(document).on("click", ".editDeveloperResetSlButton", async () => {
                         window.history.replaceState(null, null, "/developers");
                         viewTab.prop("disabled", false);
@@ -89,20 +85,20 @@ $(window).on("load", async () => {
                 async: true,
                 url: `/api/deleteDeveloper?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
                 success: function() {
-                    if (developerIndex === 0 && otherDevelopersFooterSlButtons.length === 0) { //If is only one remove sl-carousel-item of removed developer's team
+                    if (developerIndex === 0 && otherDevelopersFooterSlButtons.length === 0) { // If is only one remove sl-carousel-item of removed developer's team
                         currentRemoveSlButton.parent().parent().parent().nextAll('div').each(function(index, slCarouselItem) {
                             $(slCarouselItem).children('sl-card').find("div[slot='footer'] sl-button").each(function(index, slButton) {
                                 $(slButton).data("development-team-index", $(slButton).data("development-team-index") - 1);
                             });
-                        }); //Update indexes for fallowing development teams
+                        }); // Update indexes for fallowing development teams
                         currentRemoveSlButton.parent().parent().parent().remove();
-                    } else { //Update indexes for fallowing developers
+                    } else { // Update indexes for fallowing developers
                         otherDevelopersFooterSlButtons.each(function(index, slButton) {
                             $(slButton).data("developer-index", $(slButton).data("developer-index") - 1);
                         });
                     }
 
-                    currentRemoveSlButton.parent().parent().remove(); //Remove sl-card of removed developer
+                    currentRemoveSlButton.parent().parent().remove(); // Remove sl-card of removed developer
                 }
             });
         });
