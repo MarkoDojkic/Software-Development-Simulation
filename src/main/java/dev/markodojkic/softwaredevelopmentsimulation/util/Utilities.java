@@ -78,7 +78,10 @@ public class Utilities {
 					.filter(i -> getCurrentDevelopmentTeamsSetup().get(i).stream()
 							.anyMatch(d -> Objects.equals(d.getId(), epic.getAssignee().getId())))
 					.findFirst().orElse(0);
-			if(!getAvailableDevelopmentTeamIds().contains(epicDevelopmentTeamId)) getAvailableDevelopmentTeamIds().push(epicDevelopmentTeamId);
+			if(!getAvailableDevelopmentTeamIds().contains(epicDevelopmentTeamId)) {
+				getAvailableDevelopmentTeamIds().addLast(epicDevelopmentTeamId);
+				logger.log(Level.FINE, "Adding new development team {0} to queue", epicDevelopmentTeamId);
+			}
 			jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get()));
 		});
@@ -93,7 +96,10 @@ public class Utilities {
 
 		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
 
-		predefinedEpics.forEach(epic -> iGateways.generateEpic(epic));
+		predefinedEpics.forEach(epic -> {
+			logger.log(Level.FINE, "Found TODO Epic {0}", epic.getId());
+			iGateways.generateEpic(epic);
+		});
 	}
 
 	public static void generateRandomEpics(boolean save, int epicCountDownLimit, int epicCountUpperLimit){

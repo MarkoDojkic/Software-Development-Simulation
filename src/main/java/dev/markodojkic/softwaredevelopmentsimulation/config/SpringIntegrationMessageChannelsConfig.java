@@ -75,10 +75,21 @@ public class SpringIntegrationMessageChannelsConfig {
 
 	@Bean(name = "epicMessage.input")
 	public MessageChannel epicInput(){
-		PriorityChannel epicInputPriorityChannel = new PriorityChannel(0, (message1, message2) -> {
-            Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1;
+		PriorityChannel epicInputPriorityChannel = new PriorityChannel(1000, (message1, message2) -> {
+            Message<BaseTask> baseTaskMessage1 = (Message<BaseTask>) message1; //Unchecked cast is acceptable
             Message<BaseTask> baseTaskMessage2 = (Message<BaseTask>) message2;
-            return Integer.compare(baseTaskMessage2.getPayload().getPriority().getUrgency(), baseTaskMessage1.getPayload().getPriority().getUrgency());
+			return (getAvailableDevelopmentTeamIds().size() == 1 && !getCurrentDevelopmentTeamsSetup().get(getAvailableDevelopmentTeamIds().peekFirst()).contains(baseTaskMessage1.getPayload().getAssignee())) ? 0 : Integer.compare(baseTaskMessage2.getPayload().getPriority().getUrgency(), baseTaskMessage1.getPayload().getPriority().getUrgency());
+			/* Here we compare epics by its urgency, but leave order if task is from currently busy development team so that others can be processed first (again they are already compared in previous iterations)
+				> Example input: URBANITAS-11021256, OMITTANTUR-9682007, ELIT-12429313, POSSE-4356246, DOLORUM-11966156, JUSTO-11562991
+				< Expected and actual output:
+					DOLORUM-11966156 (Dev team 1, Comparator value - urgency 4)
+					ELIT-12429313 (Dev team 0, Comparator value - urgency 3)
+					POSSE-4356246 (Dev team 1, Comparator value - urgency 3)
+					OMITTANTUR-9682007 (Dev team 0, Comparator value - urgency 2)
+					URBANITAS-11021256 (Dev team 1, Comparator value - urgency 2)
+					JUSTO-11562991 (Dev team 0, Comparator value 1)
+				Note: Dev team order shows alternating pattern here is by coincidence
+			 */
         });
 		epicInputPriorityChannel.setDatatypes(Epic.class);
 
@@ -91,9 +102,14 @@ public class SpringIntegrationMessageChannelsConfig {
 		pollerMetadata.setMaxMessagesPerPoll(1);
 
 		return IntegrationFlow.from(epicInput()).handle(message -> {
-			if(IN_PROGRESS_EPICS_COUNT.get() == getTotalDevelopmentTeamsPresent()) controlBusInput().send(MessageBuilder.withPayload("@assignEpicFlow.stop()").build());
-			logger.log(Level.INFO, "{0} arrived - Current count: {1}", new String[]{((Epic) message.getPayload()).getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.incrementAndGet())});
-			new Thread(() -> currentSprintEpic().send(MessageBuilder.withPayload(message.getPayload()).setHeader(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, getAvailableDevelopmentTeamIds().pop()).build())).start();
+			logger.log(Level.FINE, "Processing epic with id {0}", ((Epic) message.getPayload()).getId());
+			if(getAvailableDevelopmentTeamIds().isEmpty()) {
+				logger.log(Level.FINE, "Stopping assignEpicFlow due to none of development teams being available");
+				epicInput().send(message); //Resend message before stopping since it can`t be processed
+				controlBusInput().send(MessageBuilder.withPayload("@assignEpicFlow.stop()").build());
+			} else {
+				new Thread(() -> currentSprintEpic().send(MessageBuilder.withPayload(message.getPayload()).setHeader(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, getAvailableDevelopmentTeamIds().pollFirst()).build())).start();
+			}
 		}, sourcePoolingChannelAdapter -> sourcePoolingChannelAdapter.poller(pollerMetadata)).get();
 	}
 

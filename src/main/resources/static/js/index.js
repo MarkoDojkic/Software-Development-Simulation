@@ -732,8 +732,6 @@ $(window).on("load", async () => {
                 const defaultDate = instance.config.defaultDate;
                 const minDate = instance.config.minDate;
                 const maxDate = instance.config.maxDate;
-                
-                console.log(defaultDate);
 
                 if (selectedDates.length > 0) {
                     const selectedDate = selectedDates[0];

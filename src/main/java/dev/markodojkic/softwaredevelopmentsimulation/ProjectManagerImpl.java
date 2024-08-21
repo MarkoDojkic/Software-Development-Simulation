@@ -49,11 +49,18 @@ public class ProjectManagerImpl {
 		if(epic.getReporter() == null) epic.setReporter(getTechnicalManager());
 		if(epic.getAssignee() == null) epic.setAssignee(assignedDevelopmentTeam.getFirst());
 		else {
-			if(!assignedDevelopmentTeam.contains(epic.getAssignee())) { //In case of predefined list data, we check if we assigned correct development team
+			if(!assignedDevelopmentTeam.contains(epic.getAssignee())) { //In case of development team is busy, assigned development team would be wrong
+				logger.log(Level.FINE, "Rejected epic with id {0}, due to its assigned team is currently busy with another epic", epic.getId());
+				logger.log(Level.FINE, "Adding its development team {0} back to queue", String.valueOf(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class)));
+				getAvailableDevelopmentTeamIds().addLast(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
+				controlBusInput.send(MessageBuilder.withPayload("@assignEpicFlow.start()").build());
 				epicInput.send(epicMessage);
 				return List.of();
 			}
 		}
+
+		logger.log(Level.FINE, "Epic {0} arrived - Current count of in-progress epics is {1}", new String[]{epic.getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.incrementAndGet())});
+
 		AtomicReference<String> jiraAccumulatedOutput = new AtomicReference<>("");
 
 		jiraAccumulatedOutput.set(String.format("\033[1m%s\033[21m\033[24m changed the Assignee to '\033[1m%s\033[21m\033[24m' on EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
@@ -131,9 +138,10 @@ public class ProjectManagerImpl {
 		if(epicMessage != null) {
 			getIGateways().sendToJiraActivityStream(String.format("\033[1m%s\033[21m\033[24m changed the status to Done on EPIC: \033[3m\033[1m\033[9m%s\033[21m\033[24m\033[29m - %s\033[23m with resolution \033[1mDone\033[21m\033[24m ◴ %s$",
 					epicMessage.getPayload().getAssignee().getDisplayName(), epicMessage.getPayload().getId(), epicMessage.getPayload().getName(), ZonedDateTime.now().plusSeconds(SECURE_RANDOM.nextInt(10, 20)).format(DATE_TIME_FORMATTER)).replaceFirst(".$", "")); // 9 - STRIKE-THROUGH, 29 - RESET STRIKE-THROUGH
-			logger.log(Level.INFO, "{0} finished - Current count: {1}", new String[]{epicMessage.getPayload().getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.decrementAndGet())});
-			getAvailableDevelopmentTeamIds().push(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
-			if(IN_PROGRESS_EPICS_COUNT.get() < getTotalDevelopmentTeamsPresent()) controlBusInput.send(MessageBuilder.withPayload("@assignEpicFlow.start()").build());
+			logger.log(Level.FINE, "Epic {0} finished - Current count of in-progress epics is {1}", new String[]{epicMessage.getPayload().getId(), String.valueOf(IN_PROGRESS_EPICS_COUNT.decrementAndGet())});
+			logger.log(Level.FINE, "Adding its development team {0} back to queue", String.valueOf(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class)));
+			getAvailableDevelopmentTeamIds().addLast(epicMessage.getHeaders().get(ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER, Integer.class));
+			controlBusInput.send(MessageBuilder.withPayload("@assignEpicFlow.start()").build());
 		}
 	}
 

@@ -27,7 +27,6 @@ public class SoftwareDevelopmentSimulationApp
 
         getIGateways().sendToInfo("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using my spring integration web based application");
 
-        //TODO: Fix issue with carousel (i.e. carousel item is below scroll container when scrolled and thus not interactable) - problem is only with shoelace instance, tried others but they won`t work
         //TODO: Write tests for complete application flow, predefined and randomized data flow saving and loading
     }
 }
