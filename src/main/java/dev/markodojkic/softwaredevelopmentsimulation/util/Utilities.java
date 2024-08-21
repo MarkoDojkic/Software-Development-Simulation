@@ -7,9 +7,7 @@ import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
-import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
-import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
-import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
+import dev.markodojkic.softwaredevelopmentsimulation.model.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
@@ -38,7 +36,7 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 @UtilityClass
 public class Utilities {
 	private static final Logger logger = Logger.getLogger(Utilities.class.getName());
-	public static final String STRING_FORMAT = "%s-%s";
+	private static final String STRING_FORMAT = "%s-%s";
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
 	public static final String ASSIGNED_DEVELOPMENT_TEAM_POSITION_NUMBER = "assignedDevelopmentTeamPositionNumber";
 	public static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -59,7 +57,8 @@ public class Utilities {
 	@Setter
 	private static int totalEpicsCount;
 	@Getter
-	private static final List<Epic> epicsForSaving = new ArrayList<>();
+	@Setter
+	private static List<Epic> epicsForSaving;
 	@Getter
 	@Setter
 	private static ObjectMapper objectMapper;
@@ -73,18 +72,18 @@ public class Utilities {
 	
     public static void loadPredefinedTasks(List<Epic> predefinedEpics){
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		availableDevelopmentTeamIds.clear();
+		getAvailableDevelopmentTeamIds().clear();
 		predefinedEpics.forEach(epic -> {
-			int epicDevelopmentTeamId = IntStream.range(0, currentDevelopmentTeamsSetup.size())
-					.filter(i -> currentDevelopmentTeamsSetup.get(i).stream()
-							.anyMatch(d -> Objects.equals(d.getId(), epic.getReporter().getId())))
+			int epicDevelopmentTeamId = IntStream.range(0, getCurrentDevelopmentTeamsSetup().size())
+					.filter(i -> getCurrentDevelopmentTeamsSetup().get(i).stream()
+							.anyMatch(d -> Objects.equals(d.getId(), epic.getAssignee().getId())))
 					.findFirst().orElse(0);
-			if(!availableDevelopmentTeamIds.contains(epicDevelopmentTeamId)) availableDevelopmentTeamIds.push(epicDevelopmentTeamId);
+			if(!getAvailableDevelopmentTeamIds().contains(epicDevelopmentTeamId)) getAvailableDevelopmentTeamIds().push(epicDevelopmentTeamId);
 			jiraEpicCreatedOutput.set(String.format("\033[1m%s\033[21m\033[24m created EPIC: \033[3m\033[1m%s\033[21m\033[24m - %s\033[23m ◴ %s$",
 					epic.getReporter().getDisplayName(), epic.getId(), epic.getName(), epic.getCreatedOn().format(DATE_TIME_FORMATTER)).concat(jiraEpicCreatedOutput.get()));
 		});
 
-		totalDevelopmentTeamsPresent = availableDevelopmentTeamIds.size();
+		totalDevelopmentTeamsPresent = getAvailableDevelopmentTeamIds().size();
 
 		iGateways.sendToInfo("""
 				All epics are created. Total developerTeams available: {0}
@@ -102,8 +101,8 @@ public class Utilities {
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
 		totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
-		availableDevelopmentTeamIds.addAll(IntStream.rangeClosed(0, currentDevelopmentTeamsSetup.size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
-		totalDevelopmentTeamsPresent = currentDevelopmentTeamsSetup.size();
+		getAvailableDevelopmentTeamIds().addAll(IntStream.rangeClosed(0, getCurrentDevelopmentTeamsSetup().size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
+		totalDevelopmentTeamsPresent = getCurrentDevelopmentTeamsSetup().size();
 
 		for (var i = 0; i < totalEpicsCount; i++) {
 			int finalI = i;
@@ -137,9 +136,9 @@ public class Utilities {
 
 		iGateways.sendToJiraActivityStream(jiraEpicCreatedOutput.get().replaceFirst(".$", ""));
 
-		totalEpicsCount = save ? totalEpicsCount : -1;
+		epicsForSaving = save ? new ArrayList<>() : null;
 
-		Collections.shuffle(availableDevelopmentTeamIds);
+		Collections.shuffle(getAvailableDevelopmentTeamIds());
 		epicList.forEach(epic -> iGateways.generateEpic(epic));
 	}
 
@@ -155,7 +154,7 @@ public class Utilities {
 					.description(LOREM.getWords(2, 4))
 					.priority(Priority.values()[SECURE_RANDOM.nextInt(Priority.values().length)])
 					.epicId(epicId)
-					.createdOn(ZonedDateTime.now())
+					.createdOn(ZonedDateTime.now().plusSeconds(1))
 					.technicalTasks(new ArrayList<>())
 					.build();
 			int totalTechnicalTasks = SECURE_RANDOM.nextInt(userStory.getPriority().getUrgency() + 3, userStory.getPriority().getUrgency() + 8);
@@ -184,7 +183,7 @@ public class Utilities {
 					.priority(Priority.values()[SECURE_RANDOM.nextInt(Priority.values().length)])
 					.userStoryId(userStoryId)
 					.id(String.format(STRING_FORMAT, boardName, Long.parseLong(userStoryId.split(boardName.concat("-"))[1]+1)+i))
-					.createdOn(ZonedDateTime.now())
+					.createdOn(ZonedDateTime.now().plusSeconds(2))
 					.build());
 			logger.log(Level.INFO, () -> colorize(String.format("\t\t+ Generated TECHNICAL TASK #%d", finalI), Attribute.TEXT_COLOR(118), Attribute.BACK_COLOR(244)));
 		}
@@ -198,7 +197,6 @@ public class Utilities {
 
 	public static void saveEpics(){
 		try {
-			setTotalEpicsCount(0);
 			String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
 			Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
 

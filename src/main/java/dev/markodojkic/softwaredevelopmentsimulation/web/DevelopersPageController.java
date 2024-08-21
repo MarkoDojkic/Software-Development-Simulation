@@ -107,8 +107,9 @@ public class DevelopersPageController {
     }
 
 	@PostMapping(value = "/api/applicationFlowRandomized")
-	public void applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
+	public ModelAndView applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
 		generateRandomEpics(save, min, max);
+		return null;
 	}
 
 	private String getBackgroundColor(String text) {

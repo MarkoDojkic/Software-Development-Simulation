@@ -21,12 +21,12 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 public class DataProvider {
 	@Getter
 	@Setter
-	static Developer technicalManager;
+	private static Developer technicalManager;
 
 	@Getter
-	static List<List<Developer>> currentDevelopmentTeamsSetup = Collections.emptyList();
+	private static List<List<Developer>> currentDevelopmentTeamsSetup = Collections.emptyList();
 	@Getter
-	static LinkedList<Integer> availableDevelopmentTeamIds = new LinkedList<>();
+	private static final LinkedList<Integer> availableDevelopmentTeamIds = new LinkedList<>();
 
 	static final String PLACE_OF_BIRTH_MAPS_DEFAULT_VALUE = "Unknown";
 	static NavigableMap<Integer, String> countryMap;

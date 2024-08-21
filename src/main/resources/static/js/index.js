@@ -533,7 +533,7 @@ $(window).on("load", async () => {
             dateFormat: "d.m.Y. H:i:S",
             time_24hr: true,
             allowInput:true,
-            defaultDate: editingUserStory.epicCreatedOn,
+            defaultDate: editingUserStory.userStoryCreatedOn,
             minDate: new Date(flatpickr.parseDate(currentPredefinedData[eventValues[0]].epicCreatedOn, "d.m.Y. H:i:S").getTime() + 1000),
             maxDate: new Date(Math.min.apply(null, editingUserStory.technicalTasks.map(technicalTask => flatpickr.parseDate(technicalTask.technicalTaskCreatedOn, "d.m.Y. H:i:S").getTime())) - 1000),
             onClose: function(selectedDates, dateStr, instance) {
@@ -850,7 +850,7 @@ $(window).on("load", async () => {
                     slRadioOptions += `<sl-radio name="predefinedDataSelection" value="${folderName}">${counter++}. ${folderName}</sl-radio>`;
                 });
 
-                $("#predefinedDataSelection > div").html(`
+                $("#predefinedDataSelection").html(`
                         <form id="predefinedDataSelectionForm" method="POST" style="text-align: -webkit-center;">
                             <sl-radio-group name="predefinedDataSelection" required>
                               ${slRadioOptions}
@@ -859,7 +859,7 @@ $(window).on("load", async () => {
                             <div style="display: inline-flex">
                                 <sl-button id="getPredefinedDataFoldersListConfirmSlButton" outline type="submit" variant="success">Confirm selection</sl-button>
                                 <sl-divider vertical></sl-divider>
-                                <sl-button outline type="reset" variant="neutral" onclick="$('#predefinedDataSelection')[0].hide()">Clear form</sl-button>
+                                <sl-button outline type="reset" variant="neutral" onclick="$('#predefinedDataSelection')[0].hide()">Cancel</sl-button>
                             </div>
                         </form>
                     `);
@@ -1026,7 +1026,7 @@ function updateCustomEpicsList() {
                 <span>Created on: ${value.epicCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
-                    Reporter: ${value.epicReporter === -1 ? $("#technicalManagerNameField").html().split(" (UMCN")[0] : $("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
+                    Reporter: ${value.epicReporter == -1 ? $("#technicalManagerNameField").html().split(" (UMCN")[0] : $("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
                 </sl-badge>
                 <sl-badge variant="warning">
                     Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee + "]").html()}
@@ -1050,7 +1050,6 @@ function updateCustomEpicsList() {
                     $("sl-tab-panel[name='customUserStoriesViewTab']").html(`<sl-carousel pagination></sl-carousel>`);
 
                     const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
-                    userStoriesCarousel.css("--aspect-ratio", "0");
 
                     setTimeout(() => $("#scroll-container", userStoriesCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
 
@@ -1066,7 +1065,6 @@ function updateCustomEpicsList() {
                         $("sl-tab-panel[name='customTechnicalTasksViewTab']").html(`<sl-carousel pagination></sl-carousel>`);
 
                         const technicalTasksCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
-                        technicalTasksCarousel.css("--aspect-ratio", "0");
 
                         setTimeout(() => $("#scroll-container", technicalTasksCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
 

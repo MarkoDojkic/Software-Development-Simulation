@@ -1,7 +1,11 @@
 package dev.markodojkic.softwaredevelopmentsimulation.config;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.common.reflect.TypeToken;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
 import dev.markodojkic.softwaredevelopmentsimulation.util.EpicNotDoneException;
 import dev.markodojkic.softwaredevelopmentsimulation.util.PredefinedTasksDeserializer;
@@ -26,14 +30,17 @@ import org.springframework.integration.router.ErrorMessageExceptionTypeRouter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.retry.support.RetryTemplateBuilder;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
 @EnableIntegration
 @IntegrationComponentScan(basePackages = "dev.markodojkic.softwaredevelopmentsimulation")
+@SuppressWarnings("unchecked")
 public class MiscellaneousConfig {
 	private static final String CLIENT_ID = "be-client-" + UUID.randomUUID();
 
@@ -103,7 +110,34 @@ public class MiscellaneousConfig {
 		SimpleModule module = new SimpleModule();
 
 		//Add mappings for predefined tasks
-		module.addSerializer(Epic.class, new PredefinedTasksSerializer());
+		module.addSerializer(new JsonSerializer<List<?>>() {
+			@Override
+			public void serialize(List<?> value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+				if (value.isEmpty()) {
+					gen.writeStartArray();
+					gen.writeEndArray();
+					return;
+				}
+
+				// Check if the list is of type List<Epic>
+				if (value.getFirst() instanceof Epic) { //Unchecked cast is checked here
+					new PredefinedTasksSerializer().serialize((List<Epic>) value, gen, serializers);
+				} else {
+					// Handle other list types with default serialization
+					gen.writeStartArray();
+					for (Object item : value) {
+						gen.writeObject(item);
+					}
+					gen.writeEndArray();
+				}
+			}
+
+			@Override
+			public Class<List<?>> handledType() {
+				TypeToken<List<?>> typeToken = new TypeToken<>() {};
+				return (Class<List<?>>) typeToken.getRawType();
+			}
+		});
 		module.addDeserializer(Epic.class, new PredefinedTasksDeserializer());
 
 		objectMapper.registerModule(module);

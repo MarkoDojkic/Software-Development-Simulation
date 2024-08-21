@@ -48,7 +48,7 @@ public class PredefinedTasksDeserializer extends JsonDeserializer<Epic> {
                 .id(epicId)
                 .name(epicName)
                 .priority(Priority.valueOf(epicPriority))
-                .reporter(currentDevelopmentTeam.get(epicReporterIndex))
+                .reporter(epicReporterIndex == -1 ? DataProvider.getTechnicalManager() : currentDevelopmentTeam.get(epicReporterIndex))
                 .assignee(currentDevelopmentTeam.get(epicAssigneeIndex))
                 .createdOn(ZonedDateTime.of(LocalDateTime.parse(epicCreatedOn, Utilities.DATE_TIME_FORMATTER), ZoneId.systemDefault()))
                 .description(epicDescription)

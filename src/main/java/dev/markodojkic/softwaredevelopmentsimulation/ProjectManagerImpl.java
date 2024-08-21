@@ -88,10 +88,9 @@ public class ProjectManagerImpl {
 
 		new Thread(() -> inProgressEpic.send(epicMessage)).start();
 
-		if(getTotalEpicsCount() != -1) {
+		if(getEpicsForSaving() != null) {
 			addEpicForSaving(epic);
-			setTotalEpicsCount(getTotalEpicsCount() - 1);
-			if(getTotalEpicsCount() == 0) saveEpics();
+			if(getEpicsForSaving().size() == getTotalEpicsCount()) saveEpics();
 		}
 
 		return epic.getUserStories();
@@ -170,10 +169,14 @@ public class ProjectManagerImpl {
 	}
 
 	private int calculateTotalLoggedTimeInHours(Developer reporter, Developer assignee, Priority taskPriority){
-		double reporterExpertise = reporter.getExperienceCoefficient() * reporter.getDeveloperType().getSeniorityCoefficient();
-		double assigneeExpertise = assignee.getExperienceCoefficient() * assignee.getDeveloperType().getSeniorityCoefficient();
-		double averageExpertise = (reporterExpertise + assigneeExpertise) / 2.0;
+		try {
+			double reporterExpertise = reporter.getExperienceCoefficient() * reporter.getDeveloperType().getSeniorityCoefficient();
+			double assigneeExpertise = assignee.getExperienceCoefficient() * assignee.getDeveloperType().getSeniorityCoefficient();
+			double averageExpertise = (reporterExpertise + assigneeExpertise) / 2.0;
 
-		return (int) Math.round(Math.clamp(1.0, 240.0 * (taskPriority.getResolutionTimeCoefficient() / averageExpertise) * (1.0 / (1 + taskPriority.getUrgency())), 240.0));
+			return (int) Math.round(Math.clamp(1.0, 240.0 * (taskPriority.getResolutionTimeCoefficient() / averageExpertise) * (1.0 / (1 + taskPriority.getUrgency())), 240.0));
+		} catch (Exception e){
+			return 240;
+		}
 	}
 }
