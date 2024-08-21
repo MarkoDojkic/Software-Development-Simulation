@@ -23,8 +23,6 @@ $(window).on("load", async () => {
 
         setTimeout(() => themeSwitch.click(), 1);
 
-        $($("#sl-tab-panel-1 sl-carousel")[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
-
         $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); // Change icon for every sl-rating with class .rating-developers
         $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); // Change tooltip message on each slRange instances
 
@@ -103,6 +101,20 @@ $(window).on("load", async () => {
             });
         });
     });
+
+    //Remove "inert" attribute on carousel that is added when scroll and fix vertical scroll
+    const developersCarousel = $("#sl-tab-panel-1 sl-carousel")[0];
+    $(developersCarousel.shadowRoot).find("#scroll-container").css("overflow-y", "auto");
+
+    const observer = new MutationObserver(mutationsList => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'inert') {
+                mutation.target.removeAttribute('inert');
+            }
+        }
+    });
+
+    observer.observe(developersCarousel, { childList: true, subtree: true, attributes: true });
 })
 
 function setupResize() {

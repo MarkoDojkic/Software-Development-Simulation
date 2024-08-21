@@ -2,6 +2,14 @@ import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/compone
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/components/popup/popup.js';
 import {ansi2html_string} from './ansi2html.js';
 
+const observer = new MutationObserver(mutationsList => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'inert') {
+            mutation.target.removeAttribute('inert');
+        }
+    }
+});
+
 $(window).on("load", async () => {
     const themeLightLink = $('#theme-light');
     const themeDarkLink = $('#theme-dark');
@@ -1051,7 +1059,10 @@ function updateCustomEpicsList() {
 
                     const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
 
-                    setTimeout(() => $("#scroll-container", userStoriesCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
+                    setTimeout(() => {
+                        $(userStoriesCarousel[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
+                        observer.observe(userStoriesCarousel[0], { childList: true, subtree: true, attributes: true });
+                    }, 500);
 
                     $(userStoriesCarousel).on('sl-slide-change', event => {
                         $(customUserStories.shadowRoot).find("#title slot").html($(customUserStories.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing Epic: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
@@ -1066,7 +1077,10 @@ function updateCustomEpicsList() {
 
                         const technicalTasksCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
 
-                        setTimeout(() => $("#scroll-container", technicalTasksCarousel[0].shadowRoot).css("overflow-y", "auto"), 1000);
+                        setTimeout(() => {
+                            $(technicalTasksCarousel[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
+                            observer.observe(technicalTasksCarousel[0], { childList: true, subtree: true, attributes: true });
+                        }, 500);
 
                         $(technicalTasksCarousel).on('sl-slide-change', event => {
                             $(customTechnicalTasks.shadowRoot).find("#title slot").html($(customTechnicalTasks.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing User story: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
