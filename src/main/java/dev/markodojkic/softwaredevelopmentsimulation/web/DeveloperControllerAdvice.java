@@ -16,7 +16,7 @@ public class DeveloperControllerAdvice {
     @ModelAttribute("formDeveloperPlaceholder")
     public Developer overrideDeveloperFields(Developer developer) {
         if (StringUtil.isNullOrEmpty(developer.getYugoslavianUMCN())) {
-            developer.setYugoslavianUMCN(generateRandomYugoslavianUMCN(developer.isFemale(), false));
+            developer.setYugoslavianUMCN(generateRandomYugoslavianUMCN(developer.isFemale()));
         }
 
         if (StringUtil.isNullOrEmpty(developer.getId())) {

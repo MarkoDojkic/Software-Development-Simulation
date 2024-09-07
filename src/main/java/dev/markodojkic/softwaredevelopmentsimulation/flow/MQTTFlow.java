@@ -32,7 +32,7 @@ public class MQTTFlow {
 	public IntegrationFlow errorOutputMQTTFlow(MqttPahoMessageHandler rabbitMQMessageHandler){
 		rabbitMQMessageHandler.setDefaultTopic("error-printout-topic");
 
-		return IntegrationFlow.from("error.mqtt.input")
+		return IntegrationFlow.from("errorChannel.mqtt.input")
 				.transform(Message.class, message -> MessageBuilder.fromMessage(message)
 						.setHeader(MqttHeaders.TOPIC, "error-printout-topic")
 						.build()).handle(rabbitMQMessageHandler).get();

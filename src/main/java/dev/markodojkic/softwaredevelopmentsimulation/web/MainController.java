@@ -1,10 +1,12 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +34,7 @@ public class MainController {
 
     @GetMapping(value = "/")
     public ModelAndView index() {
-        ModelAndView modelAndView = new ModelAndView("/index");
+        ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("technicalManager", getTechnicalManager());
         modelAndView.addObject("selectedEpicDevelopmentTeam", null);
         modelAndView.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
@@ -52,17 +54,17 @@ public class MainController {
         }
     }
 
-    @GetMapping(value = "/api/getPredefinedDataFoldersList")
-    public ResponseEntity<Object> getPredefinedDataFoldersList() {
+    @GetMapping(value = "/api/getPredefinedDataFoldersList", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getPredefinedDataFoldersList() {
         try (Stream<Path> paths = Files.list(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA))) {
             List<String> folders = paths
                     .filter(Files::isDirectory)
                     .map(Path::getFileName)
                     .map(Path::toString).toList();
 
-            return ResponseEntity.ok(folders);
+            return ResponseEntity.ok(String.join(",", folders));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
                     .body("Error occurred while trying to get predefined data path folders list: " + e.getMessage());
         }
     }
@@ -70,10 +72,8 @@ public class MainController {
     @PostMapping(value = "/api/saveSessionData")
     public ResponseEntity<String> saveCurrentPredefinedData(@RequestBody String sessionDataJSON){
         try {
-            String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
+            String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
             Path parentDirectory = getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
-
-            if(!Files.exists(parentDirectory)) Files.createDirectories(parentDirectory);
 
             Files.createDirectories(parentDirectory.resolve(folderName));
 
@@ -98,5 +98,23 @@ public class MainController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while trying to load predefined data: " + e.getMessage());
         }
+    }
+
+    @PostMapping(value = "/api/applicationFlowPredefined")
+    public ResponseEntity<String> applicationFlowPredefined(@RequestBody String predefinedData){
+        try {
+            loadPredefinedTasks(objectMapper.readValue(predefinedData, new TypeReference<>() {
+            }));
+            return ResponseEntity.ok("Successfully started application flow with predefined data");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while trying start application flow with predefined data: " + e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/api/applicationFlowRandomized")
+    public ModelAndView applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
+        generateRandomEpics(save, min, max);
+        return null;
     }
 }

@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.updateDevelopmentTeamsSetup;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
@@ -16,17 +19,18 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 @SpringBootApplication
 public class SoftwareDevelopmentSimulationApp
 {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         ConfigurableApplicationContext configurableApplicationContext = new SpringApplication(SoftwareDevelopmentSimulationApp.class).run(args);
         setIGateways(configurableApplicationContext.getBean(IGateways.class));
         setObjectMapper(configurableApplicationContext.getBean(ObjectMapper.class));
 
-        setupDataProvider(false);
+        setupDataProvider();
         updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 
-        getIGateways().sendToInfo("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024$I hope you will enjoy using my spring integration web based application");
-
-        //TODO: Write tests for complete application flow, predefined and randomized data flow saving and loading
+        try {
+            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by predefined data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", (double) Files.size(getCurrentApplicationDataPath()) / 1024));
+        } catch (IOException e) {
+            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by predefined data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", 0.00));
+        }
     }
 }

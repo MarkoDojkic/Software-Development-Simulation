@@ -3,7 +3,6 @@ package dev.markodojkic.softwaredevelopmentsimulation.util;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.google.common.reflect.TypeToken;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.*;
 
@@ -41,13 +40,6 @@ public class PredefinedTasksSerializer extends JsonSerializer<List<Epic>> {
         }
 
         jsonGenerator.writeEndArray();
-    }
-
-    @Override
-    public Class<List<Epic>> handledType() {
-        TypeToken<List<Epic>> typeToken = new TypeToken<>() {
-        };
-        return (Class<List<Epic>>) typeToken.getRawType();
     }
 
     private void serializeUserStories(int epicIndex, List<Developer> currentDevelopmentTeam, String selectedEpicDevelopmentTeam, List<UserStory> userStories, JsonGenerator jsonGenerator)

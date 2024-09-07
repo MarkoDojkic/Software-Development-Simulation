@@ -64,12 +64,23 @@ public class Utilities {
 	private static ObjectMapper objectMapper;
 
 	static {
-		Path base = Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.3.0");
+		boolean isTesting = System.getProperty("spring.profiles.active", "default").equals("test");
+
+		Path base = isTesting ? Paths.get("src/test/resources", "dev.markodojkic.software_development_simulation.testing_data") : Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.3.0");
 
 		currentApplicationDataPath = base;
-		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
+		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", isTesting ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
+
+		if(isTesting){
+            try {
+				Files.createDirectories(currentApplicationDataPath);
+				Files.createDirectories(currentApplicationLogsPath);
+            } catch (IOException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+		}
 	}
-	
+
     public static void loadPredefinedTasks(List<Epic> predefinedEpics){
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
 		getAvailableDevelopmentTeamIds().clear();
@@ -105,7 +116,7 @@ public class Utilities {
 	public static void generateRandomEpics(boolean save, int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		totalEpicsCount = SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
+		totalEpicsCount = (epicCountDownLimit == 0 && epicCountUpperLimit == 0) ? 0 : SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
 
 		getAvailableDevelopmentTeamIds().addAll(IntStream.rangeClosed(0, getCurrentDevelopmentTeamsSetup().size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 		totalDevelopmentTeamsPresent = getCurrentDevelopmentTeamsSetup().size();
@@ -203,10 +214,8 @@ public class Utilities {
 
 	public static void saveEpics(){
 		try {
-			String folderName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
+			String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
 			Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
-
-			if (!Files.exists(parentDirectory)) Files.createDirectories(parentDirectory);
 
 			Files.createDirectories(parentDirectory.resolve(folderName));
 
@@ -217,3 +226,4 @@ public class Utilities {
 		}
 	}
 }
+

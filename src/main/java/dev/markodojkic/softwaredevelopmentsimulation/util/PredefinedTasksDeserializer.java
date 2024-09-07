@@ -37,11 +37,9 @@ public class PredefinedTasksDeserializer extends JsonDeserializer<Epic> {
         // Deserialize user stories
         List<UserStory> userStories = new ArrayList<>();
         JsonNode userStoriesNode = epicNode.get("userStories");
-        if (userStoriesNode.isArray()) {
-            for (JsonNode userStoryNode : userStoriesNode) {
-                UserStory userStory = deserializeUserStory(currentDevelopmentTeam, epicId, userStoryNode);
-                userStories.add(userStory);
-            }
+        for (JsonNode userStoryNode : userStoriesNode) {
+            UserStory userStory = deserializeUserStory(currentDevelopmentTeam, epicId, userStoryNode);
+            userStories.add(userStory);
         }
 
         return Epic.builder()
@@ -69,11 +67,9 @@ public class PredefinedTasksDeserializer extends JsonDeserializer<Epic> {
         // Deserialize technical tasks
         List<TechnicalTask> technicalTasks = new ArrayList<>();
         JsonNode technicalTasksNode = userStoryNode.get("technicalTasks");
-        if (technicalTasksNode.isArray()) {
-            for (JsonNode technicalTaskNode : technicalTasksNode) {
-                TechnicalTask technicalTask = deserializeTechnicalTask(currentDevelopmentTeam, userStoryId, technicalTaskNode);
-                technicalTasks.add(technicalTask);
-            }
+        for (JsonNode technicalTaskNode : technicalTasksNode) {
+            TechnicalTask technicalTask = deserializeTechnicalTask(currentDevelopmentTeam, userStoryId, technicalTaskNode);
+            technicalTasks.add(technicalTask);
         }
 
         return UserStory.builder()

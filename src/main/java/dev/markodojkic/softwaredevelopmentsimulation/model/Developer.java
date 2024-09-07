@@ -35,7 +35,7 @@ public class Developer implements Serializable {
 	public Developer(String id, String name, String surname, String yugoslavianUMCN, String placeOfBirth, DeveloperType developerType, long experienceCoefficient, boolean isFemale) {
 		this.name = name;
 		this.surname = surname;
-		this.yugoslavianUMCN = StringUtil.isNullOrEmpty(yugoslavianUMCN) ? generateRandomYugoslavianUMCN(isFemale, false) : yugoslavianUMCN;
+		this.yugoslavianUMCN = StringUtil.isNullOrEmpty(yugoslavianUMCN) ? generateRandomYugoslavianUMCN(isFemale) : yugoslavianUMCN;
 		this.id = StringUtil.isNullOrEmpty(id) ? UUID.nameUUIDFromBytes(this.yugoslavianUMCN.getBytes(StandardCharsets.UTF_8)).toString() : id;
 		this.placeOfBirth = StringUtil.isNullOrEmpty(placeOfBirth) ? getPlaceOfBirthBasedUMCNPoliticalRegionCode(Integer.parseInt(this.yugoslavianUMCN.substring(7, 9))) : placeOfBirth;
 		this.developerType = developerType;

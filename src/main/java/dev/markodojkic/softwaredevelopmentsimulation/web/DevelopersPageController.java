@@ -1,15 +1,9 @@
 package dev.markodojkic.softwaredevelopmentsimulation.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,24 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.generateRandomEpics;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.loadPredefinedTasks;
 
 @Controller
 public class DevelopersPageController {
 	private static final String REDIRECT_DEVELOPERS = "redirect:/developers";
 
-	private final ObjectMapper objectMapper;
-
-	@Autowired
-	public DevelopersPageController(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
-
 	@GetMapping("/developers")
 	public ModelAndView getDevelopersPage(){
 		List<String> backgroundColors = getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.getFirst().getDisplayName())).toList();
-		ModelAndView developersPage = new ModelAndView("/developers");
+		ModelAndView developersPage = new ModelAndView("developersPage");
 
 		developersPage.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		developersPage.addObject("developmentTeamBackgroundColors", backgroundColors);
@@ -49,14 +34,9 @@ public class DevelopersPageController {
 		return developersPage;
 	}
 
-	@GetMapping("/test")
-	public ModelAndView gettest(){
-		return new ModelAndView("/test");
-	}
-
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developers.html file
+		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
 
 		editingDeveloperForm.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
@@ -92,24 +72,6 @@ public class DevelopersPageController {
 	public ModelAndView deleteDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		removeDeveloper(developmentTeamIndex, developerIndex);
 		return null; //Solves issue: Error resolving template [api/removeDeveloper]
-	}
-
-	@PostMapping(value = "/api/applicationFlowPredefined")
-	public ResponseEntity<String> applicationFlowPredefined(@RequestBody String predefinedData){
-        try {
-            loadPredefinedTasks(objectMapper.readValue(predefinedData, new TypeReference<>() {
-            }));
-			return ResponseEntity.ok("Successfully started application flow with predefined data");
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while trying start application flow with predefined data: " + e.getMessage());
-        }
-    }
-
-	@PostMapping(value = "/api/applicationFlowRandomized")
-	public ModelAndView applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
-		generateRandomEpics(save, min, max);
-		return null;
 	}
 
 	private String getBackgroundColor(String text) {
