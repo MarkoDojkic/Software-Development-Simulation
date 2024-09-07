@@ -112,8 +112,8 @@
                     <sl-input class="labelOnLeftModification" label="Likelihood of generating female developer" name="femaleDevelopersPercentage" type="number" value="45" size="medium" help-text="Default value is 45%" min="0" max="100" inputmode="number" required no-spin-buttons pill>
                         <sl-icon name="percent" slot="suffix"></sl-icon>
                     </sl-input>
-                    <sl-divider vertical></sl-divider>
-                    <div style="display: ruby-text">
+                    <sl-divider class="horizontalDivider"></sl-divider>
+                    <div style="display: inline-flex">
                         <sl-input class="labelOnLeftModification" label="Created developers count" name="minimalDevelopersCount" type="number" value="30" size="medium" help-text="Default values are min: x30" min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
@@ -122,7 +122,7 @@
                         </sl-input>
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
-                    <div style="display: ruby-text">
+                    <div style="display: inline-flex">
                         <sl-input class="labelOnLeftModification" label="Developers in team count" name="minimalDevelopersInTeamCount" type="number" value="5" size="medium" help-text="Default values are min: x5" min="0" max="999" inputmode="number" required no-spin-buttons pill>
                             <sl-icon name="x" slot="prefix"></sl-icon>
                         </sl-input>
@@ -145,7 +145,7 @@
     </body>
 
     <div style="display: none"> <!-- Fragment containers -->
-        <form id="developer-edit-form" th:action="@{/api/editDeveloper}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
+        <form id="developer-edit-form" th:action="@{/api/modifyDeveloper}" th:object="${formEditDeveloperPlaceholder}" th:method="PATCH" style="text-align: -webkit-center;" th:fragment="editingDeveloperForm">
             <div style="display: inline-flex">
                 <sl-input type="text" name="name" placeholder="Name" size="medium" maxlength="64" th:value="${formEditDeveloperPlaceholder.name}" pattern="^[\u0410-\u0418\u0402\u0408\u041A-\u041F\u0409\u040A\u0420-\u0428\u040B\u040FA-Z\u0110\u017D\u0106\u010C\u0160]{1}[\u0430-\u0438\u0452\u043A-\u043F\u045A\u0459\u0440-\u0448\u0458\u045B\u045Fa-z\u0111\u017E\u0107\u010D\u0161]+$" required pill></sl-input>
                 <sl-divider vertical></sl-divider>
