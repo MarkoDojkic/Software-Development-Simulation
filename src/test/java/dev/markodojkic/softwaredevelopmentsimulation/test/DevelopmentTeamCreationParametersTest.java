@@ -1,20 +1,14 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
-import org.junit.jupiter.api.BeforeAll;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DevelopmentTeamCreationParametersTest {
+class DevelopmentTeamCreationParametersTest extends SoftwareDevelopmentSimulationAppBaseTest {
     private DevelopmentTeamCreationParameters params;
-
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
 
     @BeforeEach
     public void setup() {

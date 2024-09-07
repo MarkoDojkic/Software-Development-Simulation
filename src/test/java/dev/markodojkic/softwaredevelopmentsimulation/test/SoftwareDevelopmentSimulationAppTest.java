@@ -1,51 +1,47 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
-import dev.markodojkic.softwaredevelopmentsimulation.DeveloperImpl;
-import dev.markodojkic.softwaredevelopmentsimulation.ProjectManagerImpl;
-import dev.markodojkic.softwaredevelopmentsimulation.config.MiscellaneousConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.config.SpringIntegrationMessageChannelsConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.flow.FileHandlingFlow;
-import dev.markodojkic.softwaredevelopmentsimulation.flow.MQTTFlow;
-import dev.markodojkic.softwaredevelopmentsimulation.flow.PrintoutFlow;
-import dev.markodojkic.softwaredevelopmentsimulation.interfaces.IGateways;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.util.concurrent.Uninterruptibles;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Epic;
+import dev.markodojkic.softwaredevelopmentsimulation.model.TechnicalTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.UserStory;
-import dev.markodojkic.softwaredevelopmentsimulation.test.Config.TestConfig;
-import dev.markodojkic.softwaredevelopmentsimulation.transformer.PrinterTransformer;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
-import io.moquette.broker.Server;
-import io.moquette.broker.config.MemoryConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PriorityChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ExecutorChannelInterceptor;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.updateDevelopmentTeamsSetup;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@ContextConfiguration(classes = { MiscellaneousConfig.class, TestConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, FileHandlingFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class })
-@ExtendWith(MockitoExtension.class)
-class SoftwareDevelopmentSimulationAppTest {
+class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulationAppBaseTest {
+	@Autowired
+	private MockMvc mockMvc;
+
 	@Autowired
 	@Qualifier(value = "information.mqtt.input")
 	private MessageChannel informationMQTTInput;
@@ -54,43 +50,17 @@ class SoftwareDevelopmentSimulationAppTest {
 	@Qualifier(value = "epicMessage.input")
 	private MessageChannel epicMessageInput;
 
-    @Autowired
-    @Qualifier("IGateways")
-	private IGateways iGateways;
+	@Autowired
+	@Qualifier(value = "doneEpics.output")
+	private MessageChannel doneEpicsOutput;
 
-	private static Server mqttServer;
+	@Autowired
+	@Qualifier(value = "doneSprintUserStories.output")
+	private MessageChannel doneSprintUserStoriesOutput;
 
-
-	@BeforeAll
-	public static void preSetup() throws Exception {
-		Properties properties = new Properties();
-		properties.setProperty("port", "21681");
-		properties.setProperty("host", "0.0.0.0");
-		properties.setProperty("password_file", ""); //No password
-		properties.setProperty("allow_anonymous", "true");
-		properties.setProperty("authenticator_class", "");
-		properties.setProperty("authorizator_class", "");
-		properties.setProperty("netty.mqtt.message_size", "32368");
-
-		MemoryConfig memoryConfig = new MemoryConfig(properties);
-		mqttServer = new Server();
-		mqttServer.startServer(memoryConfig); //In memory MQTT server
-		setupDataProvider(true);
-	}
-
-	@AfterAll
-	public static void tearDown() {
-		mqttServer.stopServer();
-	}
-
-	@BeforeEach
-	public void setup() {
-		assertNotNull(iGateways);
-		Utilities.setIGateways(iGateways);
-		assertNotNull(Utilities.getIGateways());
-		setupDataProvider(true);
-		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
-	}
+	@Autowired
+	@Qualifier(value = "doneTechnicalTasks.output")
+	private MessageChannel doneTechnicalTasksOutput;
 
 	@Test
 	void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload() {
@@ -131,7 +101,9 @@ class SoftwareDevelopmentSimulationAppTest {
 	}
 
 	@Test
-	void when_generateRandomEpics_epicsAreCorrectlyCreated() {
+	void when_generateRandomEpics_epicsAreCorrectlyCreated() throws Exception {
+		String originalOsName = System.getProperty("os.name");
+		System.setProperty("os.name", "generic");
 		assertNotNull(epicMessageInput);
 
 		CountDownLatch interceptorLatch = new CountDownLatch(4);
@@ -146,11 +118,10 @@ class SoftwareDevelopmentSimulationAppTest {
 				epics.add((Epic) message.getPayload());
 				interceptorLatch.countDown();
 				return ExecutorChannelInterceptor.super.preSend(message, channel);
-				//Here preSend is used since this is pollable channel, so I can get all epics even whether they are polled or not
 			}
 		});
 
-		Utilities.generateRandomEpics(false, epicCountDownLimit, epicCountUpperLimit);
+		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(epicCountDownLimit)).param("max", String.valueOf(epicCountUpperLimit))).andExpect(status().is2xxSuccessful());
 
 		try {
 			assertTrue(interceptorLatch.await(10, TimeUnit.MILLISECONDS));
@@ -173,5 +144,168 @@ class SoftwareDevelopmentSimulationAppTest {
 		}
 
 		((PriorityChannel) epicMessageInput).removeInterceptor(0);
+
+		Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
+
+		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("informationChannel.log")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("jiraActivityStreamChannel.log")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("sessionData.json")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("developersData.json")).isEmpty());
+
+		System.setProperty("os.name", originalOsName);
+	}
+
+	@Test
+	void when_predefinedDataIsUsed_correctApplicationFlowIsExpected() {
+        try {
+			assertNotNull(epicMessageInput);
+			assertNotNull(doneEpicsOutput);
+			assertNotNull(doneSprintUserStoriesOutput);
+			assertNotNull(doneTechnicalTasksOutput);
+
+			CountDownLatch epicsInputInterceptorLatch = new CountDownLatch(1);
+			List<Epic> epicsInput = new ArrayList<>();
+
+			CountDownLatch epicsDoneInterceptorLatch = new CountDownLatch(1);
+			List<Epic> epicsDone = new ArrayList<>();
+
+			CountDownLatch userStoriesDoneInterceptorLatch = new CountDownLatch(2);
+			List<UserStory> userStoriesDone = new ArrayList<>();
+
+			CountDownLatch technicalTasksDoneInterceptorLatch = new CountDownLatch(3);
+			List<TechnicalTask> technicalTasksDone = new ArrayList<>();
+
+			((PriorityChannel) epicMessageInput).addInterceptor(new ExecutorChannelInterceptor() {
+				@Override
+				public Message<?> preSend(Message<?> message, MessageChannel channel) {
+					epicsInput.add((Epic) message.getPayload());
+					epicsInputInterceptorLatch.countDown();
+					return ExecutorChannelInterceptor.super.preSend(message, channel);
+				}
+			});
+
+			((DirectChannel) doneEpicsOutput).addInterceptor(new ExecutorChannelInterceptor() {
+				@Override
+				public Message<?> preSend(Message<?> message, MessageChannel channel) {
+					epicsDone.add((Epic) message.getPayload());
+					epicsDoneInterceptorLatch.countDown();
+					return ExecutorChannelInterceptor.super.preSend(message, channel);
+				}
+			});
+
+			((DirectChannel) doneSprintUserStoriesOutput).addInterceptor(new ExecutorChannelInterceptor() {
+				@Override
+				public Message<?> preSend(Message<?> message, MessageChannel channel) {
+					userStoriesDone.add((UserStory) message.getPayload());
+					userStoriesDoneInterceptorLatch.countDown();
+					return ExecutorChannelInterceptor.super.preSend(message, channel);
+				}
+			});
+
+			((DirectChannel) doneTechnicalTasksOutput).addInterceptor(new ExecutorChannelInterceptor() {
+				@Override
+				public Message<?> preSend(Message<?> message, MessageChannel channel) {
+					technicalTasksDone.add((TechnicalTask) message.getPayload());
+					technicalTasksDoneInterceptorLatch.countDown();
+					return ExecutorChannelInterceptor.super.preSend(message, channel);
+				}
+			});
+
+			replaceDevelopmentTeamsSetup(getObjectMapper().readValue(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testDevelopersData.json")).toURI())), new TypeReference<>() {}));
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/api/applicationFlowPredefined").content(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())))).andExpect(status().is2xxSuccessful());
+
+			Uninterruptibles.sleepUninterruptibly(30, TimeUnit.SECONDS); //Time needed to complete application flow with test data
+
+			for (Epic epic : epicsInput) {
+				List<UserStory> userStories = epic.getUserStories();
+				assertNotNull(epic.getUserStories());
+				assertTrue(epicsDone.contains(epic));
+
+				for (UserStory userStory : userStories) {
+					assertNotNull(userStory.getTechnicalTasks());
+					assertTrue(userStoriesDone.contains(userStory));
+
+					for(TechnicalTask task : userStory.getTechnicalTasks()) {
+						assertTrue(technicalTasksDone.contains(task));
+					}
+				}
+			}
+
+			((PriorityChannel) epicMessageInput).removeInterceptor(0);
+			((DirectChannel) doneEpicsOutput).removeInterceptor(0);
+			((DirectChannel) doneSprintUserStoriesOutput).removeInterceptor(0);
+			((DirectChannel) doneTechnicalTasksOutput).removeInterceptor(0);
+
+			assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("informationChannel.log")).isEmpty());
+			assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("jiraActivityStreamChannel.log")).isEmpty());
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/api/saveSessionData")
+							.contentType(MediaType.APPLICATION_JSON)
+							.content(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI()))))
+					.andExpect(status().is2xxSuccessful())
+					.andExpect(MockMvcResultMatchers.content().string("Data successfully saved to folder '2012-12-12 00:00:00'"));
+
+
+			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("sessionData.json")));
+			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testDevelopersData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("developersData.json")));
+        } catch (Exception e) {
+            fail(e.getCause());
+        }
+    }
+
+	@Test
+	void when_emptyRandomizedDataIsUsed_applicationFlowPassesWithoutError() throws Exception {
+		DevelopmentTeamCreationParameters parameters = new DevelopmentTeamCreationParameters();
+		parameters.setRetainOld(false);
+		parameters.setFemaleDevelopersPercentage(80);
+		parameters.setMinimalDevelopersCount(5);
+		parameters.setMaximalDevelopersCount(6);
+		parameters.setMinimalDevelopersInTeamCount(5);
+		parameters.setMaximalDevelopersInTeamCount(6);
+
+		mockMvc.perform(put("/api/recreateDevelopmentTeams")
+						.flashAttr("parameters", parameters))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/developers"));
+
+		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(0)).param("max", String.valueOf(0))).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void when_emptyOrPartialPredefinedDataIsUsed_applicationFlowPassesWithoutError() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/applicationFlowPredefined")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("[]"))
+				.andExpect(status().is2xxSuccessful());
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/applicationFlowPredefined")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("[" +
+								"  {\"userStories\": []," +
+								"    \"epicId\": \"TMTV-101\"," +
+								"    \"epicName\": \"Calendar SPRINT-12500\"," +
+								"    \"epicPriority\": \"CRITICAL\"," +
+								"    \"selectedEpicDevelopmentTeam\": \"5\"," +
+								"    \"epicReporter\": \"-1\"," +
+								"    \"epicAssignee\": \"3\"," +
+								"    \"epicCreatedOn\": \"11.08.2024. 17:12:39\"," +
+								"    \"epicDescription\": \"Create calendar microservice with basic functions\"" +
+								"  }" +
+								"]"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void when_errorTextIsPassedToErrorChannel_errorApplicationFlowIsTriggered() throws IOException {
+		getIGateways().sendToError("Some error message");
+
+		Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
+
+		assertTrue(Files.readString(getCurrentApplicationLogsPath().resolve("errorChannel.log")).contains("""
+                \u001B[38;5;196m/*\t- !ERROR! -\u001B[0m
+                \u001B[38;5;196m  !-- Some error message\u001B[0m
+                \u001B[38;5;196m\t - !ERROR! - */\u001B[0m%$
+                """));
 	}
 }

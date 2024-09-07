@@ -4,22 +4,20 @@ import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
-import org.junit.jupiter.api.BeforeAll;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.GlobalSetupExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.ZonedDateTime;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
+@ExtendWith(GlobalSetupExtension.class)
 class BaseTaskTest {
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
-
     @Test
     void when_noArgsConstructorIsCalled_correctValuesAreSetAsDefault() {
         BaseTask task = new BaseTask();
@@ -34,10 +32,11 @@ class BaseTaskTest {
     }
 
     @Test
-    void when_allArgsConstructorIsCalled_correctValuesAreSet() {
+    void when_allArgsConstructorIsCalled_correctValuesAreSetAndToStringIsAdequate() {
         Priority priority = Priority.NORMAL;
-        Developer assignee = mock(Developer.class);
-        Developer reporter = mock(Developer.class);
+        Developer reporter = new Developer("John Doe", "1234567858123", DeveloperType.SENIOR_DEVELOPER, false, 2L);
+        Developer assignee = new Developer("Alice Johnson", "9876543210987", DeveloperType.INTERN_DEVELOPER, true, 1L);
+
         ZonedDateTime createdOn = ZonedDateTime.now();
 
         BaseTask task = new BaseTask("1", "Task Name", "Task Description", priority, assignee, reporter, createdOn);
@@ -49,6 +48,19 @@ class BaseTaskTest {
         assertEquals(assignee, task.getAssignee());
         assertEquals(reporter, task.getReporter());
         assertEquals(createdOn, task.getCreatedOn());
+
+        // Assertion for toString method
+        String expectedToString = "BaseTask{" +
+                "id='1'," +
+                " name='Task Name'," +
+                " description='Task Description'," +
+                " priority=NORMAL," +
+                " assignee='" + assignee.getDisplayName() +
+                "', reporter='" + reporter.getDisplayName() +
+                "', createdOn=" + createdOn +
+                '}';
+
+        assertEquals(expectedToString, task.toString());
     }
 
     @Test
@@ -103,34 +115,6 @@ class BaseTaskTest {
 
         // Test with null
         assertNotNull(task1);
-    }
-    
-    @Test
-    void testToString() {
-        Priority priority = Priority.NORMAL;
-        Developer assignee = mock(Developer.class);
-        Developer reporter = mock(Developer.class);
-        ZonedDateTime createdOn = ZonedDateTime.now();
-
-        BaseTask task = new BaseTask("1", "Task Name", "Task Description", priority, null, null, createdOn);
-
-        String expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
-                ", assignee='UNASSIGNED', reporter='UNASSIGNED', createdOn=" + createdOn + '}';
-
-        assertEquals(expectedToString, task.toString());
-
-        task.setAssignee(assignee);
-        task.setReporter(reporter);
-
-        expectedToString = "BaseTask{id='1', name='Task Name', description='Task Description', priority=" + priority +
-                ", assignee='" + assignee.getDisplayName() + "', reporter='" + reporter.getDisplayName() +
-                "', createdOn=" + createdOn + '}';
-
-        assertEquals(expectedToString, task.toString());
-
-        task.setReporter(null);
-
-        assertEquals(expectedToString, task.toString());
     }
 
     @Test

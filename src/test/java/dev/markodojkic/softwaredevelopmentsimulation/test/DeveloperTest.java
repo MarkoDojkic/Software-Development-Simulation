@@ -2,20 +2,14 @@ package dev.markodojkic.softwaredevelopmentsimulation.test;
 
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
-import org.junit.jupiter.api.BeforeAll;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeveloperTest {
+class DeveloperTest extends SoftwareDevelopmentSimulationAppBaseTest {
     private Developer developer;
-
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
 
     @BeforeEach
     public void setup() {
@@ -31,6 +25,7 @@ class DeveloperTest {
         assertNull(developer.getYugoslavianUMCN());
         assertNull(developer.getPlaceOfBirth());
         assertEquals(DeveloperType.INTERN_DEVELOPER, developer.getDeveloperType());
+        assertEquals("Intern developer", developer.getDeveloperType().getDisplayName());
         assertEquals(0L, developer.getExperienceCoefficient());
     }
 
@@ -65,8 +60,8 @@ class DeveloperTest {
 
     @Test
     void when_equalsOrHashCodeIsCalled_onEqualObjectAreSame_onNonEqualObjectsAreDifferent() {
-        Developer developer1 = new Developer("John Doe", "1234567890123", DeveloperType.SENIOR_DEVELOPER, false, 2L);
-        Developer developer2 = new Developer("John Doe", "1234567890123", DeveloperType.SENIOR_DEVELOPER, false, 2L);
+        Developer developer1 = new Developer("John Doe", "1234567858123", DeveloperType.SENIOR_DEVELOPER, false, 2L);
+        Developer developer2 = new Developer("John Doe", "1234567858123", DeveloperType.SENIOR_DEVELOPER, false, 2L);
         Developer developer3 = new Developer("Alice Johnson", "9876543210987", DeveloperType.INTERN_DEVELOPER, true, 1L);
 
         assertEquals(developer1, developer2);
@@ -74,5 +69,7 @@ class DeveloperTest {
 
         assertNotEquals(developer1, developer3);
         assertNotEquals(developer1.hashCode(), developer3.hashCode());
+
+        assertNotEquals("John Doe", developer1);
     }
 }

@@ -3,23 +3,16 @@ package dev.markodojkic.softwaredevelopmentsimulation.test;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class DataProviderTest {
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
-
+class DataProviderTest extends SoftwareDevelopmentSimulationAppBaseTest {
     @Test
     void when_updateDevelopmentTeamsSetup_currentDevelopmentTeamsSetupIsPopulated_withReplacementOfOldValues() {
         DevelopmentTeamCreationParameters parameters = new DevelopmentTeamCreationParameters();

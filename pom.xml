@@ -40,7 +40,7 @@
         <spring-version>3.3.2</spring-version>
         <spring-integration-version>6.3.2</spring-integration-version>
         <jmockit-version>1.49.2</jmockit-version>
-        <junit-jupiter-version>5.10.2</junit-jupiter-version>
+        <junit-jupiter-version>5.11.0</junit-jupiter-version>
         <application.version>${project.version}</application.version>
     </properties>
 
@@ -168,6 +168,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-api</artifactId>
+            <version>1.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.12.0</version>
@@ -249,6 +261,11 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>dev/markodojkic/softwaredevelopmentsimulation/SoftwareDevelopmentSimulationApp.class</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -259,6 +276,7 @@
                 <configuration>
                     <argLine>
                         ${argLine} <!-- Needed for jacoco to run -->
+                        -Dspring.profiles.active=test
                         -Xshare:off
                         -XX:+EnableDynamicAgentLoading
                         -javaagent:${user.home}/.m2/repository/com/github/hazendaz/jmockit/jmockit/${jmockit-version}/jmockit-${jmockit-version}.jar

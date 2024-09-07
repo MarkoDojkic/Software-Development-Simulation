@@ -3,31 +3,32 @@ package dev.markodojkic.softwaredevelopmentsimulation.test;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider;
-import dev.markodojkic.softwaredevelopmentsimulation.web.DevelopersPageController;
+import dev.markodojkic.softwaredevelopmentsimulation.web.DeveloperControllerAdvice;
 import mockit.*;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
+import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.getPlaceOfBirthBasedUMCNPoliticalRegionCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DevelopersPageController.class)
-class DevelopersPageControllerTest {
+class DevelopersPageControllerTest extends SoftwareDevelopmentSimulationAppBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
+    @InjectMocks
+    private DeveloperControllerAdvice developerControllerAdvice;
 
     @BeforeEach
     public void setup() {
@@ -123,8 +124,53 @@ class DevelopersPageControllerTest {
     @Test
     void when_getRequestIsSentToDevelopersEndpoint_developersPageViewIsReturned() throws Exception {
         mockMvc.perform(get("/developers"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("/developers"))
-                .andExpect(model().attributeExists("developmentTeams"));
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("developersPage"))
+                .andExpect(model().attributeExists("developmentTeams"))
+                .andExpect(model().attributeExists("developmentTeamBackgroundColors"))
+                .andExpect(model().attributeExists("developmentTeamForegroundColors"))
+                .andExpect(model().attributeExists("developerTypes"))
+                .andExpect(model().attributeExists("formDeveloperPlaceholder"))
+                .andExpect(model().attributeExists("formEditDeveloperPlaceholder"))
+                .andExpect(model().attributeDoesNotExist("developerIndex"))
+                .andExpect(model().attributeDoesNotExist("developmentTeamIndex"));
     }
+
+    @Test
+    void when_nullValuesAreProvidedForDeveloper_defaultDataIsPopulatedUsingAdvice() {
+        // Section 1: whenYugoslavianUMCNIsEmpty_thenItIsGenerated
+        Developer developer = new Developer();  // Assuming Developer is your model class
+        DeveloperControllerAdvice developerControllerAdvice = new DeveloperControllerAdvice();  // Your controller advice instance
+
+        // Act
+        Developer updatedDeveloper = developerControllerAdvice.overrideDeveloperFields(developer);
+
+        // Assert
+        assertNotNull(updatedDeveloper.getYugoslavianUMCN(), "Yugoslavian UMCN should be generated");
+
+        // Section 2: whenIdIsEmpty_thenItIsGeneratedFromYugoslavianUMCN
+        String mockYugoslavianUMCN = "1234567890123";
+        developer.setYugoslavianUMCN(mockYugoslavianUMCN);
+
+        // Act
+        developer.setId(null);
+        updatedDeveloper = developerControllerAdvice.overrideDeveloperFields(developer);
+
+        // Assert
+        UUID expectedUUID = UUID.nameUUIDFromBytes(mockYugoslavianUMCN.getBytes(StandardCharsets.UTF_8));
+        assertEquals(expectedUUID.toString(), updatedDeveloper.getId(), "ID should be generated from Yugoslavian UMCN");
+
+        // Section 3: whenPlaceOfBirthIsEmpty_thenItIsSetBasedOnRegionCode
+        mockYugoslavianUMCN = "1234567012345";  // Region code 01
+        developer.setYugoslavianUMCN(mockYugoslavianUMCN);
+        developer.setPlaceOfBirth(null);
+
+        // Act
+        updatedDeveloper = developerControllerAdvice.overrideDeveloperFields(developer);
+
+        // Assert
+        String expectedPlaceOfBirth = getPlaceOfBirthBasedUMCNPoliticalRegionCode(1);  // Region code from UMCN
+        assertEquals(expectedPlaceOfBirth, updatedDeveloper.getPlaceOfBirth(), "Place of birth should be set based on UMCN's region code");
+    }
+
 }

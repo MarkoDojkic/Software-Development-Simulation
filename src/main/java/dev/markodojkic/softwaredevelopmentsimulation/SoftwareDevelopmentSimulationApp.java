@@ -32,5 +32,7 @@ public class SoftwareDevelopmentSimulationApp
         } catch (IOException e) {
             getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by predefined data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", 0.00));
         }
+
+        //TODO: Implement swagger, explain controllers and write readme
     }
 }

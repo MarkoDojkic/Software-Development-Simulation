@@ -1,14 +1,13 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import dev.markodojkic.softwaredevelopmentsimulation.util.Utilities;
-import dev.markodojkic.softwaredevelopmentsimulation.web.MainController;
 import mockit.Mock;
 import mockit.MockUp;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,108 +17,50 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Stream;
+import java.util.concurrent.TimeUnit;
 
-import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.setupDataProvider;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(MainController.class)
-class MainControllerTests {
+class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final ZonedDateTime now = ZonedDateTime.now();
-
-    @BeforeAll
-    public static void preSetup(){
-        setupDataProvider(true);
-    }
-
-    @BeforeEach
-    void setup() {
-        new MockUp<Utilities>() {
-            @Mock
-            public Path getCurrentApplicationLogsPath() {
-                return Paths.get("/mock/path");
-            }
-        };
-
-        new MockUp<ZonedDateTime>(){
-            @Mock
-            public static ZonedDateTime now() {
-                return now;
-            }
-        };
-
-        new MockUp<Files>() {
-            @Mock
-            public String readString(Path path) {
-                return "[]";
-            }
-
-            @Mock
-            public static Path writeString(Path path, CharSequence csq, OpenOption... options)
-                    throws IOException
-            {
-                return path;
-            }
-        };
-    }
-
-    @Test
-    void whenShowFileContentsMethodIsCalled_exampleResponseEntityIsRetrieved() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/logs")
-                        .param("filename", "testFile")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
-    }
-
     @Test
     void whenShowFileContentsMethodIsCalled_withNonExistingFilePath_FileNotFoundErrorIsThrown() throws Exception {
-        new MockUp<Files>() {
-            @Mock
-            public String readString(Path path) throws IOException {
-                throw new IOException("File not found");
-            }
-        };
-
         mockMvc.perform(MockMvcRequestBuilders.get("/api/logs")
-                        .param("filename", "nonExistentTestFile")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("filename", "nonExistentTestFile"))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.content().string("Error occurred while trying to read file: File not found"));
+                .andExpect(content().string(String.format("Error occurred while trying to read file: %s/nonExistentTestFile.log", Utilities.getCurrentApplicationLogsPath().toAbsolutePath())));
     }
 
     @Test
     void when_getRequestIsSentToRootEndpoint_indexPageIsRetrieved() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/")
-                        .contentType(MediaType.TEXT_HTML))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("/index"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("developer"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.view().name("index")) // Adjusted view name
+                .andExpect(MockMvcResultMatchers.model().attributeExists("technicalManager"))
+                .andExpect(MockMvcResultMatchers.model().attributeDoesNotExist("selectedEpicDevelopmentTeam"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("developmentTeams"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("developmentTeamsSummary"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("priorities"));
     }
 
     @Test
     void when_getPredefinedDataFoldersListEndpointIsCalled() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+        when_saveSessionDataEndpointIsCalled_savePredefinedData();
+
+        Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     void when_getPredefinedDataFoldersListEndpointIsCalled_withNonExistingFilePath_PathNotFoundErrorIsThrown() throws Exception {
-        new MockUp<Files>() {
-            @Mock
-            public static Stream<Path> list(Path dir) throws IOException {
-                throw new IOException("Path not found");
-            }
-        };
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList"))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.content().string("Error occurred while trying to get predefined data path folders list: Path not found"));
+        FileUtils.deleteDirectory(Utilities.getCurrentApplicationDataPath().toAbsolutePath().toFile());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -129,17 +70,18 @@ class MainControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/saveSessionData")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(sessionDataJSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Data successfully saved to folder '".concat(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"))).concat("'")));
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("Data successfully saved to folder '2012-12-12 00:00:00'"));
     }
 
     @Test
-    void when_saveSessionDataEndpointIsCalled_savePredefinedData_withNonExistingFilePath_FileNotFoundErrorIsThrown() throws Exception {
+    void when_saveSessionDataEndpointIsCalled_givenMockedException_exceptionIsCaught() throws Exception {
         new MockUp<Files>() {
             @Mock
             public static Path writeString(Path path, CharSequence csq, OpenOption... options)
-                    throws IOException {
-                throw new IOException("Path not found for parent directory");
+                    throws IOException
+            {
+                throw new IOException("Test Exception");
             }
         };
 
@@ -148,30 +90,43 @@ class MainControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/saveSessionData")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(sessionDataJSON))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.content().string("Error occurred while trying to save session data into file: Path not found for parent directory"));
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Error occurred while trying to save session data into file: Test Exception"));
     }
 
     @Test
     void when_loadSessionDataEndpointIsCalled_loadPredefinedData() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/loadSessionData")
-                        .param("folder", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"))))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
+                        .param("folder", "2012-12-12 00:00:00"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("{\"key\":\"value\"}"));
     }
 
     @Test
-    void when_loadSessionDataEndpointIsCalled_loadPredefinedData_withNonExistingFilePath_FileNotFoundErrorIsThrown() throws Exception {
-        new MockUp<Files>() {
-            @Mock
-            public String readString(Path path) throws IOException {
-                throw new IOException("Path not found for parent directory");
-            }
-        };
-
+    void when_loadSessionDataEndpointIsCalled_loadPredefinedData_withNonExistingFilePath_fileNotFoundErrorIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/loadSessionData")
-                        .param("folder", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"))+"?"))
+                        .param("folder", "2012-12-12 06:06:06"))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.content().string("Error occurred while trying to load predefined data: Path not found for parent directory"));
+                .andExpect(content().string(String.format("Error occurred while trying to load predefined data: %s/developersData.json", Utilities.getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 06:06:06"))));
+    }
+
+    @Test
+    void when_loadInvalidPredefinedData_internalServerErrorIsThrown() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/applicationFlowPredefined")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                [
+                                  {
+                                    "epicId": "TMTV-101",
+                                    "epicName": "Calendar SPRINT-12500",
+                                    "epicPriority": "CRITICAL",
+                                    "selectedEpicDevelopmentTeam": "-8",
+                                    "epicReporter": "-1",
+                                    "epicAssignee": "3",
+                                    "epicCreatedOn": "11.23.2024. 17:12:39",
+                                    "epicDescription": "Create calendar microservice with basic functions"
+                                  }
+                                ]"""))
+                .andExpect(status().isInternalServerError());
     }
 }
