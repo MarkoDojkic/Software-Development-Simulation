@@ -278,3 +278,8 @@ sl-radio-group[name='predefinedDataSelection']::part(form-control-input) {
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
+
+sl-alert {
+    white-space: normal;
+    overflow-wrap: break-word;
+}

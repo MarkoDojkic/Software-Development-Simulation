@@ -28,11 +28,9 @@ public class SoftwareDevelopmentSimulationApp
         updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters());
 
         try {
-            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by predefined data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", (double) Files.size(getCurrentApplicationDataPath()) / 1024));
+            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by appliaction user data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", (double) Files.size(getCurrentApplicationDataPath()) / 1024));
         } catch (IOException e) {
-            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by predefined data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", 0.00));
+            getIGateways().sendToInfo(String.format("Welcome to Software development simulator™ Developed by Ⓒ Marko Dojkić 2024%nSize occupied by appliaction user data is: %.2f KB%nI hope you will enjoy using my spring integration web-based application", 0.00));
         }
-
-        //TODO: Implement swagger, explain controllers and write readme
     }
 }

@@ -852,7 +852,7 @@ $(window).on("load", async () => {
             success: response => {
                 let slRadioOptions= "";
                 let counter = 1;
-                response.forEach(folderName => {
+                response.split(',').forEach(folderName => {
                     slRadioOptions += `<sl-radio name="predefinedDataSelection" value="${folderName}">${counter++}. ${folderName}</sl-radio>`;
                 });
 
@@ -871,7 +871,8 @@ $(window).on("load", async () => {
                     `);
 
                 $('#predefinedDataSelection')[0].show();
-            }
+            },
+            error: response => notifyError(response.responseText)
         });
     });
 

@@ -52,14 +52,14 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
 
         Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     void when_getPredefinedDataFoldersListEndpointIsCalled_withNonExistingFilePath_PathNotFoundErrorIsThrown() throws Exception {
         FileUtils.deleteDirectory(Utilities.getCurrentApplicationDataPath().toAbsolutePath().toFile());
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -68,7 +68,7 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
         String sessionDataJSON = "{\"key\":\"value\"}";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/saveSessionData")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.TEXT_PLAIN)
                         .content(sessionDataJSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string("Data successfully saved to folder '2012-12-12 00:00:00'"));

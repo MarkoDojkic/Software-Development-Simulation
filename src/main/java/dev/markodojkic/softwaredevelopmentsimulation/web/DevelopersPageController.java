@@ -3,6 +3,9 @@ package dev.markodojkic.softwaredevelopmentsimulation.web;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.DevelopmentTeamCreationParameters;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,8 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 public class DevelopersPageController {
 	private static final String REDIRECT_DEVELOPERS = "redirect:/developers";
 
+	@Operation(summary = "This method generates the ModelAndView for the developersPage view in a Spring MVC application")
+	@ApiResponse(responseCode = "200", description = "Returns ModelAndView for developers page containing current development team setup")
 	@GetMapping("/developers")
 	public ModelAndView getDevelopersPage(){
 		List<String> backgroundColors = getCurrentDevelopmentTeamsSetup().stream().map(developmentTeam -> getBackgroundColor(developmentTeam.getFirst().getDisplayName())).toList();
@@ -34,6 +39,11 @@ public class DevelopersPageController {
 		return developersPage;
 	}
 
+	@Operation(summary = "This method generates the ModelAndView for the developer editing fragment in a Spring MVC application")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Returns ModelAndView for developer editing fragment containing chosen developer data"),
+			@ApiResponse(responseCode = "500", description = "In case of invalid development team index and/or developer index, which translates into request for non existent developer, internal server error is received as response")
+	})
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
@@ -47,6 +57,11 @@ public class DevelopersPageController {
 		return editingDeveloperForm;
 	}
 
+	@Operation(summary = "This method replaces current developer team setup with newly generated one based on provided parameters")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "302", description = "Updates current developer team using provided parameters and redirects user to developers list page"),
+			@ApiResponse(responseCode = "500", description = "In of invalid parameters, internal server error is received as response")
+	})
 	@PutMapping(value = "/api/recreateDevelopmentTeams")
 	public String recreateDevelopmentTeams(@ModelAttribute(name = "parameters") DevelopmentTeamCreationParameters parameters){
 		updateDevelopmentTeamsSetup(parameters);
@@ -54,6 +69,11 @@ public class DevelopersPageController {
 	}
 
 
+	@Operation(summary = "This method adds new developer based on form data to selected developer team")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "302", description = "New developer is added to team and user is redirected to developers list page"),
+			@ApiResponse(responseCode = "500", description = "In case of invalid new developer data or non existent developer team, internal server error is received as response")
+	})
 	@PostMapping(value = "/api/insertDeveloper")
 	public String insertDeveloper(@ModelAttribute(name = "formDeveloperPlaceholder") Developer newDeveloper, @ModelAttribute(name = "selectedDevelopmentTeamIndex") int developmentTeamIndex){
 		addDeveloper(developmentTeamIndex, newDeveloper);
@@ -62,16 +82,26 @@ public class DevelopersPageController {
 
 
 
+	@Operation(summary = "This method modifies existing developer")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "302", description = "Data for existing developer is modified and user is redirected to developers list page"),
+			@ApiResponse(responseCode = "500", description = "In case of invalid developer data, internal server error is received as response")
+	})
 	@PatchMapping(value = "/api/modifyDeveloper")
 	public String modifyDeveloper(@ModelAttribute(name = "formEditDeveloperPlaceholder") Developer existingDeveloper, @ModelAttribute(name = "editDeveloperSelectedDevelopmentTeamIndex") int developmentTeamIndex, @ModelAttribute(name = "developerIndex") int developerIndex, @ModelAttribute(name = "previousDevelopmentTeamIndex") int previousDevelopmentTeamIndex){
 		editDeveloper(developmentTeamIndex == -1 ? previousDevelopmentTeamIndex : developmentTeamIndex, previousDevelopmentTeamIndex, developerIndex, existingDeveloper);
 		return REDIRECT_DEVELOPERS;
 	}
 
+	@Operation(summary = "This method deletes existing developer")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Existing developer is removed"),
+			@ApiResponse(responseCode = "500", description = "In case of invalid developer team index and/or developer index, which translates into request for non existent developer, internal server error is received as response")
+	})
 	@DeleteMapping(value = "/api/deleteDeveloper")
 	public ModelAndView deleteDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		removeDeveloper(developmentTeamIndex, developerIndex);
-		return null; //Solves issue: Error resolving template [api/removeDeveloper]
+		return null; //This call is used in async matter so no redirection is needed
 	}
 
 	private String getBackgroundColor(String text) {

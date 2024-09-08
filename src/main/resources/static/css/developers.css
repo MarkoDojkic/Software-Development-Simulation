@@ -112,3 +112,8 @@ span + sl-icon[name='gender-male'], span + sl-icon[name='gender-female'] {
     top: 4px;
     right: 1.4px;
 }
+
+sl-alert {
+    white-space: normal;
+    overflow-wrap: break-word;
+}

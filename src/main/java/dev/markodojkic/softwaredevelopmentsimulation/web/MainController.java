@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +35,8 @@ public class MainController {
         this.objectMapper = objectMapper;
     }
 
+    @Operation(summary = "This method generates the ModelAndView for the index page")
+    @ApiResponse(responseCode = "200", description = "Returns ModelAndView for index page with needed data")
     @GetMapping(value = "/")
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("index");
@@ -44,6 +49,11 @@ public class MainController {
         return modelAndView;
     }
 
+    @Operation(summary = "This method returns content of log files (information, jiraActivity and error logs)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns content of provided log file"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely non existent file path), internal server error is received as response with exception message")
+    })
     @GetMapping(value = "/api/logs")
     public ResponseEntity<String> showLogFileContents(@RequestParam("filename") String filename) {
         try {
@@ -54,7 +64,12 @@ public class MainController {
         }
     }
 
-    @GetMapping(value = "/api/getPredefinedDataFoldersList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "This method returns list of predefined data folders, so user can choose adequate session data to load")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns list of folder names in predefined data path"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely non existent folder path), internal server error is received as response with exception message")
+    })
+    @GetMapping(value = "/api/getPredefinedDataFoldersList", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getPredefinedDataFoldersList() {
         try (Stream<Path> paths = Files.list(getCurrentApplicationDataPath().resolve(PREDEFINED_DATA))) {
             List<String> folders = paths
@@ -64,11 +79,16 @@ public class MainController {
 
             return ResponseEntity.ok(String.join(",", folders));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.TEXT_PLAIN)
                     .body("Error occurred while trying to get predefined data path folders list: " + e.getMessage());
         }
     }
 
+    @Operation(summary = "This method saves current session and development team setup data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Information of successful data save is provided in message along with its path"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely non existent folder path), internal server error is received as response with exception message")
+    })
     @PostMapping(value = "/api/saveSessionData")
     public ResponseEntity<String> saveCurrentPredefinedData(@RequestBody String sessionDataJSON){
         try {
@@ -87,6 +107,11 @@ public class MainController {
         }
     }
 
+    @Operation(summary = "This method loads wanted session and development team setup data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requested session data file content is retrieved as response and current development team setup is replaced with request developer data file content"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely non existent folder path), internal server error is received as response with exception message")
+    })
     @GetMapping(value = "/api/loadSessionData")
     public ResponseEntity<String> loadCurrentPredefinedData(@RequestParam("folder") String folder) {
         try {
@@ -100,6 +125,11 @@ public class MainController {
         }
     }
 
+    @Operation(summary = "This method starts application using predefined data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Application flow is started and success message is received as response"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely invalid predefined epics data), internal server error is received as response with exception message")
+    })
     @PostMapping(value = "/api/applicationFlowPredefined")
     public ResponseEntity<String> applicationFlowPredefined(@RequestBody String predefinedData){
         try {
@@ -112,9 +142,14 @@ public class MainController {
         }
     }
 
+    @Operation(summary = "This method starts application using randomized data given adequate parameters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Application flow is started given adequate parameters"),
+            @ApiResponse(responseCode = "500", description = "In case of any error (namely invalid parameters are provided), internal server error is received as response with exception message")
+    })
     @PostMapping(value = "/api/applicationFlowRandomized")
     public ModelAndView applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
         generateRandomEpics(save, min, max);
-        return null;
+        return null; //This call is used in async matter so no redirection is needed
     }
 }
