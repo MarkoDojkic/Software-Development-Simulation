@@ -17,6 +17,8 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 @MessageEndpoint
 public class DeveloperImpl {
 	private static final Logger logger = Logger.getLogger(DeveloperImpl.class.getName());
+	public static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
+	public static final String TEST = "test";
 
 	@ServiceActivator(inputChannel = "trivialTechnicalTask.intermediate", outputChannel = "doneTechnicalTasks.output")
 	public TechnicalTask trivialTaskHandler(TechnicalTask technicalTask) {
@@ -29,7 +31,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.01
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on trivial technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -45,7 +47,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.02
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on normal technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -61,7 +63,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.03
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on minor technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -77,7 +79,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.04
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on major technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -93,7 +95,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.05
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on critical technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
@@ -109,7 +111,7 @@ public class DeveloperImpl {
 								* (6 - technicalTask.getPriority().getUrgency()) / 5.0
 								* 0.06
 								+ 1500)
-				, TimeUnit.MILLISECONDS);
+				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
 		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on blocker technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}

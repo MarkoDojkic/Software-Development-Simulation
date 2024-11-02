@@ -46,7 +46,7 @@ public class DevelopersPageController {
 	})
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		ModelAndView editingDeveloperForm = new ModelAndView("/developers::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
+		ModelAndView editingDeveloperForm = new ModelAndView("/developersPage::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
 
 		editingDeveloperForm.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);
@@ -101,7 +101,7 @@ public class DevelopersPageController {
 	@DeleteMapping(value = "/api/deleteDeveloper")
 	public ModelAndView deleteDeveloper(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
 		removeDeveloper(developmentTeamIndex, developerIndex);
-		return null; //This call is used in async matter so no redirection is needed
+		return null; //This call is used in async manner so no redirection is needed
 	}
 
 	private String getBackgroundColor(String text) {

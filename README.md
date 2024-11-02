@@ -15,7 +15,7 @@ The Software Development Simulation project is a web-based application designed 
 
 ## Features
 
-- **Spring Boot Application**: Built with Spring Boot 3.3.3.
+- **Spring Boot Application**: Built with Spring Boot 3.3.5.
 - **Spring Integration**: Configured with multiple channels for task management.
 - **Swagger Documentation**: Integrated for API documentation and testing.
 - **SonarQube Integration**: Quality and security analysis with all issues resolved.

@@ -66,10 +66,10 @@ public class Utilities {
 	static {
 		boolean isTesting = System.getProperty("spring.profiles.active", "default").equals("test");
 
-		Path base = isTesting ? Paths.get("src/test/resources", "dev.markodojkic.software_development_simulation.testing_data") : Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.3.0");
+		Path base = isTesting ? Paths.get("src/test/resources", "dev.markodojkic.software_development_simulation.testing_data") : Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.4.0");
 
 		currentApplicationDataPath = base;
-		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", isTesting ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
+		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", isTesting ? "2012-12-12 00-00-00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
 
 		if(isTesting){
             try {
@@ -116,7 +116,7 @@ public class Utilities {
 	public static void generateRandomEpics(boolean save, int epicCountDownLimit, int epicCountUpperLimit){
 		List<Epic> epicList = new ArrayList<>();
 		AtomicReference<String> jiraEpicCreatedOutput = new AtomicReference<>(Strings.EMPTY);
-		totalEpicsCount = (epicCountDownLimit == 0 && epicCountUpperLimit == 0) ? 0 : SECURE_RANDOM.nextInt(epicCountDownLimit,epicCountUpperLimit);
+		totalEpicsCount = epicCountDownLimit == epicCountUpperLimit ? epicCountDownLimit : SECURE_RANDOM.nextInt(epicCountUpperLimit - epicCountDownLimit + 1) + epicCountDownLimit;
 
 		getAvailableDevelopmentTeamIds().addAll(IntStream.rangeClosed(0, getCurrentDevelopmentTeamsSetup().size() - 1).boxed().collect(Collectors.toCollection(ArrayList::new)));
 		totalDevelopmentTeamsPresent = getCurrentDevelopmentTeamsSetup().size();
@@ -214,7 +214,7 @@ public class Utilities {
 
 	public static void saveEpics(){
 		try {
-			String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
+			String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00-00-00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
 			Path parentDirectory = Utilities.getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
 
 			Files.createDirectories(parentDirectory.resolve(folderName));

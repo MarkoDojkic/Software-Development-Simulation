@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
@@ -31,7 +32,7 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/logs")
                         .param("filename", "nonExistentTestFile"))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(content().string(String.format("Error occurred while trying to read file: %s/nonExistentTestFile.log", Utilities.getCurrentApplicationLogsPath().toAbsolutePath())));
+                .andExpect(content().string(String.format("Error occurred while trying to read file: %s%snonExistentTestFile.log", Utilities.getCurrentApplicationLogsPath().toAbsolutePath(), File.separator)));
     }
 
     @Test
@@ -58,7 +59,9 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
 
     @Test
     void when_getPredefinedDataFoldersListEndpointIsCalled_withNonExistingFilePath_PathNotFoundErrorIsThrown() throws Exception {
-        FileUtils.deleteDirectory(Utilities.getCurrentApplicationDataPath().toAbsolutePath().toFile());
+        try {
+            FileUtils.deleteDirectory(Utilities.getCurrentApplicationDataPath().toAbsolutePath().toFile());
+        } catch (IOException ignore) { /* Ignored exception */ }
         mockMvc.perform(MockMvcRequestBuilders.get("/api/getPredefinedDataFoldersList").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isInternalServerError());
     }
@@ -71,7 +74,7 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
                         .contentType(MediaType.TEXT_PLAIN)
                         .content(sessionDataJSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string("Data successfully saved to folder '2012-12-12 00:00:00'"));
+                .andExpect(content().string("Data successfully saved to folder '2012-12-12 00-00-00'"));
     }
 
     @Test
@@ -97,7 +100,7 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
     @Test
     void when_loadSessionDataEndpointIsCalled_loadPredefinedData() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/loadSessionData")
-                        .param("folder", "2012-12-12 00:00:00"))
+                        .param("folder", "2012-12-12 00-00-00"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string("{\"key\":\"value\"}"));
     }
@@ -105,9 +108,9 @@ class MainControllerTests extends SoftwareDevelopmentSimulationAppBaseTest {
     @Test
     void when_loadSessionDataEndpointIsCalled_loadPredefinedData_withNonExistingFilePath_fileNotFoundErrorIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/loadSessionData")
-                        .param("folder", "2012-12-12 06:06:06"))
+                        .param("folder", "2012-12-12 06-06-06"))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(content().string(String.format("Error occurred while trying to load predefined data: %s/developersData.json", Utilities.getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 06:06:06"))));
+                .andExpect(content().string(String.format("Error occurred while trying to load predefined data: %s%sdevelopersData.json", Utilities.getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 06-06-06"), File.separator)));
     }
 
     @Test

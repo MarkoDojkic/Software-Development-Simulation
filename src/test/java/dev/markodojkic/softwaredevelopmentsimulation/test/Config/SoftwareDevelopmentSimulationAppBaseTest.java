@@ -16,11 +16,10 @@ import dev.markodojkic.softwaredevelopmentsimulation.web.DevelopersPageControlle
 import dev.markodojkic.softwaredevelopmentsimulation.web.MainController;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,11 +35,9 @@ import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.up
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@AutoConfigureMockMvc  // Enables MockMvc with full context
-//@ComponentScan(basePackages = "dev.markodojkic.softwaredevelopmentsimulation")
+@AutoConfigureMockMvc(addFilters = false)  // Enables MockMvc with full context
 @ContextConfiguration(classes = { MiscellaneousConfig.class, TestConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, FileHandlingFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class, MainController.class, DevelopersPageController.class })
-@ExtendWith(MockitoExtension.class)
-@ExtendWith(GlobalSetupExtension.class)
+//@ExtendWith({MockitoExtension.class, GlobalSetupExtension.class})
 public abstract class SoftwareDevelopmentSimulationAppBaseTest {
     private static Server mqttServer;
 
@@ -66,8 +63,9 @@ public abstract class SoftwareDevelopmentSimulationAppBaseTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    public static void tearDown() throws IOException {
         mqttServer.stopServer();
+        FileUtils.deleteDirectory(Utilities.getCurrentApplicationDataPath().toAbsolutePath().toFile());
     }
 
     @BeforeEach

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +67,7 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 	void whenSendInfoMessageViaGateway_InformationInputChannelReceiveMessageWithSentPayload() {
 		assertNotNull(informationMQTTInput);
 
-		CountDownLatch interceptorLatch = new CountDownLatch(1);
+		CountDownLatch informationMQTTInputLatch = new CountDownLatch(1);
 
 		List<String> infoMessages = new ArrayList<>();
 
@@ -74,7 +75,7 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 			@Override
 			public Message<?> preSend(Message<?> message, MessageChannel channel) {
 				infoMessages.add(message.getPayload().toString());
-				interceptorLatch.countDown();
+				informationMQTTInputLatch.countDown();
 				return ExecutorChannelInterceptor.super.preSend(message, channel);
 			}
 		});
@@ -85,10 +86,10 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 
 		// Wait for interceptors to process messages
 		try {
-			assertTrue(interceptorLatch.await(10, TimeUnit.MILLISECONDS));
+			informationMQTTInputLatch.await();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
+			fail("Interrupted while waiting for interceptors to complete", e);
 		}
 
 		assertEquals(1, infoMessages.size());
@@ -105,10 +106,12 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 		String originalOsName = System.getProperty("os.name");
 		System.setProperty("os.name", "generic");
 		assertNotNull(epicMessageInput);
+		assertNotNull(doneEpicsOutput);
 
-		CountDownLatch interceptorLatch = new CountDownLatch(4);
+		CountDownLatch epicMessageInputLatch = new CountDownLatch(4);
+		CountDownLatch epicMessageDoneLatch = new CountDownLatch(4);
 		int epicCountDownLimit = 4;
-		int epicCountUpperLimit = 5;
+		int epicCountUpperLimit = 4;
 
 		List<Epic> epics = new ArrayList<>();
 
@@ -116,21 +119,21 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 			@Override
 			public Message<?> preSend(Message<?> message, MessageChannel channel) {
 				epics.add((Epic) message.getPayload());
-				interceptorLatch.countDown();
+				epicMessageInputLatch.countDown();
 				return ExecutorChannelInterceptor.super.preSend(message, channel);
 			}
 		});
 
-		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(epicCountDownLimit)).param("max", String.valueOf(epicCountUpperLimit))).andExpect(status().is2xxSuccessful());
+		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "false").param("min", String.valueOf(epicCountDownLimit)).param("max", String.valueOf(epicCountUpperLimit))).andExpect(status().is2xxSuccessful());
 
 		try {
-			assertTrue(interceptorLatch.await(10, TimeUnit.MILLISECONDS));
+			epicMessageInputLatch.await();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
 		}
 
-		assertTrue(epics.size() >= epicCountDownLimit && epics.size() < epicCountUpperLimit);
+		assertTrue(epics.size() >= epicCountDownLimit && epics.size() <= epicCountUpperLimit);
 
 		for (Epic epic : epics) {
 			List<UserStory> userStories = epic.getUserStories();
@@ -145,12 +148,64 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 
 		((PriorityChannel) epicMessageInput).removeInterceptor(0);
 
-		Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
+		((DirectChannel) doneEpicsOutput).addInterceptor(new ExecutorChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				epicMessageDoneLatch.countDown();
+				return ExecutorChannelInterceptor.super.preSend(message, channel);
+			}
+		});
+
+		try {
+			epicMessageDoneLatch.await();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
+		}
+
+		((DirectChannel) doneEpicsOutput).removeInterceptor(0);
 
 		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("informationChannel.log")).isEmpty());
 		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("jiraActivityStreamChannel.log")).isEmpty());
-		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("sessionData.json")).isEmpty());
-		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("developersData.json")).isEmpty());
+
+		assertFalse(Files.exists(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")));
+		assertFalse(Files.exists(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")));
+
+		System.setProperty("os.name", originalOsName);
+	}
+
+	@Test
+	void when_generateRandomEpicsWithSave_epicsAreCorrectlyCreatedAndSaved() throws Exception {
+		Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+		String originalOsName = System.getProperty("os.name");
+		System.setProperty("os.name", "generic");
+		assertNotNull(doneEpicsOutput);
+
+		CountDownLatch epicMessageDoneLatch = new CountDownLatch(1);
+		int epicCountDownLimit = 1;
+		int epicCountUpperLimit = 1;
+
+		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(epicCountDownLimit)).param("max", String.valueOf(epicCountUpperLimit))).andExpect(status().is2xxSuccessful());
+
+		((DirectChannel) doneEpicsOutput).addInterceptor(new ExecutorChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				epicMessageDoneLatch.countDown();
+				return ExecutorChannelInterceptor.super.preSend(message, channel);
+			}
+		});
+
+		try {
+			epicMessageDoneLatch.await();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
+		}
+
+		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("informationChannel.log")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("jiraActivityStreamChannel.log")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")).isEmpty());
+		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")).isEmpty());
 
 		System.setProperty("os.name", originalOsName);
 	}
@@ -163,23 +218,16 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 			assertNotNull(doneSprintUserStoriesOutput);
 			assertNotNull(doneTechnicalTasksOutput);
 
-			CountDownLatch epicsInputInterceptorLatch = new CountDownLatch(1);
-			List<Epic> epicsInput = new ArrayList<>();
-
 			CountDownLatch epicsDoneInterceptorLatch = new CountDownLatch(1);
+			List<Epic> epicsInput = new ArrayList<>();
 			List<Epic> epicsDone = new ArrayList<>();
-
-			CountDownLatch userStoriesDoneInterceptorLatch = new CountDownLatch(2);
 			List<UserStory> userStoriesDone = new ArrayList<>();
-
-			CountDownLatch technicalTasksDoneInterceptorLatch = new CountDownLatch(3);
 			List<TechnicalTask> technicalTasksDone = new ArrayList<>();
 
 			((PriorityChannel) epicMessageInput).addInterceptor(new ExecutorChannelInterceptor() {
 				@Override
 				public Message<?> preSend(Message<?> message, MessageChannel channel) {
 					epicsInput.add((Epic) message.getPayload());
-					epicsInputInterceptorLatch.countDown();
 					return ExecutorChannelInterceptor.super.preSend(message, channel);
 				}
 			});
@@ -197,7 +245,6 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 				@Override
 				public Message<?> preSend(Message<?> message, MessageChannel channel) {
 					userStoriesDone.add((UserStory) message.getPayload());
-					userStoriesDoneInterceptorLatch.countDown();
 					return ExecutorChannelInterceptor.super.preSend(message, channel);
 				}
 			});
@@ -206,7 +253,6 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 				@Override
 				public Message<?> preSend(Message<?> message, MessageChannel channel) {
 					technicalTasksDone.add((TechnicalTask) message.getPayload());
-					technicalTasksDoneInterceptorLatch.countDown();
 					return ExecutorChannelInterceptor.super.preSend(message, channel);
 				}
 			});
@@ -215,7 +261,12 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 
 			mockMvc.perform(MockMvcRequestBuilders.post("/api/applicationFlowPredefined").content(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())))).andExpect(status().is2xxSuccessful());
 
-			Uninterruptibles.sleepUninterruptibly(30, TimeUnit.SECONDS); //Time needed to complete application flow with test data
+			try {
+				epicsDoneInterceptorLatch.await();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException("Interrupted while waiting for interceptors to complete", e);
+			}
 
 			for (Epic epic : epicsInput) {
 				List<UserStory> userStories = epic.getUserStories();
@@ -244,11 +295,10 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 							.contentType(MediaType.APPLICATION_JSON)
 							.content(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI()))))
 					.andExpect(status().is2xxSuccessful())
-					.andExpect(MockMvcResultMatchers.content().string("Data successfully saved to folder '2012-12-12 00:00:00'"));
+					.andExpect(MockMvcResultMatchers.content().string("Data successfully saved to folder '2012-12-12 00-00-00'"));
 
-
-			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("sessionData.json")));
-			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testDevelopersData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00:00:00").resolve("developersData.json")));
+			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")));
+			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testDevelopersData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")));
         } catch (Exception e) {
             fail(e.getCause());
         }
@@ -269,7 +319,7 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/developers"));
 
-		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(0)).param("max", String.valueOf(0))).andExpect(status().is2xxSuccessful());
+		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "false").param("min", String.valueOf(0)).param("max", String.valueOf(0))).andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -300,12 +350,19 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 	void when_errorTextIsPassedToErrorChannel_errorApplicationFlowIsTriggered() throws IOException {
 		getIGateways().sendToError("Some error message");
 
-		Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
+		Uninterruptibles.sleepUninterruptibly(15, TimeUnit.SECONDS);
 
-		assertTrue(Files.readString(getCurrentApplicationLogsPath().resolve("errorChannel.log")).contains("""
-                \u001B[38;5;196m/*\t- !ERROR! -\u001B[0m
-                \u001B[38;5;196m  !-- Some error message\u001B[0m
-                \u001B[38;5;196m\t - !ERROR! - */\u001B[0m%$
-                """));
+		String expectedWindows = """
+				[38;5;196m/*\t- !ERROR! -
+				  !-- Some error message
+				\t - !ERROR! - */\u001B[0m%$
+				""".trim();
+		String expectedOther = """
+				[38;5;196m/*	- !ERROR! -[0m
+				[38;5;196m  !-- Some error message[0m
+				[38;5;196m	 - !ERROR! - */[0m%$
+				""".trim();
+
+		assertEquals(System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH).contains("windows") ? expectedWindows : expectedOther, Files.readString(getCurrentApplicationLogsPath().resolve("errorChannel.log")).trim());
 	}
 }

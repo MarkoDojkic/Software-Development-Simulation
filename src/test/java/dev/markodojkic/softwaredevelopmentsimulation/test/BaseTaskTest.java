@@ -4,10 +4,8 @@ import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
 import dev.markodojkic.softwaredevelopmentsimulation.model.Developer;
-import dev.markodojkic.softwaredevelopmentsimulation.test.Config.GlobalSetupExtension;
+import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelopmentSimulationAppBaseTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.ZonedDateTime;
 
@@ -15,9 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ExtendWith(GlobalSetupExtension.class)
-class BaseTaskTest {
+class BaseTaskTest extends SoftwareDevelopmentSimulationAppBaseTest {
     @Test
     void when_noArgsConstructorIsCalled_correctValuesAreSetAsDefault() {
         BaseTask task = new BaseTask();

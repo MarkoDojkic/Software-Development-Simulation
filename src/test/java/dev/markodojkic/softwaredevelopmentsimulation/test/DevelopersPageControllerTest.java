@@ -31,6 +31,7 @@ class DevelopersPageControllerTest extends SoftwareDevelopmentSimulationAppBaseT
     private DeveloperControllerAdvice developerControllerAdvice;
 
     @BeforeEach
+    @Override
     public void setup() {
         new MockUp<DataProvider>() {
             @Mock
@@ -67,8 +68,10 @@ class DevelopersPageControllerTest extends SoftwareDevelopmentSimulationAppBaseT
                         .param("developmentTeamIndex", "0")
                         .param("developerIndex", "0"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/developers::editingDeveloperForm"))
+                .andExpect(view().name("/developersPage::editingDeveloperForm"))
                 .andExpect(model().attributeExists("developmentTeams"))
+                .andExpect(model().attributeExists("developerTypes"))
+                .andExpect(model().attributeExists("formEditDeveloperPlaceholder"))
                 .andExpect(model().attribute("developmentTeamIndex", 0))
                 .andExpect(model().attribute("developerIndex", 0));
     }
@@ -140,7 +143,7 @@ class DevelopersPageControllerTest extends SoftwareDevelopmentSimulationAppBaseT
     void when_nullValuesAreProvidedForDeveloper_defaultDataIsPopulatedUsingAdvice() {
         // Section 1: whenYugoslavianUMCNIsEmpty_thenItIsGenerated
         Developer developer = new Developer();  // Assuming Developer is your model class
-        DeveloperControllerAdvice developerControllerAdvice = new DeveloperControllerAdvice();  // Your controller advice instance
+        developerControllerAdvice = new DeveloperControllerAdvice();  // Your controller advice instance
 
         // Act
         Developer updatedDeveloper = developerControllerAdvice.overrideDeveloperFields(developer);

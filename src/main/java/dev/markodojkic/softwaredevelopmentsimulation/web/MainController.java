@@ -92,7 +92,7 @@ public class MainController {
     @PostMapping(value = "/api/saveSessionData")
     public ResponseEntity<String> saveCurrentPredefinedData(@RequestBody String sessionDataJSON){
         try {
-            String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00:00:00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
+            String folderName = System.getProperty("spring.profiles.active", "default").equals("test") ? "2012-12-12 00-00-00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"));
             Path parentDirectory = getCurrentApplicationDataPath().resolve(PREDEFINED_DATA);
 
             Files.createDirectories(parentDirectory.resolve(folderName));
@@ -150,6 +150,6 @@ public class MainController {
     @PostMapping(value = "/api/applicationFlowRandomized")
     public ModelAndView applicationFlowRandomized(@RequestParam(name = "save", defaultValue = "false", required = false) boolean save, @RequestParam("min") int min, @RequestParam("max") int max){
         generateRandomEpics(save, min, max);
-        return null; //This call is used in async matter so no redirection is needed
+        return null; //This call is used in async manner so no redirection is needed
     }
 }

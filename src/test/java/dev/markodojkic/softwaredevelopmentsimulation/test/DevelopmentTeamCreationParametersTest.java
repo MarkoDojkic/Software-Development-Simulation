@@ -11,8 +11,8 @@ class DevelopmentTeamCreationParametersTest extends SoftwareDevelopmentSimulatio
     private DevelopmentTeamCreationParameters params;
 
     @BeforeEach
+    @Override
     public void setup() {
-        // Initialize the DevelopmentTeamCreationParameters instance before each test
         params = new DevelopmentTeamCreationParameters();
     }
 

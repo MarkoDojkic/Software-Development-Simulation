@@ -12,6 +12,7 @@ class DeveloperTest extends SoftwareDevelopmentSimulationAppBaseTest {
     private Developer developer;
 
     @BeforeEach
+    @Override
     public void setup() {
         developer = new Developer();
     }
@@ -52,7 +53,7 @@ class DeveloperTest extends SoftwareDevelopmentSimulationAppBaseTest {
 
     @Test
     void testToString() {
-        Developer developer = new Developer("123", "Bob", "Smith", "9876543210987", "Test area", DeveloperType.INTERN_DEVELOPER, 1L, false);
+        developer = new Developer("123", "Bob", "Smith", "9876543210987", "Test area", DeveloperType.INTERN_DEVELOPER, 1L, false);
         String expectedString = "Developer(id=123, name=Bob, surname=Smith, yugoslavianUMCN=9876543210987, placeOfBirth=Test area, developerType=INTERN_DEVELOPER, experienceCoefficient=1)";
 
         assertEquals(expectedString, developer.toString());

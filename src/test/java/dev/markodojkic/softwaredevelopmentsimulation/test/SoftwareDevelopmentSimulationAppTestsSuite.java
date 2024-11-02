@@ -5,6 +5,7 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
+        SwaggerTest.class,
         BaseTaskTest.class,
         DataProviderTest.class,
         DeveloperTest.class,

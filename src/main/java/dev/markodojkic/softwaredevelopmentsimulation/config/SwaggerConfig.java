@@ -16,8 +16,10 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info().title("Software development simulator™ API")
                         .description("This is the API documentation for the Software development simulator™ Developed by Ⓒ Marko Dojkić")
-                        .version("v1.3.0")
-                        .license(new License().name("Apache 2.0").url("https://springdoc.org")))
+                        .version("v1.4.0")
+                        .license(new License()
+                            .name("MIT License")
+                            .url("https://github.com/MarkoDojkic/Software-Development-Simulation/blob/main/LICENSE")))
                 .externalDocs(new ExternalDocumentation()
                         .description("GitHub Repository")
                         .url("https://github.com/MarkoDojkic/Software-Development-Simulation"));
