@@ -1,3 +1,5 @@
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/alert/alert.js';
+
 $(window).on("load", async () => {
     await Promise.all([
         customElements.whenDefined("sl-tab-panel"),
@@ -10,18 +12,35 @@ $(window).on("load", async () => {
         const themeSwitch = $('#theme-switch');
 
         themeSwitch.on('sl-change', (event) => {
+            alert = Object.assign(document.createElement('sl-alert'), {
+                variant: 'primary',
+                closable: false,
+                duration: 1000,
+                innerHTML: `
+                    <sl-icon name="info-circle" slot="icon"></sl-icon>
+                    Theme switched to ${event.target.checked ? 'dark' : 'light'}
+                `
+            });
+
             if (event.target.checked) {
                 $('html').addClass('sl-theme-dark');
                 themeDarkLink.removeAttr('disabled');
                 themeLightLink.attr('disabled', 'disabled');
+
             } else {
                 $('html').removeClass('sl-theme-dark');
                 themeDarkLink.attr('disabled', 'disabled');
                 themeLightLink.removeAttr('disabled');
             }
+
+            document.body.append(alert);
+            alert.toast();
         });
 
-        setTimeout(() => themeSwitch.click(), 1);
+        const switchThemeInterval = setInterval(() => {
+            themeSwitch.click();
+            clearInterval(switchThemeInterval);
+        }, 100);
 
         $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); // Change icon for every sl-rating with class .rating-developers
         $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); // Change tooltip message on each slRange instances
@@ -106,15 +125,16 @@ $(window).on("load", async () => {
     const developersCarousel = $("#sl-tab-panel-1 sl-carousel")[0];
     $(developersCarousel.shadowRoot).find("#scroll-container").css("overflow-y", "auto");
 
-    const observer = new MutationObserver(mutationsList => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'inert') {
-                mutation.target.removeAttribute('inert');
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            // Check if the mutation is related to the 'inert' attribute
+            if ((mutation.type === 'attributes' && mutation.attributeName === 'inert') || mutation.target.hasAttribute('inert')) {
+                mutation.target.removeAttribute('inert'); // Remove the 'inert' attribute
             }
-        }
+        });
     });
 
-    observer.observe(developersCarousel, { childList: true, subtree: true, attributes: true });
+    observer.observe(developersCarousel, { childList: true, subtree: true, attributeFilter: ["inert"] });
 })
 
 function setupResize() {

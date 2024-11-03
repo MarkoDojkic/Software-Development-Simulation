@@ -283,3 +283,50 @@ sl-alert {
     white-space: normal;
     overflow-wrap: break-word;
 }
+
+/* Hide vertical scrollbar for WebKit browsers (Chrome, Safari) */
+sl-carousel-item::-webkit-scrollbar {
+    width: 0; /* Hide vertical scrollbar */
+}
+
+/* Hide vertical scrollbar for Firefox */
+sl-carousel-item {
+    scrollbar-width: none; /* Hide vertical scrollbar */
+}
+
+/* For Edge and Internet Explorer */
+sl-carousel-item {
+    -ms-overflow-style: none; /* Hide scrollbar */
+}
+
+@media (max-width: 451px) {
+    #jiraActivityStreamDiv {
+        font-size: 0.42vw;
+        text-align: center;
+        font-family: monospace;
+    }
+}
+
+@media (min-width: 551px) and (max-width: 780px) {
+    #jiraActivityStreamDiv {
+        font-size: 0.59vw;
+        text-align: center;
+        font-family: monospace;
+    }
+}
+
+@media (min-width: 780px) and (max-width: 1180px) {
+    #jiraActivityStreamDiv {
+        font-size: 0.78vw;
+        text-align: center;
+        font-family: monospace;
+    }
+}
+
+@media (min-width: 1180px) {
+    #jiraActivityStreamDiv {
+        font-size: 0.95vw;
+        text-align: center;
+        font-family: monospace;
+    }
+}

@@ -3,16 +3,16 @@
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
         <title>Software development simulator - Home page</title>
-        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
-        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
+        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
+        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
         <link type="text/css" id="flatpickr-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" integrity="sha512-MQXduO8IQnJVq1qmySpN87QQkiR1bZHtorbJBD0tzy7/0U9+YIC93QWHeGTEoojMVHWWNkoCp8V6OzVSYrX0oQ==" crossorigin="anonymous">
         <link type="text/css" id="flatpickr-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" integrity="sha512-fRrsq2NfGA3jgajOMPsvcxypg4Nhcm8cf+/FFT49o8cfXx0I1TagS6SieQgGqwlxVYP6sdYbqqny2e7F0bTjbQ==" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" th:href="@{/css/index.css}"/>
         <script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr" integrity="sha512-K/oyQtMXpxI4+K0W7H25UopjM8pzq0yrVdFdG21Fh5dBe91I40pDd9A4lzNlHPHBIP2cwZuoxaUSX0GJSObvGA==" crossorigin="anonymous"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js" integrity="sha512-iTpkJ1vB9YD5jFwrppJ+0A6NIa8faZcY+iQTmkg4bkOfEw2R1OlLZnxsC43GzqHX92i87xCLULbYnFpBZFbAxA==" crossorigin="anonymous"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/shoelace-autoloader.js" integrity="sha512-Op8WeqWF7nCUmV9JTE/qM2VxVJJs4nwGbWQkUk6cNkCEFRLpe+/PVDeMtHlMdEX8mTmaPpEFyPnJThLZzsLhIg==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" integrity="sha512-nlrGqnXyDyswl/oRH13cQUfr7ZsQs0XxVAZP0Ygs1hzJcq0PiBgTzqnI3YSEFosXOPznrul6lDYcwVvc7gX0UA==" crossorigin="anonymous"></script>
-        <script type="module" th:src="@{/js/index.js}"></script>
+        <script type="module" th:src="@{/js/index.js}" defer></script>
     </head>
     <body>
         <header style="display: flex; align-items: center; justify-content: center; text-align: center;">
@@ -77,7 +77,7 @@
     </body>
 
     <sl-dialog id="jiraActivityStream" label="Jira Activity Stream" style="--width: 96vw">
-        <div style="text-align: center; font-family: monospace"></div>
+        <div id="jiraActivityStreamDiv"></div>
     </sl-dialog>
 
     <sl-dialog id="customEpics" label="Manage epics for predefined application flow" style="--width: 96vw">
@@ -132,7 +132,7 @@
             <sl-tab panel="customUserStoriesAddTab" slot="nav">Add</sl-tab>
             <sl-tab disabled panel="customUserStoriesEditTab" slot="nav">Edit</sl-tab>
 
-            <sl-tab-panel name="customUserStoriesViewTab">
+            <sl-tab-panel name="customUserStoriesViewTab" style="overflow: hidden">
                 <p>There aren't any user stories created in this session</p>
             </sl-tab-panel>
             <sl-tab-panel name="customUserStoriesAddTab">
@@ -176,7 +176,7 @@
             <sl-tab panel="customTechnicalTasksAddTab" slot="nav">Add</sl-tab>
             <sl-tab disabled panel="customTechnicalTasksEditTab" slot="nav">Edit</sl-tab>
 
-            <sl-tab-panel name="customTechnicalTasksViewTab">
+            <sl-tab-panel name="customTechnicalTasksViewTab" style="overflow: hidden">
                 <p>There aren't any technical tasks created in this session</p>
             </sl-tab-panel>
             <sl-tab-panel name="customTechnicalTasksAddTab">

@@ -1,14 +1,6 @@
-import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/components/alert/alert.js';
-import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/components/popup/popup.js';
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/alert/alert.js';
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/popup/popup.js';
 import {ansi2html_string} from './ansi2html.js';
-
-const observer = new MutationObserver(mutationsList => {
-    for (const mutation of mutationsList) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'inert') {
-            mutation.target.removeAttribute('inert');
-        }
-    }
-});
 
 $(window).on("load", async () => {
     const themeLightLink = $('#theme-light');
@@ -31,9 +23,14 @@ $(window).on("load", async () => {
             flatpickrDark.attr('disabled', 'disabled');
             flatpickrLight.removeAttr('disabled');
         }
+
+        notifyInfo(`Theme switched to ${event.target.checked ? 'dark' : 'light'}`)
     });
 
-    setTimeout(() => themeSwitch.click(), 1);
+    const switchThemeInterval = setInterval(() => {
+        themeSwitch.click();
+        clearInterval(switchThemeInterval);
+    }, 100);
 
     flatpickr("sl-input[name='epicCreatedOn']", {
         enableTime: true,
@@ -1020,6 +1017,15 @@ function updateCustomEpicsList() {
         const customUserStories = $("#customUserStories")[0];
         const customTechnicalTasks = $("#customTechnicalTasks")[0];
 
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                // Check if the mutation is related to the 'inert' attribute
+                if ((mutation.type === 'attributes' && mutation.attributeName === 'inert') || mutation.target.hasAttribute('inert')) {
+                    mutation.target.removeAttribute('inert'); // Remove the 'inert' attribute
+                }
+            });
+        });
+
         currentPredefinedData.forEach((value, key) => {
             $("#epicsWrapper").append(`<sl-card id="epic_#${key}" style="height:100%; --border-color: rgb(150, 2, 253, 1); text-align: -webkit-center;" xmlns="http://www.w3.org/1999/html">
                 <strong>ID: ${value.epicId}</strong>
@@ -1058,10 +1064,7 @@ function updateCustomEpicsList() {
 
                     const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
 
-                    setTimeout(() => {
-                        $(userStoriesCarousel[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
-                        observer.observe(userStoriesCarousel[0], { childList: true, subtree: true, attributes: true });
-                    }, 500);
+                    observer.observe(userStoriesCarousel[0], { childList: true, subtree: true, attributeFilter: ["inert"] });
 
                     $(userStoriesCarousel).on('sl-slide-change', event => {
                         $(customUserStories.shadowRoot).find("#title slot").html($(customUserStories.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing Epic: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
@@ -1076,10 +1079,7 @@ function updateCustomEpicsList() {
 
                         const technicalTasksCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
 
-                        setTimeout(() => {
-                            $(technicalTasksCarousel[0].shadowRoot).find("#scroll-container").css("overflow-y", "auto");
-                            observer.observe(technicalTasksCarousel[0], { childList: true, subtree: true, attributes: true });
-                        }, 500);
+                        observer.observe(technicalTasksCarousel[0], { childList: true, subtree: true, attributeFilter: ["inert"] });
 
                         $(technicalTasksCarousel).on('sl-slide-change', event => {
                             $(customTechnicalTasks.shadowRoot).find("#title slot").html($(customTechnicalTasks.shadowRoot).find("#title slot").html().split("(")[0] + "(Currently viewing User story: '" + $(event.target.children).filter((index, child) => $(child).attr('class') && $(child).attr('class').includes('--is-active'))[0].id.split("Of")[1] + "')");
@@ -1108,7 +1108,7 @@ function updateCustomEpicsList() {
 function updateCustomUserStoriesList(relatedEpicId, userStories) {
     const userStoriesCarousel = $("sl-tab-panel[name='customUserStoriesViewTab'] sl-carousel");
 
-    userStoriesCarousel.append(`<sl-carousel-item id="userStoriesOf${relatedEpicId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
+    userStoriesCarousel.append(`<sl-carousel-item id="userStoriesOf${relatedEpicId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; width: 99%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center; overflow-y: auto;"></sl-carousel-item>`)
 
     const userStorySlSelect = $("sl-select[name='selectedUserStory']");
 
@@ -1151,9 +1151,9 @@ function updateCustomUserStoriesList(relatedEpicId, userStories) {
 }
 
 function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
-    const technicalTaskCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
+    const technicalTasksCarousel = $("sl-tab-panel[name='customTechnicalTasksViewTab'] sl-carousel");
 
-    technicalTaskCarousel.append(`<sl-carousel-item id="technicalTaskOf${relatedUserStoryId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center;"></sl-carousel-item>`)
+    technicalTasksCarousel.append(`<sl-carousel-item id="technicalTaskOf${relatedUserStoryId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; width: 99%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center; overflow-y: auto;"></sl-carousel-item>`)
 
     setTimeout(() => $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html("Manage technical tasks for predefined application flow (Currently viewing User story: '" + relatedUserStoryId + "')"), 500);
 
