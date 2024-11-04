@@ -46,7 +46,7 @@ public class DevelopersPageController {
 	})
 	@GetMapping(value = "/developers/edit")
 	public ModelAndView getEditingDeveloperForm(@RequestParam("developmentTeamIndex") int developmentTeamIndex, @RequestParam("developerIndex") int developerIndex){
-		ModelAndView editingDeveloperForm = new ModelAndView("/developersPage::editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
+		ModelAndView editingDeveloperForm = new ModelAndView("developersPage :: editingDeveloperForm"); //Warning is false positive: View is thymeleaf fragment contained in developersPage.html file
 
 		editingDeveloperForm.addObject("developmentTeams", getCurrentDevelopmentTeamsSetup());
 		editingDeveloperForm.addObject("developmentTeamIndex", developmentTeamIndex);

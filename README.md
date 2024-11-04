@@ -5,7 +5,7 @@
 ![SonarQube Quality Gate](https://img.shields.io/badge/SonarQube%20Quality%20Gate-Passed-brightgreen)
 ![SonarQube Duplicated Lines](https://img.shields.io/badge/SonarQube%20Duplicated%20Lines-0%25-brightgreen)
 ![SonarQube LOC](https://img.shields.io/badge/SonarQube%20LOC-2000-blue)
-![JaCoCo Coverage](https://img.shields.io/badge/JaCoCo%20Coverage-93.5%25-brightgreen)
+![JaCoCo Coverage](https://img.shields.io/badge/JaCoCo%20Coverage-93.1%25-brightgreen)
 
 **Note:** SonarQube information is based on the last GitHub Action run and is generated locally. As such, there is no direct link available to the SonarQube dashboard.
 

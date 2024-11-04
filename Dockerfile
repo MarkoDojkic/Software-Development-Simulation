@@ -17,12 +17,26 @@ RUN mvn clean package -DskipTests
 # Stage 2: Create an image with RabbitMQ and your Spring Boot application
 FROM rabbitmq:management-alpine AS final
 
-# Install necessary runtime packages
-RUN apk add --no-cache openjdk22-jdk supervisor \
-    && rabbitmq-plugins enable --offline rabbitmq_mqtt \
-    && rabbitmq-plugins enable --offline rabbitmq_web_mqtt \
-    && addgroup -S runtimeUsers \
-    && adduser -S runtimeUser -G runtimeUsers
+# Download OpenJDK 22 packages from Alpine Edge (since it isn`t available in latest stable alpine 3.20)
+# Check if openjdk22 is already installed, and install if not
+RUN if ! java --version 2>/dev/null; then \
+        echo "Installing OpenJDK 22..."; \
+        apk add --no-cache curl; \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-jre-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-jmods-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-jdk-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-demos-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-doc-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-jre-headless-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-src-22.0.2_p9-r2.apk && \
+            curl -O https://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/openjdk22-static-libs-22.0.2_p9-r2.apk; \
+        apk add --allow-untrusted ./*.apk && rm ./*.apk; \
+    fi; \
+    apk add --no-cache supervisor \
+      && rabbitmq-plugins enable --offline rabbitmq_mqtt \
+      && rabbitmq-plugins enable --offline rabbitmq_web_mqtt \
+      && addgroup -S runtimeUsers && adduser -S runtimeUser -G runtimeUsers
 
 # Copy the Spring Boot application from the build stage
 COPY --from=build /app/target/softwaredevelopmentsimulation-1.4.0.jar /app/software-development-simulation.jar

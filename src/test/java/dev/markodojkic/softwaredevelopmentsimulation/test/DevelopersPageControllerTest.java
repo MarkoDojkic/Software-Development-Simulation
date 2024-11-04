@@ -68,7 +68,7 @@ class DevelopersPageControllerTest extends SoftwareDevelopmentSimulationAppBaseT
                         .param("developmentTeamIndex", "0")
                         .param("developerIndex", "0"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/developersPage::editingDeveloperForm"))
+                .andExpect(view().name("developersPage :: editingDeveloperForm"))
                 .andExpect(model().attributeExists("developmentTeams"))
                 .andExpect(model().attributeExists("developerTypes"))
                 .andExpect(model().attributeExists("formEditDeveloperPlaceholder"))
