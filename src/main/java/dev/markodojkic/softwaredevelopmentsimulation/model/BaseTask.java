@@ -40,10 +40,10 @@ public class BaseTask implements Serializable {
 	}
 
 	public void setAssignee(Developer assignee) {
-		this.assignee = this.assignee == null ? assignee : this.assignee;
+		this.assignee = assignee == null ? this.assignee : assignee;
 	}
 
 	public void setReporter(Developer reporter) {
-		this.reporter = this.reporter == null ? reporter : this.reporter;
+		this.reporter = reporter == null ? this.reporter : reporter;
 	}
 }

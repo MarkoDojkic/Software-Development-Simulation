@@ -25,7 +25,7 @@ class SwaggerTest {
     private GroupedOpenApi groupedOpenApi;
 
     @Test
-    void testCustomOpenAPIConfig() {
+    void when_openAPIConfigIsCalled_correctDataIsReturned() {
         Info info = openAPI.getInfo();
         assertEquals("Software development simulator™ API", info.getTitle());
         assertEquals("This is the API documentation for the Software development simulator™ Developed by Ⓒ Marko Dojkić", info.getDescription());
@@ -41,7 +41,7 @@ class SwaggerTest {
     }
 
     @Test
-    void testApiGroupConfig() {
+    void when_groupedOpenAPIConfigIsCalled_correctDataIsReturned() {
         // Verify that the GroupedOpenApi is set up with the correct group name and paths
         assertEquals("api", groupedOpenApi.getGroup());
         assertEquals(List.of("/api/**"), groupedOpenApi.getPathsToMatch());

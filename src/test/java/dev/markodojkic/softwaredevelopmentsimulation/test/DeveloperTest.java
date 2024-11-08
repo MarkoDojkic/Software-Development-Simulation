@@ -44,7 +44,7 @@ class DeveloperTest extends SoftwareDevelopmentSimulationAppBaseTest {
     }
 
     @Test
-    void testGetDisplayName() {
+    void when_getDisplayNameIsCalled_correctDisplayNameIsReturned() {
         developer.setName("Alice");
         developer.setSurname("Johnson");
 
@@ -52,7 +52,7 @@ class DeveloperTest extends SoftwareDevelopmentSimulationAppBaseTest {
     }
 
     @Test
-    void testToString() {
+    void when_toStringIsCalled_correctDataIsReturned() {
         developer = new Developer("123", "Bob", "Smith", "9876543210987", "Test area", DeveloperType.INTERN_DEVELOPER, 1L, false);
         String expectedString = "Developer(id=123, name=Bob, surname=Smith, yugoslavianUMCN=9876543210987, placeOfBirth=Test area, developerType=INTERN_DEVELOPER, experienceCoefficient=1)";
 

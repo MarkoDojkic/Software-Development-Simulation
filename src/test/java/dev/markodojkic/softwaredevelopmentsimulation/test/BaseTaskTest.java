@@ -1,5 +1,6 @@
 package dev.markodojkic.softwaredevelopmentsimulation.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.Priority;
 import dev.markodojkic.softwaredevelopmentsimulation.enums.DeveloperType;
 import dev.markodojkic.softwaredevelopmentsimulation.model.BaseTask;
@@ -8,7 +9,9 @@ import dev.markodojkic.softwaredevelopmentsimulation.test.Config.SoftwareDevelop
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 
+import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -25,6 +28,11 @@ class BaseTaskTest extends SoftwareDevelopmentSimulationAppBaseTest {
         assertNull(task.getAssignee());
         assertNull(task.getReporter());
         assertNull(task.getCreatedOn());
+
+        // Assertion for toString method
+        String expectedToString = "BaseTask{id='null', name='null', description='null', priority=null, assignee='UNASSIGNED', reporter='UNASSIGNED', createdOn=null}";
+
+        assertEquals(expectedToString, task.toString());
     }
 
     @Test
@@ -82,6 +90,7 @@ class BaseTaskTest extends SoftwareDevelopmentSimulationAppBaseTest {
         // Test equality
         assertEquals(task1, task2);
         assertEquals(task1.hashCode(), task2.hashCode());
+        assertNotEquals(task1, assignee1);
 
         // Create tasks with different IDs
         BaseTask task3 = new BaseTask("2", "Task Name", "Task Description", Priority.NORMAL, assignee1, reporter1, ZonedDateTime.now());
@@ -134,6 +143,15 @@ class BaseTaskTest extends SoftwareDevelopmentSimulationAppBaseTest {
         assertEquals(Priority.CRITICAL, task.getPriority());
         assertEquals("assignee 1", task.getAssignee().getDisplayName());
         assertEquals("reporter 1", task.getReporter().getDisplayName());
+        task.setAssignee(null);
+        task.setReporter(null);
+        assertEquals("assignee 1", task.getAssignee().getDisplayName());
+        assertEquals("reporter 1", task.getReporter().getDisplayName());
         assertNotNull(task.getCreatedOn());
+    }
+
+    @Test
+    void when_emptyListIsPassedToJSONSerializer_emptyJSONArrayIsRetrieved() throws JsonProcessingException {
+        assertEquals("[]", getObjectMapper().writeValueAsString(new ArrayList<>()));
     }
 }

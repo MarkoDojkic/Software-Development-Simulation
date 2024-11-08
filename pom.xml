@@ -37,11 +37,23 @@
     </issueManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>3.3.5</spring-version>
-        <spring-integration-version>6.3.5</spring-integration-version>
-        <jmockit-version>1.49.2</jmockit-version>
-        <junit-jupiter-version>5.11.3</junit-jupiter-version>
+        <spring.version>3.3.5</spring.version>
+        <spring-integration.version>6.3.5</spring-integration.version>
+        <jmockit.version>1.55.0</jmockit.version>
+        <junit-jupiter.version>5.11.3</junit-jupiter.version>
+        <mockito.version>5.14.2</mockito.version>
         <application.version>${project.version}</application.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <sonar.projectKey>Software-Development-Simulation</sonar.projectKey>
+        <sonar.projectName>Software Development Simulation</sonar.projectName>
+        <sonar.projectVersion>${application.version}</sonar.projectVersion>
+        <sonar.host.url>${env.SONAR_HOST_URL}</sonar.host.url>
+        <sonar.token>${env.SONAR_TOKEN}</sonar.token>
+        <sonar.java.binaries>target/classes</sonar.java.binaries>
+        <sonar.coverage.exclusions>
+            src/main/java/dev/markodojkic/softwaredevelopmentsimulation/SoftwareDevelopmentSimulationApp.java
+        </sonar.coverage.exclusions>
+        <sonar.dynamic>reuseReports</sonar.dynamic>
     </properties>
 
     <dependencies>
@@ -49,38 +61,38 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test-autoconfigure</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -88,25 +100,25 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
-            <version>${spring-integration-version}</version>
+            <version>${spring-integration.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-stream</artifactId>
-            <version>${spring-integration-version}</version>
+            <version>${spring-integration.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
-            <version>${spring-integration-version}</version>
+            <version>${spring-integration.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-file</artifactId>
-            <version>${spring-integration-version}</version>
+            <version>${spring-integration.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -159,37 +171,37 @@
         <dependency>
             <groupId>com.github.hazendaz.jmockit</groupId>
             <artifactId>jmockit</artifactId>
-            <version>${jmockit-version}</version>
+            <version>${jmockit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${junit-jupiter-version}</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit-jupiter-version}</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit-jupiter-version}</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite-api</artifactId>
+            <artifactId>junit-platform-suite</artifactId>
             <version>1.11.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.14.2</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -230,7 +242,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-version}</version>
+                <version>${spring.version}</version>
                 <configuration>
                     <mainClass>dev.markodojkic.softwaredevelopmentsimulation.SoftwareDevelopmentSimulationApp</mainClass>
                     <layout>JAR</layout>
@@ -253,25 +265,26 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>5.0.0.4389</version>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
                             <goal>report</goal>
                         </goals>
+                        <phase>test</phase>
                         <configuration>
                             <excludes>
                                 <exclude>dev/markodojkic/softwaredevelopmentsimulation/SoftwareDevelopmentSimulationApp.class</exclude>
                             </excludes>
+                            <destFile>${project.build.directory}/site/jacoco/jacoco.xml</destFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -282,18 +295,27 @@
                 <version>3.5.1</version>
                 <configuration>
                     <argLine>
-                        ${argLine} <!-- Defines jacoco javaagent -->
                         -Dspring.profiles.active=test
                         -Xshare:off
                         -XX:+EnableDynamicAgentLoading
-                        -javaagent:${user.home}/.m2/repository/com/github/hazendaz/jmockit/jmockit/${jmockit-version}/jmockit-${jmockit-version}.jar
+                        -javaagent:${settings.localRepository}/com/github/hazendaz/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
+                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=target/jacoco.exec
                     </argLine>
+                    <includes>dev/markodojkic/softwaredevelopmentsimulation/test/SoftwareDevelopmentSimulationAppTestsSuite</includes>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.17.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>use-latest-versions</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

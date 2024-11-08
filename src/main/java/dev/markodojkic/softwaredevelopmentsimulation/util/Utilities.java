@@ -66,12 +66,11 @@ public class Utilities {
 	static {
 		boolean isTesting = System.getProperty("spring.profiles.active", "default").equals("test");
 
-		Path base = isTesting ? Paths.get("src/test/resources", "dev.markodojkic.software_development_simulation.testing_data") : Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.4.0");
+		currentApplicationDataPath = isTesting ? Paths.get("src/test/resources", "dev.markodojkic.software_development_simulation.testing_data") : Paths.get(System.getProperty("user.home"), "dev.markodojkic", "software_development_simulation", "1.4.0");
 
-		currentApplicationDataPath = base;
-		currentApplicationLogsPath = Paths.get(String.valueOf(base), "logs", isTesting ? "2012-12-12 00-00-00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
+		currentApplicationLogsPath = Paths.get(String.valueOf(currentApplicationDataPath), "logs", isTesting ? "2012-12-12 00-00-00" : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")));
 
-		if(isTesting){
+		if(!Files.exists(currentApplicationDataPath)){
             try {
 				Files.createDirectories(currentApplicationDataPath);
 				Files.createDirectories(currentApplicationLogsPath);

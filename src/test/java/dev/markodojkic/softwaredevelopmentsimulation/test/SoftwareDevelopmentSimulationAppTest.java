@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static dev.markodojkic.softwaredevelopmentsimulation.util.DataProvider.*;
 import static dev.markodojkic.softwaredevelopmentsimulation.util.Utilities.*;
@@ -103,11 +104,10 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 
 	@Test
 	void when_generateRandomEpics_epicsAreCorrectlyCreated() throws Exception {
-		String originalOsName = System.getProperty("os.name");
-		System.setProperty("os.name", "generic");
 		assertNotNull(epicMessageInput);
 		assertNotNull(doneEpicsOutput);
 
+		updateDevelopmentTeamsSetup(new DevelopmentTeamCreationParameters(65, 30, 31, 15, 20, false));
 		CountDownLatch epicMessageInputLatch = new CountDownLatch(4);
 		CountDownLatch epicMessageDoneLatch = new CountDownLatch(4);
 		int epicCountDownLimit = 4;
@@ -170,22 +170,31 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 
 		assertFalse(Files.exists(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")));
 		assertFalse(Files.exists(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")));
-
-		System.setProperty("os.name", originalOsName);
 	}
 
 	@Test
 	void when_generateRandomEpicsWithSave_epicsAreCorrectlyCreatedAndSaved() throws Exception {
 		Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
-		String originalOsName = System.getProperty("os.name");
-		System.setProperty("os.name", "generic");
 		assertNotNull(doneEpicsOutput);
 
-		CountDownLatch epicMessageDoneLatch = new CountDownLatch(1);
+		CountDownLatch epicMessageDoneLatch;
 		int epicCountDownLimit = 1;
-		int epicCountUpperLimit = 1;
+		int epicCountUpperLimit = 2;
+		AtomicInteger countOfEpics = new AtomicInteger(0);
 
 		mockMvc.perform(post("/api/applicationFlowRandomized").param("save", "true").param("min", String.valueOf(epicCountDownLimit)).param("max", String.valueOf(epicCountUpperLimit))).andExpect(status().is2xxSuccessful());
+
+		((PriorityChannel) epicMessageInput).addInterceptor(new ExecutorChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				countOfEpics.incrementAndGet();
+				return ExecutorChannelInterceptor.super.preSend(message, channel);
+			}
+		});
+
+		Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+
+		epicMessageDoneLatch = new CountDownLatch(countOfEpics.get());
 
 		((DirectChannel) doneEpicsOutput).addInterceptor(new ExecutorChannelInterceptor() {
 			@Override
@@ -206,8 +215,6 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 		assertFalse(Files.readString(getCurrentApplicationLogsPath().resolve("jiraActivityStreamChannel.log")).isEmpty());
 		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")).isEmpty());
 		assertFalse(Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")).isEmpty());
-
-		System.setProperty("os.name", originalOsName);
 	}
 
 	@Test
@@ -297,7 +304,10 @@ class SoftwareDevelopmentSimulationAppTest extends SoftwareDevelopmentSimulation
 					.andExpect(status().is2xxSuccessful())
 					.andExpect(MockMvcResultMatchers.content().string("Data successfully saved to folder '2012-12-12 00-00-00'"));
 
+			assertEquals(Objects.requireNonNull(getObjectMapper().writeValueAsString(epicsInput)), Objects.requireNonNull(getObjectMapper().writeValueAsString(epicsDone))); //Direct test for epics custom json serializer/deserializer
+
 			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testSessionData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("sessionData.json")));
+
 			assertEquals(Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("testDevelopersData.json")).toURI())), Files.readString(getCurrentApplicationDataPath().resolve("predefinedData").resolve("2012-12-12 00-00-00").resolve("developersData.json")));
         } catch (Exception e) {
             fail(e.getCause());

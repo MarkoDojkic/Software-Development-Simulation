@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)  // Enables MockMvc with full context
 @ContextConfiguration(classes = { MiscellaneousConfig.class, TestConfig.class, SpringIntegrationMessageChannelsConfig.class, MQTTFlow.class, PrintoutFlow.class, FileHandlingFlow.class, PrinterTransformer.class, DeveloperImpl.class, ProjectManagerImpl.class, MainController.class, DevelopersPageController.class })
-//@ExtendWith({MockitoExtension.class, GlobalSetupExtension.class})
 public abstract class SoftwareDevelopmentSimulationAppBaseTest {
     private static Server mqttServer;
 

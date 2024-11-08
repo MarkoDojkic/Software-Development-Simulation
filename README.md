@@ -5,13 +5,30 @@
 ![SonarQube Quality Gate](https://img.shields.io/badge/SonarQube%20Quality%20Gate-Passed-brightgreen)
 ![SonarQube Duplicated Lines](https://img.shields.io/badge/SonarQube%20Duplicated%20Lines-0%25-brightgreen)
 ![SonarQube LOC](https://img.shields.io/badge/SonarQube%20LOC-2000-blue)
-![JaCoCo Coverage](https://img.shields.io/badge/JaCoCo%20Coverage-93.1%25-brightgreen)
+![JaCoCo Coverage](https://img.shields.io/badge/JaCoCo%20Coverage-95.8%25-brightgreen)
 
 **Note:** SonarQube information is based on the last GitHub Action run and is generated locally. As such, there is no direct link available to the SonarQube dashboard.
 
 ## Overview
 
 The Software Development Simulation project is a web-based application designed to simulate and manage software development tasks. It utilizes Spring Boot for backend services, Spring Integration for messaging, and integrates with Swagger for API documentation.
+
+## Usage guide
+
+This application is to be used from web interface that has two views:
+
+1. Main view on index page, with fallowing features:
+   - Allows user input for desired number of randomly generated development Epics, which is given as range between MIN - MAX (to input exact number user should input same value for both).
+   - Allows saving those generated epics along with current development teams setup for future use, or manual change.
+   - Allows managing previously saved, i.e. predefined epics, and consequently user stories and technical tasks, with option to save without overriding previous data.
+   - Allows addition,  editing and removal of epics, user stories and technical tasks in currently loaded predefined data.
+   - Provides view of informational output, error output as well as jira stream generated output during application flow.
+   - Provides options to change to "Developers page" view.
+2. Developers page view, with fallowing features
+   - View of current development teams setups and details about each developer (their personal data, skill level, position, etc.).
+   - Allows managing of said data through editing developer data, adding, moving or removing individual developers from their development teams.
+   - Provide options to generate new batch of developers data with random data using predefined parameters (male/female gender ratio, MIN - MAX range of total possible number of developers and MIN - MAX possible number of developers assigned in each development team).
+   - Provides option to add previously mentioned generated developers data to existing or to create fresh data (by checking option to not retain previous development team setup)
 
 ## Features
 
