@@ -1,10 +1,10 @@
-import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/alert/alert.js';
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/components/alert/alert.js';
 
-$(window).on("load", async () => {
+$(window).on("load", async _ => {
     await Promise.all([
         customElements.whenDefined("sl-tab-panel"),
         customElements.whenDefined("sl-carousel")
-    ]).then(() => {
+    ]).then(_ => {
         setupResize();
 
         const themeDarkLink = $('#theme-dark');
@@ -26,23 +26,27 @@ $(window).on("load", async () => {
                 $('html').addClass('sl-theme-dark');
                 themeDarkLink.removeAttr('disabled');
                 themeLightLink.attr('disabled', 'disabled');
-
+                sessionStorage.setItem("themeDark", "true");
             } else {
                 $('html').removeClass('sl-theme-dark');
                 themeDarkLink.attr('disabled', 'disabled');
                 themeLightLink.removeAttr('disabled');
+                sessionStorage.setItem("themeDark", "false");
             }
 
             document.body.append(alert);
             alert.toast();
         });
 
-        const switchThemeInterval = setInterval(() => {
-            themeSwitch.click();
-            clearInterval(switchThemeInterval);
-        }, 100);
+        if(!sessionStorage.getItem("themeDark") || sessionStorage.getItem("themeDark") === "true") {
+            const switchThemeInterval = setInterval(_ => {
+                themeSwitch.click();
+                sessionStorage.setItem("themeDark", "true");
+                clearInterval(switchThemeInterval);
+            }, 100);
+        }
 
-        $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>')); // Change icon for every sl-rating with class .rating-developers
+        $('.sl-rating-developer').each((index, slRating) => slRating.getSymbol = (_ => '<sl-icon name="code-slash"></sl-icon>')); // Change icon for every sl-rating with class .rating-developers
         $(".developerExperienceSlRange").each((index, slRange) => slRange.tooltipFormatter = value => `Developer experience - ${value}/10`); // Change tooltip message on each slRange instances
 
         $("#developmentTeamsSelectionTree").on("sl-selection-change", event => { // Mimic select element on tree element
@@ -54,9 +58,9 @@ $(window).on("load", async () => {
         });
 
         // Below is referenced via $(document) since they are dynamically created buttons
-        $(document).on("click", ".editDeveloperSlButton", async function (){
-            const developmentTeamIndex = $(this).data("development-team-index");
-            const developerIndex = $(this).data("developer-index");
+        $(document).on("click", ".editDeveloperSlButton", async (event) => {
+            const developmentTeamIndex = $(event.target).data("development-team-index");
+            const developerIndex = $(event.target).data("developer-index");
 
             const viewTab =  $("#sl-tab-1");
             const createTab =  $("#sl-tab-2");
@@ -70,7 +74,7 @@ $(window).on("load", async () => {
                 success: response => {
                     $("#sl-tab-panel-3").html(response);
                     $("#sl-tab-panel-3 .developerExperienceSlRange")[0].tooltipFormatter = value => `Developer experience - ${value}/10`; // Need to be reinitialized, since new sl-range is created
-                    $(document).on("click", ".editDeveloperResetSlButton", async () => {
+                    $(document).on("click", ".editDeveloperResetSlButton", async _ => {
                         window.history.replaceState(null, null, "/developers");
                         viewTab.prop("disabled", false);
                         createTab.prop("disabled", false)
@@ -78,7 +82,7 @@ $(window).on("load", async () => {
                         recreateTab.prop("disabled", false)
                         $("#sl-tab-panel-3").empty();
 
-                        await Promise.all([!viewTab.prop("disabled")]).then(() => $("body sl-tab-group")[0].show("tabDevelopersView"));
+                        await Promise.all([!viewTab.prop("disabled")]).then(_ => $("body sl-tab-group")[0].show("tabDevelopersView"));
                     });
                 }
             });
@@ -88,12 +92,12 @@ $(window).on("load", async () => {
             editTab.prop("disabled", false)
             recreateTab.prop("disabled", true)
 
-            await Promise.all([!editTab.prop("disabled")]).then(() => $("body sl-tab-group")[0].show("tabDevelopersEdit"));
+            await Promise.all([!editTab.prop("disabled")]).then(_ => $("body sl-tab-group")[0].show("tabDevelopersEdit"));
         });
 
-        $(document).on('click', '.removeDeveloperSlButton', function() {
-            const currentRemoveSlButton = $(this);
-            const otherDevelopersFooterSlButtons = currentRemoveSlButton.parent().parent().nextAll('sl-card').find(".developerExperienceSlRange slSlButt");
+        $(document).on('click', '.removeDeveloperSlButton', async (event) => {
+            const currentRemoveSlButton = $(event.target);
+            const remainingDevelopersSlCards = currentRemoveSlButton.closest('sl-card').nextAll();
             const developmentTeamIndex = currentRemoveSlButton.data("development-team-index");
             const developerIndex = currentRemoveSlButton.data("developer-index");
 
@@ -101,21 +105,20 @@ $(window).on("load", async () => {
                 type: 'DELETE',
                 async: true,
                 url: `/api/deleteDeveloper?developmentTeamIndex=${developmentTeamIndex}&developerIndex=${developerIndex}`,
-                success: function() {
-                    if (developerIndex === 0 && otherDevelopersFooterSlButtons.length === 0) { // If is only one remove sl-carousel-item of removed developer's team
-                        currentRemoveSlButton.parent().parent().parent().nextAll('div').each(function(index, slCarouselItem) {
-                            $(slCarouselItem).children('sl-card').find("div[slot='footer'] sl-button").each(function(index, slButton) {
-                                $(slButton).data("development-team-index", $(slButton).data("development-team-index") - 1);
-                            });
+                success: _ => {
+                    if (developerIndex === 0 && remainingDevelopersSlCards.length === 0) { // If is only one remove sl-carousel-item of removed developer's team
+                        currentRemoveSlButton.closest('sl-carousel-item').nextAll().each((index, slCarouselItem) => {
+                            $(slCarouselItem).find("div[slot='footer'] sl-button").each((_, otherDevelopmentTeamsFooterButton) => otherDevelopmentTeamsFooterButton.dataset.developmentTeamIndex =
+                            (parseInt(otherDevelopmentTeamsFooterButton.dataset.developmentTeamIndex) - 1).toString());
                         }); // Update indexes for fallowing development teams
-                        currentRemoveSlButton.parent().parent().parent().remove();
+                        currentRemoveSlButton.closest('sl-carousel-item').remove();
                     } else { // Update indexes for fallowing developers
-                        otherDevelopersFooterSlButtons.each(function(index, slButton) {
-                            $(slButton).data("developer-index", $(slButton).data("developer-index") - 1);
+                        remainingDevelopersSlCards.each((index, developerSlCard) => {
+                            $(developerSlCard).find("div[slot='footer'] sl-button").each((_, footerButton) => footerButton.dataset.developerIndex = (parseInt(footerButton.dataset.developerIndex) - 1).toString());
                         });
+                        currentRemoveSlButton.closest('sl-card').remove(); // Remove sl-card of removed developer
                     }
 
-                    currentRemoveSlButton.parent().parent().remove(); // Remove sl-card of removed developer
                 }
             });
         });
@@ -154,7 +157,7 @@ function setupResize() {
 
     const titleContainer = $('#titleContainer');
 
-    const callbackDuplicates = () => {
+    const callbackDuplicates = _ => {
         titleContainer.css({
             "left": "2vw",
             "top": "1.25%",
@@ -168,7 +171,7 @@ function setupResize() {
     }
 
 
-    const callbackDuplicatesSmall = () => {
+    const callbackDuplicatesSmall = _ => {
         titleContainer.css({
             "top": "1.25%",
             "left": "18%",

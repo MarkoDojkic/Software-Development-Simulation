@@ -3,13 +3,13 @@
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
         <title>Software development simulator - Home page</title>
-        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
-        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
+        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
+        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
         <link type="text/css" id="flatpickr-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" integrity="sha512-MQXduO8IQnJVq1qmySpN87QQkiR1bZHtorbJBD0tzy7/0U9+YIC93QWHeGTEoojMVHWWNkoCp8V6OzVSYrX0oQ==" crossorigin="anonymous">
         <link type="text/css" id="flatpickr-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" integrity="sha512-fRrsq2NfGA3jgajOMPsvcxypg4Nhcm8cf+/FFT49o8cfXx0I1TagS6SieQgGqwlxVYP6sdYbqqny2e7F0bTjbQ==" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" th:href="@{/css/index.css}"/>
         <script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr" integrity="sha512-K/oyQtMXpxI4+K0W7H25UopjM8pzq0yrVdFdG21Fh5dBe91I40pDd9A4lzNlHPHBIP2cwZuoxaUSX0GJSObvGA==" crossorigin="anonymous"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/shoelace-autoloader.js" integrity="sha512-Op8WeqWF7nCUmV9JTE/qM2VxVJJs4nwGbWQkUk6cNkCEFRLpe+/PVDeMtHlMdEX8mTmaPpEFyPnJThLZzsLhIg==" crossorigin="anonymous"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/shoelace-autoloader.js" integrity="sha512-YsvK9FOakV/iKji0zoMiD3TDUrv1qqFxikm2hIgLUwmMZL5KFFF/keFiitGHcE1daAVaWD5FelZH4jOogT9qOg==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" integrity="sha512-nlrGqnXyDyswl/oRH13cQUfr7ZsQs0XxVAZP0Ygs1hzJcq0PiBgTzqnI3YSEFosXOPznrul6lDYcwVvc7gX0UA==" crossorigin="anonymous"></script>
         <script type="module" th:src="@{/js/index.js}" defer></script>
@@ -117,7 +117,7 @@
                     <div style="display: inline-flex">
                         <sl-button outline type="submit" variant="success">Create epic</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=epicReporter], sl-select[name=epicAssignee]').prop('disabled', true)"
+                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=epicReporter], sl-select[name=epicAssignee]').prop('disabled', true)" onkeydown="if(EventTarget.key === 'Enter' || EventTarget.key === ' ') $('sl-select[name=epicReporter], sl-select[name=epicAssignee]').prop('disabled', true)"
                         >Clear form</sl-button>
                     </div>
                 </form>
@@ -162,7 +162,7 @@
                     <div style="display: inline-flex">
                         <sl-button outline type="submit" variant="success">Create user story</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=userStoryReporter], sl-select[name=userStoryAssignee]').prop('disabled', true)">Clear form</sl-button>
+                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=userStoryReporter], sl-select[name=userStoryAssignee]').prop('disabled', true)" onkeydown="if(EventTarget.key === 'Enter' || EventTarget.key === ' ') $('sl-select[name=userStoryReporter], sl-select[name=userStoryAssignee]').prop('disabled', true)">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
@@ -208,7 +208,7 @@
                     <div style="display: inline-flex">
                         <sl-button outline type="submit" variant="success">Create technical task</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=technicalTaskReporter], sl-select[name=technicalTaskAssignee]').prop('disabled', true)">Clear form</sl-button>
+                        <sl-button outline type="reset" variant="neutral" onclick="$('sl-select[name=technicalTaskReporter], sl-select[name=technicalTaskAssignee]').prop('disabled', true)" onkeydown="if(EventTarget.key === 'Enter' || EventTarget.key === ' ') $('sl-select[name=technicalTaskReporter], sl-select[name=technicalTaskAssignee]').prop('disabled', true)">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>

@@ -32,7 +32,7 @@ public class DeveloperImpl {
 								* 0.01
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on trivial technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on trivial technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 
@@ -48,7 +48,7 @@ public class DeveloperImpl {
 								* 0.02
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on normal technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on normal technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 
@@ -64,7 +64,7 @@ public class DeveloperImpl {
 								* 0.03
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on minor technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on minor technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 
@@ -80,7 +80,7 @@ public class DeveloperImpl {
 								* 0.04
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on major technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on major technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 
@@ -96,7 +96,7 @@ public class DeveloperImpl {
 								* 0.05
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on critical technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on critical technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 
@@ -112,7 +112,7 @@ public class DeveloperImpl {
 								* 0.06
 								+ 1500)
 				, System.getProperty(SPRING_PROFILES_ACTIVE, "").equals(TEST) ? TimeUnit.NANOSECONDS : TimeUnit.MILLISECONDS);
-		logger.log(Level.INFO, () -> colorize(String.format("%n###Developer %s finished working on blocker technical task %s", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
+		logger.log(Level.INFO, () -> colorize(String.format("%n</> Developer %s finished working on blocker technical task %s </>", technicalTask.getAssignee().getDisplayName(), technicalTask.getId()), Attribute.TEXT_COLOR(0), Attribute.BACK_COLOR(technicalTask.getPriority().getAnsiColorCode())));
 		return technicalTask;
 	}
 

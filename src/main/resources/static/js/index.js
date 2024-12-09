@@ -1,8 +1,8 @@
-import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/alert/alert.js';
-import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/components/popup/popup.js';
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/components/alert/alert.js';
+import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/components/popup/popup.js';
 import {ansi2html_string} from './ansi2html.js';
 
-$(window).on("load", async () => {
+$(window).on("load", async _ => {
     const themeLightLink = $('#theme-light');
     const themeDarkLink = $('#theme-dark');
     const flatpickrLight = $('#flatpickr-light');
@@ -16,21 +16,26 @@ $(window).on("load", async () => {
             themeLightLink.attr('disabled', 'disabled');
             flatpickrDark.removeAttr('disabled');
             flatpickrLight.attr('disabled', 'disabled');
+            sessionStorage.setItem("themeDark", "true");
         } else {
             $('html').removeClass('sl-theme-dark');
             themeDarkLink.attr('disabled', 'disabled');
             themeLightLink.removeAttr('disabled');
             flatpickrDark.attr('disabled', 'disabled');
             flatpickrLight.removeAttr('disabled');
+            sessionStorage.setItem("themeDark", "false");
         }
 
         notifyInfo(`Theme switched to ${event.target.checked ? 'dark' : 'light'}`)
     });
 
-    const switchThemeInterval = setInterval(() => {
-        themeSwitch.click();
-        clearInterval(switchThemeInterval);
-    }, 100);
+    if(!sessionStorage.getItem("themeDark") || sessionStorage.getItem("themeDark") === "true") {
+        const switchThemeInterval = setInterval(_ => {
+            themeSwitch.click();
+            sessionStorage.setItem("themeDark", "true");
+            clearInterval(switchThemeInterval);
+        }, 100);
+    }
 
     flatpickr("sl-input[name='epicCreatedOn']", {
         enableTime: true,
@@ -40,7 +45,7 @@ $(window).on("load", async () => {
         time_24hr: true,
         allowInput:true,
         defaultDate: "today",
-        onClose: function(selectedDates, dateStr, instance) {
+        onClose: (selectedDates, dateStr, instance) => {
             const defaultDate = instance.config.defaultDate;
 
             if (selectedDates.length === 0) {
@@ -50,38 +55,14 @@ $(window).on("load", async () => {
         }
     });
 
-    const userStoryCreatedOn = flatpickr("sl-input[name='userStoryCreatedOn']", {
+    const userStoryCreatedOn = flatpickr("sl-input[name='userStoryCreatedOn'], sl-input[name='technicalTaskCreatedOn']", {
         enableTime: true,
         enableSeconds: true,
         minuteIncrement: 1,
         dateFormat: "d.m.Y. H:i:S",
         time_24hr: true,
         allowInput:true,
-        onClose: function(selectedDates, dateStr, instance) {
-            const minDate = instance.config.minDate;
-            const maxDate = instance.config.maxDate;
-
-            if (selectedDates.length > 0) {
-                const selectedDate = selectedDates[0];
-                if (selectedDate < new Date(minDate) || selectedDate > new Date(maxDate)) {
-                    instance.setDate(minDate);
-                    notifyWarning(`Selected date out of boundaries. Switched to minimal acceptable date: ${minDate}`);
-                }
-            } else {
-                instance.setDate(minDate);
-                notifyWarning(`No date was selected. Switched to minimal acceptable date: ${minDate}`);
-            }
-        }
-    });
-
-    const technicalTaskCreatedOn = flatpickr("sl-input[name='technicalTaskCreatedOn']", {
-        enableTime: true,
-        enableSeconds: true,
-        minuteIncrement: 1,
-        dateFormat: "d.m.Y. H:i:S",
-        time_24hr: true,
-        allowInput:true,
-        onClose: function(selectedDates, dateStr, instance) {
+        onClose: (selectedDates, dateStr, instance)=> {
             const minDate = instance.config.minDate;
             const maxDate = instance.config.maxDate;
 
@@ -113,7 +94,7 @@ $(window).on("load", async () => {
         keepAliveInterval: 300,
         cleanSession: false,
         mqttVersion: 4, // Identification for version 3.1.1
-        onSuccess: function () {
+        onSuccess: ()=> {
             notifySuccess("MQTT connected successfully to " + websocketBroker + ":" + websocketPort);
             client.subscribe("information-printout-topic", {qos: 2});
             client.subscribe("java-activity-stream-printout-topic", {qos: 2});
@@ -127,7 +108,7 @@ $(window).on("load", async () => {
                 </ul>
             `);
         },
-        onFailure: function (message) {
+        onFailure: (message)=> {
             notifyError("MQQT connection failure (" + websocketBroker + ":" + websocketPort + ")<br />" + message.errorMessage);
         }
     };
@@ -141,13 +122,13 @@ $(window).on("load", async () => {
     const minimalEpicsCount = $("#minimalEpicsCount");
     const maximalEpicsCount = $("#maximalEpicsCount");
 
-    $("#jiraActivityStreamSlButton").on('click', () => $("#jiraActivityStream")[0].show());
+    $("#jiraActivityStreamSlButton").on('click', _ => $("#jiraActivityStream")[0].show());
 
-    $("#manageCustomEpicsSlButton").on('click', () => $("#customEpics")[0].show());
-    $("#manageCustomUserStoriesSlButton").on('click', () => $("#customUserStories")[0].show());
-    $("#manageCustomTechnicalTasksSlButton").on('click', () => $("#customTechnicalTasks")[0].show());
+    $("#manageCustomEpicsSlButton").on('click', _ => $("#customEpics")[0].show());
+    $("#manageCustomUserStoriesSlButton").on('click', _ => $("#customUserStories")[0].show());
+    $("#manageCustomTechnicalTasksSlButton").on('click', _ => $("#customTechnicalTasks")[0].show());
 
-    minimalEpicsCount.on('sl-input', () => {
+    minimalEpicsCount.on('sl-input', _ => {
         if (parseInt(minimalEpicsCount.val()) < parseInt(maximalEpicsCount.val())) {
             minimalEpicsCount[0].setCustomValidity('');
             maximalEpicsCount[0].setCustomValidity('');
@@ -158,7 +139,7 @@ $(window).on("load", async () => {
         }
     });
 
-    maximalEpicsCount.on('sl-input', () => {
+    maximalEpicsCount.on('sl-input', _ => {
         if (parseInt(maximalEpicsCount.val()) > parseInt(minimalEpicsCount.val())) {
             minimalEpicsCount[0].setCustomValidity('');
             maximalEpicsCount[0].setCustomValidity('');
@@ -169,7 +150,7 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#simulatePredefinedSlButton").on("click", async () => {
+    $("#simulatePredefinedSlButton").on("click", async _ => {
         let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
         if (currentPredefinedData.length > 0)
@@ -185,12 +166,12 @@ $(window).on("load", async () => {
             notifyError("Cannot start application flow - There aren`t any predefined data");
     });
 
-    $("#generateRandomDataFlowForm #simulateRandomizedSlButton").on("click", async () => {
+    $("#generateRandomDataFlowForm #simulateRandomizedSlButton").on("click", async _ => {
         if (minimalEpicsCount.attr("data-valid") !== undefined && maximalEpicsCount.attr("data-valid") !== undefined)
             $.ajax({
                 type: "POST",
                 url: "/api/applicationFlowRandomized?".concat("save=".concat($("#saveRandomizedDataToFile")[0].checked.toString().concat("&min=".concat(minimalEpicsCount.val().concat("&max=".concat(maximalEpicsCount.val())))))),
-                success: () => $("#generateRandomDataFlowForm").trigger('reset'),
+                success: _ => $("#generateRandomDataFlowForm").trigger('reset'),
             });
         else
             notifyError("Cannot start application flow - Data is invalid");
@@ -226,7 +207,7 @@ $(window).on("load", async () => {
         }
     });
 
-    $('#sl-rating-developer')[0].getSymbol = (() => '<sl-icon name="code-slash"></sl-icon>');
+    $('#sl-rating-developer')[0].getSymbol = (_ => '<sl-icon name="code-slash"></sl-icon>');
 
     const epicReporter = $("sl-select[name='epicReporter']");
     const epicAssignee = $("sl-select[name='epicAssignee']");
@@ -294,9 +275,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()){
             const formData = {"userStories": []};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
@@ -363,22 +342,7 @@ $(window).on("load", async () => {
             allowInput:true,
             defaultDate: editingEpic.epicCreatedOn,
             maxDate: new Date(Math.min.apply(null, editingEpic.userStories.map(userStory => flatpickr.parseDate(userStory.userStoryCreatedOn, "d.m.Y. H:i:S").getTime())) + 1000),
-            onClose: function(selectedDates, dateStr, instance) {
-                const defaultDate = instance.config.defaultDate;
-                const minDate = instance.config.minDate;
-                const maxDate = instance.config.maxDate;
-
-                if (selectedDates.length > 0) {
-                    const selectedDate = selectedDates[0];
-                    if (selectedDate < new Date(minDate) || selectedDate > new Date(maxDate)) {
-                        instance.setDate(defaultDate);
-                        notifyWarning(`Selected date out of boundaries. Switched to default date: ${defaultDate}`);
-                    }
-                } else {
-                    instance.setDate(defaultDate);
-                    notifyWarning(`No date was selected. Switched to default date: ${defaultDate}`);
-                }
-            }
+            onClose: handleDateClose
         });
 
         const editTab = $("sl-tab[panel='customEpicsEditTab']");
@@ -388,8 +352,8 @@ $(window).on("load", async () => {
         $("sl-tab[panel='customEpicsAddTab']").prop("disabled", true);
         editTab.prop("disabled", false);
 
-        await Promise.all([!editTab.prop("disabled")]).then(() => {
-            $("#customEpics").on('sl-request-close', function(e) { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
+        await Promise.all([!editTab.prop("disabled")]).then(_ => {
+            $("#customEpics").on('sl-request-close', (e)=> { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
             $("#customEpics sl-tab-group")[0].show("customEpicsEditTab");
         });
     });
@@ -402,9 +366,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()) {
             const formData = {};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             formData["userStories"] = JSON.parse(formData["userStories"]);
 
@@ -421,25 +383,17 @@ $(window).on("load", async () => {
 
             updateCustomEpicsList();
 
-            const viewTab = $("sl-tab[panel='customEpicsViewTab']");
-            window.history.replaceState(null, null, "/");
-            viewTab.prop("disabled", false);
-            $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
-            $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
-            await Promise.all([!viewTab.prop("disabled")]).then(() => {
-                $("#customEpics").off('sl-request-close');
-                $("#customEpics sl-tab-group")[0].show("customEpicsViewTab");
-            });
+            await $("#editCustomEpicResetSlButton").trigger('click');
         }
     });
 
-    $(document).on("click", "#editCustomEpicResetSlButton", async () => {
+    $(document).on("click", "#editCustomEpicResetSlButton", async _ => {
         const viewTab = $("sl-tab[panel='customEpicsViewTab']");
         window.history.replaceState(null, null, "/");
         viewTab.prop("disabled", false);
         $("sl-tab[panel='customEpicsAddTab']").prop("disabled", false);
         $("sl-tab[panel='customEpicsEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => {
+        await Promise.all([!viewTab.prop("disabled")]).then(_ => {
             $("#customEpics").off('sl-request-close');
             $("#customEpics sl-tab-group")[0].show("customEpicsViewTab");
         });
@@ -461,9 +415,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()) {
             const formData = {"technicalTasks": []};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
             const selectedEpic = formData.selectedEpic;
@@ -541,22 +493,7 @@ $(window).on("load", async () => {
             defaultDate: editingUserStory.userStoryCreatedOn,
             minDate: new Date(flatpickr.parseDate(currentPredefinedData[eventValues[0]].epicCreatedOn, "d.m.Y. H:i:S").getTime() + 1000),
             maxDate: new Date(Math.min.apply(null, editingUserStory.technicalTasks.map(technicalTask => flatpickr.parseDate(technicalTask.technicalTaskCreatedOn, "d.m.Y. H:i:S").getTime())) - 1000),
-            onClose: function(selectedDates, dateStr, instance) {
-                const defaultDate = instance.config.defaultDate;
-                const minDate = instance.config.minDate;
-                const maxDate = instance.config.maxDate;
-
-                if (selectedDates.length > 0) {
-                    const selectedDate = selectedDates[0];
-                    if (selectedDate < new Date(minDate) || selectedDate > new Date(maxDate)) {
-                        instance.setDate(defaultDate);
-                        notifyWarning(`Selected date out of boundaries. Switched to default date: ${defaultDate}`);
-                    }
-                } else {
-                    instance.setDate(defaultDate);
-                    notifyWarning(`No date was selected. Switched to default date: ${defaultDate}`);
-                }
-            }
+            onClose: handleDateClose
         });
 
         const editTab = $("sl-tab[panel='customUserStoriesEditTab']");
@@ -566,8 +503,8 @@ $(window).on("load", async () => {
         $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", true);
         editTab.prop("disabled", false);
 
-        await Promise.all([!editTab.prop("disabled")]).then(() => {
-            $("#customUserStories").on('sl-request-close', function(e) { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
+        await Promise.all([!editTab.prop("disabled")]).then(_ => {
+            $("#customUserStories").on('sl-request-close', (e)=> { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
             $("#customUserStories sl-tab-group")[0].show("customUserStoriesEditTab");
         });
     });
@@ -581,9 +518,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()) {
             const formData = {};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             formData["selectedEpicIndex"] = eventValues[0];
             formData["technicalTasks"] = JSON.parse(formData["technicalTasks"]);
@@ -599,25 +534,17 @@ $(window).on("load", async () => {
 
             updateCustomEpicsList();
 
-            const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
-            window.history.replaceState(null, null, "/");
-            viewTab.prop("disabled", false);
-            $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
-            $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
-            await Promise.all([!viewTab.prop("disabled")]).then(() => {
-                $("#customUserStories").off('sl-request-close');
-                $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab");
-            });
+            await $("#editCustomUserStoryResetSlButton").trigger('click');
         }
     });
 
-    $(document).on("click", "#editCustomUserStoryResetSlButton", async () => {
+    $(document).on("click", "#editCustomUserStoryResetSlButton", async _ => {
         const viewTab = $("sl-tab[panel='customUserStoriesViewTab']");
         window.history.replaceState(null, null, "/");
         viewTab.prop("disabled", false);
         $("sl-tab[panel='customUserStoriesAddTab']").prop("disabled", false);
         $("sl-tab[panel='customUserStoriesEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => {
+        await Promise.all([!viewTab.prop("disabled")]).then(_ => {
             $("#customUserStories").off('sl-request-close');
             $("#customUserStories sl-tab-group")[0].show("customUserStoriesViewTab");
         });
@@ -644,9 +571,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()) {
             const formData = {};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
             const selectedUserStoryValues = formData.selectedUserStory.split("$");
@@ -725,22 +650,7 @@ $(window).on("load", async () => {
             allowInput:true,
             defaultDate: editingTechnicalTask.technicalTaskCreatedOn,
             minDate: new Date(flatpickr.parseDate(currentPredefinedData[eventValues[0]].userStories[eventValues[1]].userStoryCreatedOn, "d.m.Y. H:i:S").getTime() + 1000),
-            onClose: function(selectedDates, dateStr, instance) {
-                const defaultDate = instance.config.defaultDate;
-                const minDate = instance.config.minDate;
-                const maxDate = instance.config.maxDate;
-
-                if (selectedDates.length > 0) {
-                    const selectedDate = selectedDates[0];
-                    if (selectedDate < new Date(minDate) || selectedDate > new Date(maxDate)) {
-                        instance.setDate(defaultDate);
-                        notifyWarning(`Selected date out of boundaries. Switched to default date: ${defaultDate}`);
-                    }
-                } else {
-                    instance.setDate(defaultDate);
-                    notifyWarning(`No date was selected. Switched to default date: ${defaultDate}`);
-                }
-            }
+            onClose: handleDateClose
         });
 
         const editTab = $("sl-tab[panel='customTechnicalTasksEditTab']");
@@ -750,8 +660,8 @@ $(window).on("load", async () => {
         $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", true);
         editTab.prop("disabled", false);
 
-        await Promise.all([!editTab.prop("disabled")]).then(() => {
-            $("#customTechnicalTasks").on('sl-request-close', function(e) { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
+        await Promise.all([!editTab.prop("disabled")]).then(_ => {
+            $("#customTechnicalTasks").on('sl-request-close', (e) => { e.preventDefault(); notifyWarning("Cannot close popup in edit mode. Please use \"cancel\" button.") });
             $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksEditTab");
         });
     });
@@ -766,9 +676,7 @@ $(window).on("load", async () => {
         if(form[0].checkValidity()) {
             const formData = {};
 
-            form.find('sl-input, sl-select, sl-textarea').each(function () {
-                formData[this.name] = this.value;
-            });
+            form.find('sl-input, sl-select, sl-textarea').each((_, element) => formData[element.name] = element.value);
 
             formData["selectedEpicIndex"] = eventValues[0];
             formData["selectedUserStoryIndex"] = eventValues[1];
@@ -786,25 +694,17 @@ $(window).on("load", async () => {
 
             updateCustomEpicsList();
 
-            const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
-            window.history.replaceState(null, null, "/");
-            viewTab.prop("disabled", false);
-            $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
-            $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
-            await Promise.all([!viewTab.prop("disabled")]).then(() => {
-                $("#customTechnicalTasks").off('sl-request-close');
-                $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab");
-            });
+            await $("#editCustomTechnicalTaskResetSlButton").trigger('click');
         }
     });
 
-    $(document).on("click", "#editCustomTechnicalTaskResetSlButton", async () => {
+    $(document).on("click", "#editCustomTechnicalTaskResetSlButton", async _ => {
         const viewTab = $("sl-tab[panel='customTechnicalTasksViewTab']");
         window.history.replaceState(null, null, "/");
         viewTab.prop("disabled", false);
         $("sl-tab[panel='customTechnicalTasksAddTab']").prop("disabled", false);
         $("sl-tab[panel='customTechnicalTasksEditTab']").prop("disabled", true);
-        await Promise.all([!viewTab.prop("disabled")]).then(() => {
+        await Promise.all([!viewTab.prop("disabled")]).then(_ => {
             $("#customTechnicalTasks").off('sl-request-close');
             $("#customTechnicalTasks sl-tab-group")[0].show("customTechnicalTasksViewTab");
         });
@@ -825,7 +725,7 @@ $(window).on("load", async () => {
         updateCustomEpicsList();
     });
 
-    $("#saveToSessionFileSlButton").on("click", () => {
+    $("#saveToSessionFileSlButton").on("click", _ => {
         let currentPredefinedData = sessionStorage.getItem("currentPredefinedData") ? JSON.parse(sessionStorage.getItem("currentPredefinedData")) : [];
 
         if (currentPredefinedData.length === 0) notifyWarning("You haven`t added any epic, user story nor technical task. No data provided for saving!")
@@ -842,7 +742,7 @@ $(window).on("load", async () => {
         }
     });
 
-    $("#loadFromSavedSessionFileSlButton").on("click", async () => {
+    $("#loadFromSavedSessionFileSlButton").on("click", async _ => {
         $.ajax({
             type: "GET",
             url: "/api/getPredefinedDataFoldersList",
@@ -933,7 +833,7 @@ function generateUUID() {
     }
     const array = new Uint32Array(4);
     crypto.getRandomValues(array);
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         const r = (array[0] + Math.random() * 16) % 16 | 0;
         array[0] = Math.floor(array[0] / 16);
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -1039,7 +939,7 @@ function updateCustomEpicsList() {
                 <span>Created on: ${value.epicCreatedOn}</span>
                 <sl-divider></sl-divider>
                 <sl-badge variant="danger">
-                    Reporter: ${value.epicReporter == -1 ? $("#technicalManagerNameField").html().split(" (UMCN")[0] : $("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
+                    Reporter: ${value.epicReporter === -1 ? $("#technicalManagerNameField").html().split(" (UMCN")[0] : $("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicReporter + "]").html()}
                 </sl-badge>
                 <sl-badge variant="warning">
                     Assignee: ${$("#developmentTeamsListOfDevelopers #" + value.selectedEpicDevelopmentTeam + " sl-option[value=" + value.epicAssignee + "]").html()}
@@ -1155,7 +1055,7 @@ function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
 
     technicalTasksCarousel.append(`<sl-carousel-item id="technicalTaskOf${relatedUserStoryId}" style="display: grid; grid-template-columns: repeat(var(--numberOfColumns), 1fr); height: 100%; width: 99%; row-gap: 1%; column-gap: 1%; text-align: -webkit-center; overflow-y: auto;"></sl-carousel-item>`)
 
-    setTimeout(() => $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html("Manage technical tasks for predefined application flow (Currently viewing User story: '" + relatedUserStoryId + "')"), 500);
+    setTimeout(_ => $($("#customTechnicalTasks")[0].shadowRoot).find("#title slot").html("Manage technical tasks for predefined application flow (Currently viewing User story: '" + relatedUserStoryId + "')"), 500);
 
     technicalTasks.forEach((value, key) => {
         $("#technicalTaskOf" + relatedUserStoryId).append(`
@@ -1187,4 +1087,21 @@ function updateCustomTechnicalTasksList(relatedUserStoryId, technicalTasks) {
             </sl-card>
         `);
     });
+}
+
+function handleDateClose(selectedDates, dateStr, instance) {
+    const defaultDate = instance.config.defaultDate;
+    const minDate = instance.config.minDate;
+    const maxDate = instance.config.maxDate;
+
+    if (selectedDates.length > 0) {
+        const selectedDate = selectedDates[0];
+        if (selectedDate < new Date(minDate) || selectedDate > new Date(maxDate)) {
+            instance.setDate(defaultDate);
+            notifyWarning(`Selected date out of boundaries. Switched to default date: ${defaultDate}`);
+        }
+    } else {
+        instance.setDate(defaultDate);
+        notifyWarning(`No date was selected. Switched to default date: ${defaultDate}`);
+    }
 }

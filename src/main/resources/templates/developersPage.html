@@ -3,10 +3,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>Software development simulator - Developers page</title>
-        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
-        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
+        <link type="text/css" id="theme-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/themes/light.css" integrity="sha512-/wsGyRaDm069iXIoScQcUGhJKd5ifFvwidDeiaUA1moLaLQJrIDuskK6ZTYaibFvQT1wxgQhc51apWB6XShnzg==" crossorigin="anonymous">
+        <link type="text/css" id="theme-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/themes/dark.css" integrity="sha512-EiN8ncJeSJDtpZJTPNIvJ8MB6kdj7mPe5nQVK9cc9Ci8+92F3mUy3xHufAUzqKqCteas7rBLLmahmHYu35mJIA==" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" th:href="@{/css/developers.css}"/>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.18.0/cdn/shoelace-autoloader.js" integrity="sha512-Op8WeqWF7nCUmV9JTE/qM2VxVJJs4nwGbWQkUk6cNkCEFRLpe+/PVDeMtHlMdEX8mTmaPpEFyPnJThLZzsLhIg==" crossorigin="anonymous"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/shoelace-autoloader.js" integrity="sha512-YsvK9FOakV/iKji0zoMiD3TDUrv1qqFxikm2hIgLUwmMZL5KFFF/keFiitGHcE1daAVaWD5FelZH4jOogT9qOg==" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
         <script type="module" th:src="@{/js/developers.js}" defer></script>
     </head>
@@ -102,7 +102,7 @@
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Add developer</sl-button>
                         <sl-divider vertical></sl-divider>
-                        <sl-button variant="neutral" outline type="reset" onclick="$('#developmentTeamsSelectionTree [selected]').removeAttr('selected');">Clear form</sl-button>
+                        <sl-button variant="neutral" outline type="reset" onkeydown="if(EventTarget.key === 'Enter' || EventTarget.key === ' ') $('#developmentTeamsSelectionTree [selected]').removeAttr('selected');" onclick="$('#developmentTeamsSelectionTree [selected]').removeAttr('selected');">Clear form</sl-button>
                     </div>
                 </form>
             </sl-tab-panel>
@@ -132,7 +132,7 @@
                     </div>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <input type="hidden" id="retainOld" name="retainOld" value="true">
-                    <sl-checkbox checked="true" onclick="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
+                    <sl-checkbox checked="true" onchange="document.querySelector('#retainOld').value = this.checked">Retain current development team setup</sl-checkbox>
                     <sl-divider class="horizontalDivider"></sl-divider>
                     <div style="display: inline-flex">
                         <sl-button variant="success" outline type="submit">Recreate development teams</sl-button>
@@ -186,12 +186,12 @@
                     </sl-tree-item>
                 </sl-tree>
                 <!-- NOTE: Using thymeleaf field is not compatible with shoelace library -->
-                <input aria-label="" type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" th:value="${developmentTeamIndex}" required/>
-                <input aria-label="" type="text" th:field="*{id}" style="opacity: 0;" readonly/>
-                <input aria-label="" type="text" th:field="*{placeOfBirth}" style="opacity: 0;" readonly/>
-                <input aria-label="" type="text" th:field="*{yugoslavianUMCN}" style="opacity: 0;" readonly/>
-                <input aria-label="" type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
-                <input aria-label="" type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
+                <input type="number" id="editDeveloperSelectedDevelopmentTeamIndex" name="editDeveloperSelectedDevelopmentTeamIndex" style="opacity: 0;" min="0" th:max="${#lists.size(developmentTeams)-1}" th:value="${developmentTeamIndex}" required/>
+                <input type="text" th:field="*{id}" style="opacity: 0;" readonly/>
+                <input type="text" th:field="*{placeOfBirth}" style="opacity: 0;" readonly/>
+                <input type="text" th:field="*{yugoslavianUMCN}" style="opacity: 0;" readonly/>
+                <input type="number" name="previousDevelopmentTeamIndex" style="opacity: 0;" th:value="${developmentTeamIndex}" readonly/>
+                <input type="number" name="developerIndex" style="opacity: 0;" th:value="${developerIndex}" readonly/>
             </div>
             <sl-divider class="horizontalDivider"></sl-divider>
             <div style="display: inline-flex">

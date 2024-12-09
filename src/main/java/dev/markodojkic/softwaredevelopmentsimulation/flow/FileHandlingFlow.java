@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.StandardIntegrationFlow;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.dsl.Files;
 import org.springframework.integration.file.support.FileExistsMode;
@@ -31,7 +32,7 @@ public class FileHandlingFlow {
         return configureLogFileFlow(logFileMessageChannel, "errorChannel.log");
     }
 
-    private IntegrationFlow configureLogFileFlow(MessageChannel logFileMessageChannel, String fileName) {
+    private StandardIntegrationFlow configureLogFileFlow(MessageChannel logFileMessageChannel, String fileName) {
         return IntegrationFlow.from(logFileMessageChannel)
                 .enrichHeaders(h -> h
                         .header(FileHeaders.FILENAME, fileName)
